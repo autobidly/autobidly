@@ -45,7 +45,7 @@ export default function Home() {
               Pre-qualified. Binding offers. No negotiating. No &quot;let me talk to my manager.&quot;
             </p>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
-              <button style={{ background: '#111', color: '#fff', border: 'none', borderRadius: 99, padding: '14px 32px', fontSize: 15, fontWeight: 500, cursor: 'pointer' }}>See my best deals</button>
+              <a href="/deals" style={{ background: '#111', color: '#fff', border: 'none', borderRadius: 99, padding: '14px 32px', fontSize: 15, fontWeight: 500, cursor: 'pointer', textDecoration: 'none', display: 'inline-block' }}>See my best deals</a>
               <button style={{ background: 'transparent', color: '#111', border: '1.5px solid #ccc', borderRadius: 99, padding: '14px 32px', fontSize: 15, fontWeight: 500, cursor: 'pointer' }}>Submit a bid</button>
             </div>
           </div>
@@ -195,7 +195,7 @@ export default function Home() {
           Stop negotiating.<br /><span style={{ color: '#5DCAA5' }}>Start driving.</span>
         </h2>
         <p style={{ fontSize: 16, color: '#9FE1CB', marginBottom: 36 }}>It&apos;s free to browse deals and submit bids. No commitment until you say yes.</p>
-        <button style={{ background: '#1D9E75', color: '#fff', border: 'none', padding: '15px 36px', borderRadius: 99, fontSize: 15, fontWeight: 500, cursor: 'pointer' }}>Find my best deal now</button>
+        <a href="/deals" style={{ background: '#1D9E75', color: '#fff', border: 'none', padding: '15px 36px', borderRadius: 99, fontSize: 15, fontWeight: 500, cursor: 'pointer', textDecoration: 'none', display: 'inline-block' }}>Find my best deal now</a>
       </section>
 
       {/* FOOTER */}
@@ -212,10 +212,6 @@ export default function Home() {
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.4; }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(4px); }
-          to { opacity: 1; transform: translateY(0); }
         }
       `}</style>
 
