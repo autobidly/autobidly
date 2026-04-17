@@ -136,28 +136,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* FINE PRINT JOKE */}
-      <section style={{ padding: '56px 40px', background: '#111', textAlign: 'center' }}>
-        <div style={{ maxWidth: 760, margin: '0 auto' }}>
-          <div style={{ fontSize: 48, fontWeight: 800, color: '#fff', marginBottom: 8, letterSpacing: '-1px' }}>
-            $189<span style={{ fontSize: 24 }}>/mo!</span><span style={{ color: '#1D9E75' }}>*</span>
-          </div>
-          <p style={{ fontSize: 12, color: '#666', lineHeight: 2, marginBottom: 28 }}>
-            *Must be an active GM employee, currently leasing a Chevy, have top-tier credit, be a Michigan resident,{' '}
-            <span style={{ color: '#1D9E75', fontWeight: 600 }}>own exactly one cat,</span>{' '}
-            have valid insurance, active military or veteran status,{' '}
-            <span style={{ color: '#1D9E75', fontWeight: 600 }}>correctly pronounce &quot;Worcestershire&quot; on the first try,</span>{' '}
-            have a Costco membership, no prior lease defaults,{' '}
-            <span style={{ color: '#1D9E75', fontWeight: 600 }}>and your first name must start with a vowel.</span>{' '}
-            Dealer participation may vary. Offer expires whenever we feel like it. See dealer for details.
-          </p>
-          <div style={{ width: 40, height: 1, background: '#333', margin: '0 auto 24px' }}></div>
-          <div style={{ fontSize: 22, fontWeight: 600, color: '#fff', letterSpacing: '-0.3px' }}>
-            Real prices. Real people. <span style={{ color: '#1D9E75' }}>No asterisks.</span>
-          </div>
-        </div>
-      </section>
-
       {/* DIRTY SECRET */}
       <section style={{ padding: '72px 40px', background: '#f9f9f7' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40, alignItems: 'center', maxWidth: 1100, margin: '0 auto' }}>
