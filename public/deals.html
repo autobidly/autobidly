@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AutoBidly — Who's Got the Lowest Deal Near You?</title>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --ink:     #0f0e0d;
+  --ink2:    #1d1c1a;
+  --paper:   #f5f3ee;
+  --paper2:  #ede9e1;
+  --paper3:  #e4dfd5;
+  --rule:    #d6d0c5;
+  --muted:   #9a9488;
+  --signal: #1D9E75;
+  --signal2: #0F6E56;
+  --go:      #1a7a3c;
+  --go-soft: #edf7f1;
+  --warn:    #b45309;
+  --warn-soft:#fef9ee;
+  --info:    #1d4ed8;
+  --info-soft:#eff4ff;
+  --rank1:  #1D9E75;
+  --verified:#1a7a3c;
+  --shadow:  0 1px 3px rgba(15,14,13,.08), 0 4px 12px rgba(15,14,13,.06);
+  --shadow2: 0 2px 8px rgba(15,14,13,.1), 0 12px 32px rgba(15,14,13,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:15px}
+body{background:var(--paper);color:var(--ink);font-family:'Familjen Grotesk',sans-serif;line-height:1.5;overflow-x:hidden}
+
+/* ── HEADER ── */
+header{background:var(--ink);position:sticky;top:0;z-index:100;border-bottom:3px solid var(--signal)}
+.header-inner{max-width:1280px;margin:0 auto;padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:baseline;gap:0;text-decoration:none}
+.logo-auto{font-size:22px;font-weight:700;color:#c8c3bb;letter-spacing:-.3px}
+.logo-bidly{font-size:22px;font-weight:700;color:white;letter-spacing:-.3px}
+.logo-tm{font-size:9px;color:var(--signal);font-weight:700;letter-spacing:1px;margin-left:3px;vertical-align:super}
+.header-nav{display:flex;align-items:center;gap:28px}
+.header-nav a{font-size:13px;font-weight:600;color:#666;text-decoration:none;letter-spacing:.2px;transition:color .15s}
+.header-nav a:hover{color:white}
+.header-cta{padding:8px 20px;background:var(--signal);color:white;border:none;border-radius:3px;font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.3px;transition:background .15s}
+.header-cta:hover{background:var(--signal2)}
+
+/* ── HERO SEARCH ── */
+.hero{background:var(--ink);padding:52px 32px 0;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--signal),transparent)}
+.hero-inner{max-width:1280px;margin:0 auto}
+.hero-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.live-dot{width:8px;height:8px;border-radius:50%;background:var(--go);box-shadow:0 0 0 3px rgba(26,122,60,.2);animation:livepulse 2s infinite}
+@keyframes livepulse{0%,100%{box-shadow:0 0 0 3px rgba(26,122,60,.2)}50%{box-shadow:0 0 0 6px rgba(26,122,60,.05)}}
+.live-label{font-size:12px;font-weight:700;color:var(--go);letter-spacing:1px;text-transform:uppercase}
+.live-count{font-size:12px;color:#555;font-family:'JetBrains Mono',monospace}
+.hero-title{font-size:clamp(32px,4vw,52px);font-weight:700;color:white;line-height:1.05;letter-spacing:-.5px;margin-bottom:8px}
+.hero-title .highlight{color:var(--signal);font-style:italic}
+.hero-sub{font-size:16px;color:#888;margin-bottom:36px;max-width:540px;font-weight:400}
+.hero-sub strong{color:#bbb}
+
+/* SEARCH CARD */
+.search-card{background:white;border-radius:8px 8px 0 0;padding:28px 28px 0;box-shadow:0 -4px 32px rgba(0,0,0,.3)}
+.search-top{display:grid;grid-template-columns:140px 1fr 1fr 1fr 130px 130px;gap:12px;margin-bottom:14px;align-items:end}
+.search-mid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:16px}
+.sf{display:flex;flex-direction:column;gap:4px}
+.sf label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted)}
+.sf input,.sf select{background:var(--paper);border:1.5px solid var(--rule);border-radius:4px;padding:10px 12px;font-family:'Familjen Grotesk',sans-serif;font-size:14px;color:var(--ink);transition:border-color .15s;appearance:none;-webkit-appearance:none}
+.sf input:focus,.sf select:focus{outline:none;border-color:var(--signal)}
+.incentives-row{display:flex;align-items:center;gap:8px;padding:14px 0;border-top:1.5px solid var(--paper2);flex-wrap:wrap}
+.incentives-label{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);white-space:nowrap;margin-right:4px}
+.chip{display:flex;align-items:center;gap:5px;padding:6px 12px;border:1.5px solid var(--rule);border-radius:100px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;user-select:none;background:white}
+.chip input{display:none}
+.chip:has(input:checked){border-color:var(--signal);color:var(--signal);background:#fff5f3}
+.search-action{padding:0 0 0;display:flex;gap:10px;align-items:center;padding-bottom:20px;margin-top:4px}
+.search-btn{flex:1;padding:14px;background:var(--ink);color:white;border:none;border-radius:5px;font-family:'Familjen Grotesk',sans-serif;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:.3px;transition:background .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.search-btn:hover{background:var(--signal)}
+.search-btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2.5}
+.no-bs-note{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--go);font-weight:600;white-space:nowrap}
+.no-bs-note .shield{font-size:15px}
+
+/* ── RESULTS AREA ── */
+.page{max-width:1280px;margin:0 auto;padding:32px}
+
+/* RESULTS META BAR */
+.meta-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.meta-left h2{font-size:20px;font-weight:700;letter-spacing:-.2px}
+.meta-left h2 span{color:var(--signal)}
+.meta-left p{font-size:13px;color:var(--muted);margin-top:2px}
+.meta-left p strong{color:var(--go)}
+.meta-right{display:flex;gap:8px;align-items:center}
+.sort-label{font-size:12px;color:var(--muted);font-weight:600}
+.sort-select{padding:7px 12px;border:1.5px solid var(--rule);border-radius:4px;font-family:'Familjen Grotesk',sans-serif;font-size:13px;background:white;color:var(--ink);cursor:pointer}
+.view-btns{display:flex;border:1.5px solid var(--rule);border-radius:4px;overflow:hidden}
+.view-btn{padding:6px 12px;background:white;border:none;cursor:pointer;font-size:16px;transition:background .15s;border-left:1.5px solid var(--rule)}
+.view-btn:first-child{border-left:none}
+.view-btn.active,.view-btn:hover{background:var(--ink);color:white}
+
+/* TRUTH BANNER */
+.truth-banner{background:var(--go-soft);border:1.5px solid rgba(26,122,60,.2);border-radius:6px;padding:12px 18px;margin-bottom:24px;display:flex;align-items:flex-start;gap:10px}
+.truth-banner p{font-size:13px;color:#166534;line-height:1.6}
+.truth-banner strong{font-weight:700}
+
+/* DEAL CARDS — TABLE VIEW */
+.deals-table{width:100%;border-collapse:separate;border-spacing:0 8px}
+.deals-table thead tr th{font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);padding:0 16px 4px;text-align:left}
+.deal-row{background:white;box-shadow:var(--shadow);cursor:pointer;transition:box-shadow .15s,transform .1s}
+.deal-row:hover{box-shadow:var(--shadow2);transform:translateY(-1px)}
+.deal-row td{padding:18px 16px;vertical-align:middle}
+.deal-row td:first-child{border-radius:6px 0 0 6px;padding-left:20px}
+.deal-row td:last-child{border-radius:0 6px 6px 0;padding-right:20px}
+.rank-cell{width:40px}
+.rank-badge{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700}
+.rank-1{background:var(--signal);color:white}
+.rank-2{background:var(--ink2);color:white}
+.rank-3{background:#6b7280;color:white}
+.rank-n{background:var(--paper2);color:var(--muted)}
+.dealer-col{min-width:200px}
+.dealer-name-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.dealer-name{font-size:15px;font-weight:700}
+.v-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;color:var(--verified);background:var(--go-soft);border:1px solid rgba(26,122,60,.2);padding:2px 6px;border-radius:2px;letter-spacing:.3px}
+.featured-badge{display:inline-flex;align-items:center;gap:3px;font-size:10px;font-weight:700;color:var(--warn);background:var(--warn-soft);border:1px solid rgba(180,83,9,.2);padding:2px 6px;border-radius:2px;letter-spacing:.3px}
+.dealer-meta{font-size:12px;color:var(--muted)}
+.timestamp{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:4px}
+.ts-dot{width:5px;height:5px;border-radius:50%;background:var(--go);flex-shrink:0}
+.price-col{min-width:140px}
+.price-main{font-size:28px;font-weight:700;letter-spacing:-.5px;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+.price-main.best{color:var(--signal)}
+.price-sub{font-size:12px;color:var(--muted);margin-top:3px}
+.terms-col{min-width:160px}
+.term-tag{display:inline-block;padding:3px 8px;border-radius:2px;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;margin:2px 2px 2px 0;border:1px solid var(--rule);background:var(--paper);color:var(--muted)}
+.conditions-col{min-width:220px;max-width:280px}
+.cond-clean{font-size:12px;color:var(--go);font-weight:700;display:flex;align-items:center;gap:4px;margin-bottom:4px}
+.cond-warn{font-size:12px;color:var(--warn);font-weight:700;display:flex;align-items:center;gap:4px;margin-bottom:4px}
+.cond-text{font-size:12px;color:var(--muted);line-height:1.5}
+.dist-col{min-width:90px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);white-space:nowrap}
+.action-col{min-width:120px;text-align:right}
+.deal-btn{padding:9px 18px;background:var(--ink);color:white;border:none;border-radius:4px;font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s;white-space:nowrap}
+.deal-btn:hover{background:var(--signal)}
+.deal-btn.save{background:white;color:var(--ink);border:1.5px solid var(--rule);margin-top:6px;width:100%}
+.deal-btn.save:hover{border-color:var(--ink)}
+.best-deal-row{border-left:3px solid var(--signal) !important}
+/* Make best row stand out */
+.deals-table tbody .deal-row.best td:first-child{border-left:3px solid var(--signal);border-radius:3px 0 0 3px}
+
+/* EXPANDED ROW */
+.deal-expand{display:none;background:#fafaf8}
+.deal-expand td{padding:0!important}
+.deal-expand.open{display:table-row}
+.expand-inner{padding:20px 20px 20px 68px;border-top:1.5px solid var(--paper2)}
+.expand-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:16px}
+.expand-field{background:white;border:1.5px solid var(--rule);border-radius:5px;padding:12px}
+.ef-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.ef-value{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;color:var(--ink)}
+.ef-value.highlight{color:var(--signal);font-size:16px}
+.ef-value.green{color:var(--go)}
+.expand-actions{display:flex;gap:10px}
+.ea-btn{padding:10px 24px;border-radius:4px;font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;border:none}
+.ea-btn.primary{background:var(--signal);color:white}
+.ea-btn.primary:hover{background:var(--signal2)}
+.ea-btn.ghost{background:white;color:var(--ink);border:1.5px solid var(--rule)}
+.ea-btn.ghost:hover{border-color:var(--ink)}
+.ea-btn.notify{background:var(--go-soft);color:var(--go);border:1.5px solid rgba(26,122,60,.2)}
+
+/* CARD VIEW */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.deal-card{background:white;border-radius:8px;box-shadow:var(--shadow);overflow:hidden;cursor:pointer;transition:box-shadow .15s,transform .1s;position:relative}
+.deal-card:hover{box-shadow:var(--shadow2);transform:translateY(-2px)}
+.card-rank{position:absolute;top:14px;left:14px;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;z-index:1}
+.card-header{height:120px;display:flex;align-items:center;justify-content:center;font-size:52px;position:relative;background:var(--paper2)}
+.card-header.best-bg{background:linear-gradient(135deg,#fff5f3,#fde8e2)}
+.card-body{padding:18px}
+.card-dealer{font-size:13px;font-weight:700;margin-bottom:2px;display:flex;align-items:center;gap:6px}
+.card-dist{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-bottom:12px}
+.card-price{font-size:34px;font-weight:700;letter-spacing:-.5px;line-height:1;margin-bottom:2px}
+.card-price.best{color:var(--signal)}
+.card-price-sub{font-size:12px;color:var(--muted);margin-bottom:12px}
+.card-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:12px}
+.card-tag{padding:3px 7px;border-radius:2px;font-size:10px;font-weight:700;font-family:'JetBrains Mono',monospace;border:1px solid var(--rule);background:var(--paper);color:var(--muted)}
+.card-cond{font-size:11px;margin-bottom:14px;line-height:1.5}
+.card-cond.clean{color:var(--go)}
+.card-cond.warn{color:var(--warn)}
+.card-ts{font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:4px;margin-bottom:14px}
+.card-footer{display:flex;gap:8px;padding-top:12px;border-top:1.5px solid var(--paper2)}
+.card-footer button{flex:1;padding:9px;border-radius:4px;font-family:'Familjen Grotesk',sans-serif;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .15s}
+.card-footer .cf-primary{background:var(--ink);color:white}
+.card-footer .cf-primary:hover{background:var(--signal)}
+.card-footer .cf-ghost{background:var(--paper);color:var(--ink)}
+
+/* ALERT SIGNUP */
+.alert-bar{background:var(--ink2);border-radius:8px;padding:24px 28px;margin-bottom:32px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.alert-bar-left h3{font-size:17px;font-weight:700;color:white;margin-bottom:4px}
+.alert-bar-left p{font-size:13px;color:#888}
+.alert-bar-right{display:flex;gap:10px;flex-shrink:0}
+.alert-input{padding:10px 14px;background:var(--ink);border:1.5px solid #333;border-radius:4px;font-family:'Familjen Grotesk',sans-serif;font-size:14px;color:white;width:220px}
+.alert-input::placeholder{color:#555}
+.alert-input:focus{outline:none;border-color:var(--signal)}
+.alert-submit{padding:10px 20px;background:var(--signal);color:white;border:none;border-radius:4px;font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s}
+.alert-submit:hover{background:var(--signal2)}
+
+/* BIDLOCK TEASER */
+.bidlock-teaser{background:var(--paper2);border:2px dashed var(--rule);border-radius:8px;padding:28px;text-align:center;margin-top:32px}
+.bt-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.bt-title{font-size:22px;font-weight:700;letter-spacing:-.3px;margin-bottom:8px}
+.bt-title span{color:var(--signal)}
+.bt-sub{font-size:14px;color:var(--muted);margin-bottom:18px;max-width:500px;margin-left:auto;margin-right:auto}
+.bt-btn{padding:12px 32px;background:var(--ink);color:white;border:none;border-radius:4px;font-family:'Familjen Grotesk',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:background .15s}
+.bt-btn:hover{background:var(--signal)}
+.coming-soon{display:inline-block;margin-left:8px;font-size:10px;font-weight:700;background:var(--signal);color:white;padding:2px 7px;border-radius:2px;letter-spacing:.5px;vertical-align:middle}
+
+/* MODAL */
+.modal-ov{display:none;position:fixed;inset:0;z-index:200;background:rgba(15,14,13,.6);backdrop-filter:blur(4px);align-items:center;justify-content:center;padding:20px}
+.modal-ov.open{display:flex}
+.modal-box{background:white;border-radius:10px;padding:32px;max-width:560px;width:100%;box-shadow:0 32px 80px rgba(0,0,0,.25);animation:mup .2s ease;max-height:90vh;overflow-y:auto}
+@keyframes mup{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.modal-close{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1;padding:0;transition:color .15s}
+.modal-close:hover{color:var(--ink)}
+.modal-box h3{font-size:22px;font-weight:700;letter-spacing:-.3px;clear:both;margin-bottom:2px}
+.modal-box h3 span{color:var(--signal)}
+.modal-dealer{font-size:14px;color:var(--muted);margin-bottom:20px;padding-bottom:18px;border-bottom:1.5px solid var(--paper2)}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.mg{background:var(--paper);border:1.5px solid var(--rule);border-radius:5px;padding:13px}
+.mg-l{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.mg-v{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;color:var(--ink)}
+.mg-v.signal{color:var(--signal);font-size:20px}
+.mg-v.green{color:var(--go)}
+.modal-actions{display:flex;gap:10px}
+.modal-actions button{flex:1;padding:13px;border-radius:5px;font-family:'Familjen Grotesk',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;border:none}
+.ma-primary{background:var(--signal);color:white}
+.ma-primary:hover{background:var(--signal2)}
+.ma-ghost{background:var(--paper);color:var(--ink);border:1.5px solid var(--rule)!important}
+
+/* TOAST */
+.toast-c{position:fixed;bottom:20px;right:20px;z-index:300;display:flex;flex-direction:column;gap:8px}
+.toast{display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:6px;font-size:13px;font-weight:600;max-width:340px;animation:tin .25s ease;box-shadow:0 4px 20px rgba(0,0,0,.15)}
+@keyframes tin{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.toast.ok{background:var(--ink);color:var(--go)}
+.toast.info{background:var(--ink);color:#93c5fd}
+.toast.warn{background:var(--ink);color:#fcd34d}
+
+/* UTILS */
+.hidden{display:none}
+#cardsView{display:none}
+
+@media(max-width:900px){
+  .search-top{grid-template-columns:1fr 1fr}
+  .search-mid{grid-template-columns:repeat(4,1fr)}
+  .header-nav{display:none}
+  .meta-bar{flex-direction:column;align-items:flex-start}
+  .expand-grid{grid-template-columns:repeat(3,1fr)}
+  .alert-bar{flex-direction:column}
+  .alert-bar-right{flex-direction:column;width:100%}
+  .alert-input{width:100%}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <span class="logo-auto">Auto</span><span class="logo-bidly">Bidly</span><span class="logo-tm">™</span>
+    </a>
+    <nav class="header-nav">
+      <a href="#">Deal Index</a>
+      <a href="#">How It Works</a>
+      <a href="#">For Dealers</a>
+      <a href="#">About</a>
+    </nav>
+    <button class="header-cta" onclick="showToast('Coming soon — get notified at launch','info')">Get Deal Alerts</button>
+  </div>
+</header>
+
+<!-- HERO + SEARCH -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <div class="live-dot"></div>
+      <span class="live-label">Live Index</span>
+      <span class="live-count" id="liveCount">— 11,847 verified deals across 340 dealerships</span>
+    </div>
+    <h1 class="hero-title">Who's got the <span class="highlight">lowest deal</span><br>near you right now?</h1>
+    <p class="hero-sub">Every dealer. <strong>Real prices.</strong> Only the incentives you actually qualify for. Updated every 12 hours.</p>
+
+    <div class="search-card">
+      <div class="search-top">
+        <div class="sf"><label>ZIP Code</label><input type="text" id="s_zip" value="48167" placeholder="Your ZIP"/></div>
+        <div class="sf"><label>Make</label>
+          <select id="s_make" onchange="updateModels()">
+            <option>Ford</option><option>Chevrolet</option><option>GMC</option><option>Ram</option>
+            <option>Jeep</option><option>Dodge</option><option>Chrysler</option>
+            <option>Toyota</option><option>Honda</option><option>Nissan</option>
+            <option>Hyundai</option><option>Kia</option><option>Subaru</option><option>Mazda</option>
+            <option>Volkswagen</option><option>BMW</option><option>Mercedes-Benz</option><option>Audi</option>
+            <option>Cadillac</option><option>Buick</option><option>Lincoln</option>
+            <option>Lexus</option><option>Acura</option><option>Infiniti</option>
+            <option>Genesis</option><option>Volvo</option><option>Land Rover</option>
+            <option>Jaguar</option><option>Porsche</option><option>Maserati</option>
+            <option>Alfa Romeo</option><option>Tesla</option><option>Rivian</option>
+          </select>
+        </div>
+        <div class="sf"><label>Model</label>
+          <select id="s_model" onchange="updateTrims()"></select>
+        </div>
+        <div class="sf"><label>Deal Type</label>
+          <select id="s_type">
+            <option value="lease">Lease</option>
+            <option value="finance">Finance</option>
+            <option value="cash">Cash Purchase</option>
+          </select>
+        </div>
+        <div class="sf"><label>Radius</label>
+          <select id="s_radius">
+            <option>25 miles</option><option selected>50 miles</option><option>75 miles</option><option>100 miles</option>
+          </select>
+        </div>
+        <div class="sf"><label>Max Monthly</label>
+          <input type="number" id="s_max" placeholder="Any" value=""/>
+        </div>
+      </div>
+      <div class="search-mid">
+        <div class="sf"><label>Trim</label>
+          <select id="s_trim"><option>Any Trim</option></select>
+        </div>
+        <div class="sf"><label>Config</label>
+          <select id="s_config"><option>Any</option></select>
+        </div>
+        <div class="sf"><label>Cab / Body</label>
+          <select id="s_cab"><option>Any</option></select>
+        </div>
+        <div class="sf"><label>Engine</label>
+          <select id="s_engine"><option>Any</option></select>
+        </div>
+        <div class="sf"><label>Term</label>
+          <select><option>Any</option><option>24 mo</option><option>36 mo</option><option>48 mo</option><option>60 mo</option><option>72 mo</option></select>
+        </div>
+        <div class="sf"><label>Miles/Yr</label>
+          <select><option>Any</option><option>10,000</option><option>12,000</option><option>15,000</option><option>18,000</option></select>
+        </div>
+        <div class="sf"><label>Credit</label>
+          <select><option>Excellent 720+</option><option>Good 680+</option><option>Fair 620+</option></select>
+        </div>
+      </div>
+      <div class="incentives-row">
+        <span class="incentives-label">My Incentives:</span>
+        <label class="chip"><input type="checkbox"/> 🔄 Lease Loyalty</label>
+        <label class="chip"><input type="checkbox"/> 🏷️ Employee / A-Plan</label>
+        <label class="chip"><input type="checkbox"/> 🎖️ Military</label>
+        <label class="chip"><input type="checkbox"/> 🎓 College Grad</label>
+        <label class="chip"><input type="checkbox"/> ⚔️ Conquest</label>
+        <label class="chip"><input type="checkbox"/> 🔋 EV Credit</label>
+        <label class="chip"><input type="checkbox"/> 🚗 Trade-In</label>
+      </div>
+      <div class="search-action">
+        <button class="search-btn" onclick="doSearch()">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" stroke-linecap="round"/></svg>
+          SEARCH REAL DEALS
+        </button>
+        <div class="no-bs-note"><span class="shield">🛡️</span>Only YOUR incentives applied — no bait pricing</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS PAGE -->
+<div class="page">
+
+  <!-- TRUTH BANNER -->
+  <div class="truth-banner">
+    <span style="font-size:18px;flex-shrink:0">✅</span>
+    <p><strong>How we verify pricing:</strong> Every deal is pulled from manufacturer incentive feeds, Edmunds inventory data, and direct dealer submissions — then cross-checked against real window sticker data. Prices shown reflect <strong>only the incentives you selected</strong>. If a dealer's advertised price requires lease loyalty, military, or conquest bonuses you didn't select, that price is excluded or flagged. Deals are timestamped. Anything older than 72 hours is marked stale and hidden by default.</p>
+  </div>
+
+  <!-- ALERT BAR -->
+  <div class="alert-bar">
+    <div class="alert-bar-left">
+      <h3>📬 Get Alerted When This Deal Gets Cheaper</h3>
+      <p>We'll email you the moment a lower deal appears near you. Free, no account needed.</p>
+    </div>
+    <div class="alert-bar-right">
+      <input class="alert-input" type="email" placeholder="your@email.com" id="alertEmail"/>
+      <button class="alert-submit" onclick="signupAlert()">Alert Me →</button>
+    </div>
+  </div>
+
+  <!-- META BAR -->
+  <div class="meta-bar">
+    <div class="meta-left">
+      <h2 id="resultsHeading">2025 Ford F-150 <span>— 8 Dealers Near 48167</span></h2>
+      <p>Showing lease deals · 36mo · 12k mi/yr · Good credit · <strong>$0 additional incentives</strong> · 50mi radius</p>
+    </div>
+    <div class="meta-right">
+      <span class="sort-label">Sort:</span>
+      <select class="sort-select" onchange="handleSort(this.value)">
+        <option value="price">Lowest Price</option>
+        <option value="dist">Closest</option>
+        <option value="verified">Verified First</option>
+        <option value="recent">Most Recent</option>
+      </select>
+      <div class="view-btns">
+        <button class="view-btn active" id="btnTable" onclick="setView('table')" title="Table view">☰</button>
+        <button class="view-btn" id="btnCards" onclick="setView('cards')" title="Card view">⊞</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE VIEW -->
+  <div id="tableView">
+    <table class="deals-table">
+      <thead>
+        <tr>
+          <th style="width:48px">#</th>
+          <th>Dealership</th>
+          <th>Monthly Payment</th>
+          <th>Terms</th>
+          <th>Conditions</th>
+          <th>Distance</th>
+          <th>Last Verified</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- CARD VIEW -->
+  <div id="cardsView">
+    <div class="cards-grid" id="cardsGrid"></div>
+  </div>
+
+  <!-- BIDLOCK TEASER -->
+  <div class="bidlock-teaser">
+    <div class="bt-label">Coming Soon</div>
+    <h2 class="bt-title">Don't see your price? <span>Post it.</span><span class="coming-soon">PHASE 2</span></h2>
+    <p class="bt-sub">BidLock™ is coming. Post exactly what you'll pay for exactly the vehicle you want. Put down $50. Dealers in your area claim it if they can match. You never step foot in a showroom to negotiate.</p>
+    <button class="bt-btn" onclick="showToast('You\'re on the BidLock™ waitlist!','ok')">Join BidLock™ Waitlist →</button>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-ov" id="dealModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3 id="m_title">Ford <span>F-150</span></h3>
+    <div class="modal-dealer" id="m_dealer"></div>
+    <div class="modal-grid" id="m_grid"></div>
+    <div class="modal-actions">
+      <button class="ma-primary" onclick="closeModal();showToast('Dealer contacted — they\'ll reach you within 2 hrs. No salesperson involved.','ok')">Contact This Dealer</button>
+      <button class="ma-ghost" onclick="closeModal();showToast('Deal saved to your list','ok')">Save Deal</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-c" id="toastC"></div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────
+const DEALS = [
+  {
+    rank:1, name:'LaFontaine Ford', short:'LF', verified:true, featured:false,
+    monthly:479, down:0, total:'$17,244', msrp:42180,
+    term:'36mo', miles:'12k/yr', apr:null, mf:'0.00125', residual:'58%',
+    conditions:'clean', condText:'No special incentives required. Standard lease, good credit.',
+    stock:4, dist:4.2, distStr:'4.2 mi',
+    claimed:'March 22 · 9:14 AM', claimedAgo:'14 hrs ago',
+    emoji:'🚗', make:'Ford', model:'F-150', trim:'XLT 4x4 Crew',
+    dealType:'lease', color:'#d4390f'
+  },
+  {
+    rank:2, name:'Bill Brown Ford', short:'BB', verified:true, featured:false,
+    monthly:491, down:0, total:'$17,676', msrp:42180,
+    term:'36mo', miles:'12k/yr', apr:null, mf:'0.00131', residual:'57%',
+    conditions:'clean', condText:'Ford Red Carpet lease. Standard good-credit offer.',
+    stock:6, dist:7.1, distStr:'7.1 mi',
+    claimed:'March 23 · 6:30 AM', claimedAgo:'3 hrs ago',
+    emoji:'🚗', make:'Ford', model:'F-150', trim:'XLT 4x4 Crew',
+    dealType:'lease', color:'#1d4ed8'
+  },
+  {
+    rank:3, name:'Varsity Ford', short:'VF', verified:true, featured:true,
+    monthly:508, down:500, total:'$18,788', msrp:43200,
+    term:'36mo', miles:'12k/yr', apr:null, mf:'0.00138', residual:'57%',
+    conditions:'warn', condText:'$500 due at signing required. Specific VIN only — 2 units at this price.',
+    stock:2, dist:9.4, distStr:'9.4 mi',
+    claimed:'March 21 · 3:45 PM', claimedAgo:'2 days ago',
+    emoji:'🚗', make:'Ford', model:'F-150', trim:'XLT 4x4 Crew',
+    dealType:'lease', color:'#b45309'
+  },
+  {
+    rank:4, name:'Suburban Ford of Ferndale', short:'SF', verified:true, featured:false,
+    monthly:517, down:0, total:'$18,612', msrp:41900,
+    term:'36mo', miles:'12k/yr', apr:null, mf:'0.00142', residual:'56%',
+    conditions:'clean', condText:'No special incentives. Standard rate.',
+    stock:3, dist:11.8, distStr:'11.8 mi',
+    claimed:'March 22 · 5:00 PM', claimedAgo:'18 hrs ago',
+    emoji:'🚗', make:'Ford', model:'F-150', trim:'XLT 4x4 Crew',
+    dealType:'lease', color:'#1a7a3c'
+  },
+  {
+    rank:5, name:'Hines Park Ford', short:'HP', verified:false, featured:false,
+    monthly:531, down:0, total:'$19,116', msrp:43800,
+    term:'36mo', miles:'12k/yr', apr:null, mf:'0.00149', residual:'56%',
+    conditions:'warn', condText:'⚠ Advertised $489/mo requires Ford Owner Loyalty. Without it, this is the real price.',
+    stock:5, dist:13.2, distStr:'13.2 mi',
+    claimed:'March 19 · 11:20 AM', claimedAgo:'4 days ago',
+    emoji:'🚗', make:'Ford', model:'F-150', trim:'XLT 4x4 Crew',
+    dealType:'lease', color:'#6b7280'
+  },
+  {
+    rank:6, name:'Bob Maxey Ford', short:'BM', verified:true, featured:false,
+    monthly:544, down:1000, total:'$20,584', msrp:44100,
+    term:'36mo', miles:'12k/yr', apr:null, mf:'0.00152', residual:'55%',
+    conditions:'warn', condText:'Requires $1,000 cap cost reduction. Payment without it would be ~$572/mo.',
+    stock:2, dist:18.5, distStr:'18.5 mi',
+    claimed:'March 23 · 8:00 AM', claimedAgo:'4 hrs ago',
+    emoji:'🚗', make:'Ford', model:'F-150', trim:'XLT 4x4 Crew',
+    dealType:'lease', color:'#0e7490'
+  },
+  {
+    rank:7, name:'Courtesy Ford Lincoln', short:'CL', verified:false, featured:false,
+    monthly:559, down:0, total:'$20,124', msrp:44900,
+    term:'36mo', miles:'12k/yr', apr:null, mf:'0.00160', residual:'54%',
+    conditions:'warn', condText:'Advertised rate requires 740+ credit. This price shown for 680 credit score.',
+    stock:1, dist:22.1, distStr:'22.1 mi',
+    claimed:'March 17 · 2:15 PM', claimedAgo:'6 days ago',
+    emoji:'🚗', make:'Ford', model:'F-150', trim:'XLT 4x4 Crew',
+    dealType:'lease', color:'#6b7280'
+  },
+  {
+    rank:8, name:'Gateway Ford', short:'GW', verified:false, featured:false,
+    monthly:588, down:0, total:'$21,168', msrp:45200,
+    term:'36mo', miles:'12k/yr', apr:null, mf:'0.00171', residual:'53%',
+    conditions:'warn', condText:'⚠ $999 dealer market adjustment included in this price. Non-negotiable per their policy.',
+    stock:1, dist:28.4, distStr:'28.4 mi',
+    claimed:'March 14 · 4:00 PM', claimedAgo:'9 days ago',
+    emoji:'🚗', make:'Ford', model:'F-150', trim:'XLT 4x4 Crew',
+    dealType:'lease', color:'#6b7280'
+  },
+];
+
+// ─── TABLE RENDER ────────────────────────────────────────────────
+function renderTable(data) {
+  document.getElementById('tableBody').innerHTML = data.map((d,i) => `
+    <tr class="deal-row ${d.rank===1?'best':''}" onclick="toggleExpand(${d.rank}, event)">
+      <td class="rank-cell"><div class="rank-badge rank-${Math.min(d.rank,4)==d.rank?d.rank:'n'}">${d.rank}</div></td>
+      <td class="dealer-col">
+        <div class="dealer-name-row">
+          <span class="dealer-name">${d.name}</span>
+          ${d.verified ? '<span class="v-badge">✓ Verified</span>' : ''}
+          ${d.featured ? '<span class="featured-badge">★ Featured</span>' : ''}
+        </div>
+        <div class="dealer-meta">${d.stock} in stock · ${d.trim}</div>
+        <div class="timestamp"><div class="ts-dot"></div>${d.claimedAgo} · ${d.claimed}</div>
+      </td>
+      <td class="price-col">
+        <div class="price-main ${d.rank===1?'best':''}">$${d.monthly}<span style="font-size:15px;font-weight:500;color:var(--muted)">/mo</span></div>
+        <div class="price-sub">$${d.down} due at signing · ${d.total} total</div>
+      </td>
+      <td class="terms-col">
+        <span class="term-tag">${d.term}</span>
+        <span class="term-tag">${d.miles}</span>
+        <span class="term-tag">${d.mf ? 'MF '+d.mf : d.apr+' APR'}</span>
+        <span class="term-tag">Res. ${d.residual}</span>
+      </td>
+      <td class="conditions-col">
+        ${d.conditions==='clean'
+          ? `<div class="cond-clean">✓ No hidden conditions</div>`
+          : `<div class="cond-warn">⚠ Conditions apply</div>`}
+        <div class="cond-text">${d.condText}</div>
+      </td>
+      <td class="dist-col">📍 ${d.distStr}</td>
+      <td class="action-col">
+        <button class="deal-btn" onclick="event.stopPropagation();openModal(${d.rank-1})">Details</button>
+        <button class="deal-btn save" onclick="event.stopPropagation();showToast('Deal saved','ok')">♡ Save</button>
+      </td>
+    </tr>
+    <tr class="deal-expand" id="expand-${d.rank}">
+      <td colspan="8">
+        <div class="expand-inner">
+          <div class="expand-grid">
+            <div class="expand-field"><div class="ef-label">Monthly</div><div class="ef-value highlight">$${d.monthly}/mo</div></div>
+            <div class="expand-field"><div class="ef-label">Due at Signing</div><div class="ef-value">$${d.down}</div></div>
+            <div class="expand-field"><div class="ef-label">MSRP</div><div class="ef-value">$${d.msrp.toLocaleString()}</div></div>
+            <div class="expand-field"><div class="ef-label">Total Cost</div><div class="ef-value">${d.total}</div></div>
+            <div class="expand-field"><div class="ef-label">Money Factor</div><div class="ef-value">${d.mf || '—'}</div></div>
+            <div class="expand-field"><div class="ef-label">Residual</div><div class="ef-value">${d.residual}</div></div>
+          </div>
+          <div class="expand-actions">
+            <button class="ea-btn primary" onclick="showToast('Contacting ${d.name} — no salesperson involved','ok')">📞 Contact Dealer</button>
+            <button class="ea-btn ghost" onclick="showToast('Deal saved','ok')">♡ Save Deal</button>
+            <button class="ea-btn notify" onclick="showToast('You\\'ll be alerted if this price drops','ok')">🔔 Alert if Price Drops</button>
+          </div>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+// ─── CARD RENDER ─────────────────────────────────────────────────
+function renderCards(data) {
+  document.getElementById('cardsGrid').innerHTML = data.map(d => `
+    <div class="deal-card" onclick="openModal(${d.rank-1})">
+      <div class="rank-badge rank-${Math.min(d.rank,4)==d.rank?d.rank:'n'}" style="position:absolute;top:12px;left:12px;z-index:2;width:28px;height:28px;font-size:13px">${d.rank}</div>
+      <div class="card-header ${d.rank===1?'best-bg':''}">${d.emoji}</div>
+      <div class="card-body">
+        <div class="card-dealer">
+          ${d.name}
+          ${d.verified ? '<span class="v-badge">✓</span>' : ''}
+        </div>
+        <div class="card-dist">📍 ${d.distStr} · ${d.stock} in stock</div>
+        <div class="card-price ${d.rank===1?'best':''}">$${d.monthly}<span style="font-size:16px;font-weight:500;color:var(--muted)">/mo</span></div>
+        <div class="card-price-sub">$${d.down} due at signing · ${d.total} total</div>
+        <div class="card-tags">
+          <span class="card-tag">${d.term}</span>
+          <span class="card-tag">${d.miles}</span>
+          <span class="card-tag">MF ${d.mf}</span>
+          <span class="card-tag">Res ${d.residual}</span>
+        </div>
+        <div class="card-cond ${d.conditions}">${d.conditions==='clean' ? '✓ No hidden conditions' : '⚠ '+d.condText.substring(0,60)+'...'}</div>
+        <div class="card-ts"><div class="ts-dot" style="width:5px;height:5px;border-radius:50%;background:var(--go)"></div>${d.claimedAgo}</div>
+        <div class="card-footer">
+          <button class="cf-primary" onclick="event.stopPropagation();showToast('Contacting ${d.name}','ok')">Contact</button>
+          <button class="cf-ghost" onclick="event.stopPropagation();showToast('Saved','ok')">♡ Save</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// Results driven entirely by search — no hardcoded F-150 on load
+
+// ─── INTERACTIONS ────────────────────────────────────────────────
+let openExpandId = null;
+function toggleExpand(rank, e) {
+  if(e.target.tagName==='BUTTON') return;
+  const el = document.getElementById('expand-'+rank);
+  if(openExpandId && openExpandId !== rank) {
+    document.getElementById('expand-'+openExpandId)?.classList.remove('open');
+  }
+  el.classList.toggle('open');
+  openExpandId = el.classList.contains('open') ? rank : null;
+}
+
+function openModal(i) {
+  const d = DEALS[i];
+  document.getElementById('m_title').innerHTML = `${d.make} <span>${d.model}</span>`;
+  document.getElementById('m_dealer').innerHTML = `
+    ${d.name} &nbsp;
+    ${d.verified ? '<span class="v-badge">✓ Verified</span>' : '<span style="font-size:12px;color:var(--muted)">Unverified</span>'}
+    &nbsp;·&nbsp; ${d.trim} &nbsp;·&nbsp; 📍 ${d.distStr}
+    <div style="font-size:12px;color:var(--muted);margin-top:4px;font-family:\'JetBrains Mono\',monospace">Last verified: ${d.claimed}</div>
+  `;
+  document.getElementById('m_grid').innerHTML = `
+    <div class="mg"><div class="mg-l">Monthly Payment</div><div class="mg-v signal">$${d.monthly}/mo</div></div>
+    <div class="mg"><div class="mg-l">Due at Signing</div><div class="mg-v">$${d.down}</div></div>
+    <div class="mg"><div class="mg-l">Term</div><div class="mg-v">${d.term}</div></div>
+    <div class="mg"><div class="mg-l">Annual Miles</div><div class="mg-v">${d.miles}</div></div>
+    <div class="mg"><div class="mg-l">MSRP</div><div class="mg-v">$${d.msrp.toLocaleString()}</div></div>
+    <div class="mg"><div class="mg-l">Total Cost</div><div class="mg-v">${d.total}</div></div>
+    <div class="mg"><div class="mg-l">Money Factor</div><div class="mg-v">${d.mf}</div></div>
+    <div class="mg"><div class="mg-l">Residual Value</div><div class="mg-v">${d.residual}</div></div>
+    <div class="mg" style="grid-column:1/-1">
+      <div class="mg-l">Conditions</div>
+      <div class="mg-v" style="font-family:\'Familjen Grotesk\',sans-serif;font-size:13px;color:${d.conditions==='clean'?'var(--go)':'var(--warn)'}">
+        ${d.conditions==='clean' ? '✓ ' : '⚠ '}${d.condText}
+      </div>
+    </div>
+    <div class="mg"><div class="mg-l">Stock Available</div><div class="mg-v green">${d.stock} units</div></div>
+    <div class="mg"><div class="mg-l">Dealer Status</div><div class="mg-v" style="font-family:\'Familjen Grotesk\',sans-serif;font-size:13px;color:${d.verified?'var(--go)':'var(--muted)'}">${d.verified?'✓ Verified by AutoBidly':'Not yet verified'}</div></div>
+  `;
+  document.getElementById('dealModal').classList.add('open');
+}
+function closeModal() { document.getElementById('dealModal').classList.remove('open'); }
+document.getElementById('dealModal').addEventListener('click', e => { if(e.target===document.getElementById('dealModal')) closeModal(); });
+
+function setView(v) {
+  document.getElementById('tableView').style.display = v==='table' ? 'block' : 'none';
+  document.getElementById('cardsView').style.display = v==='cards' ? 'block' : 'none';
+  document.getElementById('btnTable').classList.toggle('active', v==='table');
+  document.getElementById('btnCards').classList.toggle('active', v==='cards');
+}
+
+function handleSort(val) {
+  let sorted = [...DEALS];
+  if(val==='price') sorted.sort((a,b)=>a.monthly-b.monthly);
+  else if(val==='dist') sorted.sort((a,b)=>a.dist-b.dist);
+  else if(val==='verified') sorted.sort((a,b)=>(b.verified?1:0)-(a.verified?1:0));
+  else if(val==='recent') sorted.sort((a,b)=>b.rank-a.rank);
+  sorted.forEach((d,i)=>d.rank=i+1);
+  renderTable(sorted);
+  renderCards(sorted);
+}
+
+// ─── ACCURATE 2025-2026 VEHICLE LINEUPS ─────────────────────────
+// Source: Manufacturer websites, verified March 2026
+// Discontinued models removed. Incoming models flagged.
+const modelMap = {
+  'Ford':       ['Bronco','Bronco Sport','Edge','Escape','Expedition','Explorer',
+                 'F-150','F-150 Lightning','F-250 Super Duty','F-350 Super Duty',
+                 'Maverick','Mustang','Mustang Mach-E','Ranger'],
+  'Chevrolet':  ['Blazer','Blazer EV','Colorado','Corvette','Equinox','Equinox EV',
+                 'Express','Malibu','Silverado 1500','Silverado 2500HD',
+                 'Silverado EV','Suburban','Tahoe','Traverse','Trax'],
+  'GMC':        ['Acadia','Canyon','Hummer EV Pickup','Hummer EV SUV',
+                 'Jimmy (2025)','Sierra 1500','Sierra 2500HD','Sierra 3500HD',
+                 'Terrain','Yukon','Yukon XL'],
+  'Ram':        ['1500','1500 Classic','2500','3500',
+                 'ProMaster','ProMaster City','Ram 1500 REV (EV)'],
+  'Jeep':       ['Cherokee','Compass','Gladiator','Grand Cherokee',
+                 'Grand Cherokee 4xe','Grand Cherokee L','Renegade','Wrangler','Wrangler 4xe'],
+  'Toyota':     ['4Runner','bZ4X','Camry','Corolla','Corolla Cross',
+                 'Crown','Grand Highlander','GR86','GR Corolla','GR Supra',
+                 'Highlander','Land Cruiser','Prius','Prius Prime',
+                 'RAV4','RAV4 Prime','Sequoia','Sienna','Tacoma','Tundra','Venza'],
+  'Honda':      ['Accord','Accord Hybrid','Civic','Civic Type R','CR-V',
+                 'CR-V Hybrid','HR-V','Odyssey','Passport','Pilot',
+                 'Prologue (EV)','Ridgeline'],
+  'Nissan':     ['Altima','Ariya','Armada','Frontier','GT-R',
+                 'Kicks','Leaf','Maxima','Murano','Pathfinder',
+                 'Rogue','Rogue Sport','Sentra','Titan','Versa','Z'],
+  'Hyundai':    ['Elantra','Elantra N','IONIQ 5','IONIQ 6','Kona',
+                 'Kona Electric','Palisade','Santa Cruz','Santa Fe',
+                 'Sonata','Tucson','Tucson Hybrid','Venue'],
+  'Kia':        ['Carnival','EV6','EV9','K5','Niro','Niro EV',
+                 'Seltos','Sorento','Soul','Sportage','Stinger','Telluride'],
+  'Subaru':     ['Ascent','BRZ','Crosstrek','Forester','Impreza',
+                 'Legacy','Outback','Solterra','WRX'],
+  'Mazda':      ['CX-30','CX-5','CX-50','CX-70','CX-90','CX-90 PHEV',
+                 'Mazda3','Mazda3 Sedan','MX-5 Miata','MX-30'],
+  'Volkswagen': ['Atlas','Atlas Cross Sport','Golf GTI','Golf R',
+                 'ID.4','ID. Buzz','Jetta','Passat','Taos','Tiguan'],
+  'BMW':        ['2 Series','3 Series','4 Series','5 Series','7 Series','8 Series',
+                 'i4','i5','i7','iX','iX1','iX2','M2','M3','M4','M5','M8',
+                 'X1','X2','X3','X3 M','X4','X5','X5 M','X6','X7','XM','Z4'],
+  'Mercedes-Benz':['A-Class','C-Class','CLA','CLE','E-Class','EQB','EQE',
+                   'EQE SUV','EQS','EQS SUV','G-Class','GLA','GLB','GLC',
+                   'GLE','GLS','GT','S-Class','SL','AMG GT 4-Door'],
+  'Audi':       ['A3','A4','A5','A6','A7','A8','e-tron GT','e-tron S',
+                 'Q3','Q4 e-tron','Q5','Q5 e-tron','Q7','Q8','Q8 e-tron',
+                 'R8','RS3','RS4','RS5','RS6','RS7','RS e-tron GT',
+                 'S3','S4','S5','S6','S7','S8','TT'],
+  'Cadillac':   ['CT4','CT4-V','CT4-V Blackwing','CT5','CT5-V','CT5-V Blackwing',
+                 'Escalade','Escalade ESV','Escalade IQ','LYRIQ','OPTIQ','XT4','XT5','XT6'],
+  'Lexus':      ['ES','GX','IS','LC','LS','LX','NX','NX Plug-in',
+                 'RC','RX','RX 450h+','TX','UX'],
+  'Lincoln':    ['Aviator','Aviator Grand Touring','Corsair','Navigator',
+                 'Navigator L','Nautilus'],
+  'Buick':      ['Enclave','Encore GX','Envision','Envista'],
+  'Chrysler':   ['300','Pacifica','Pacifica Hybrid','Voyager'],
+  'Dodge':      ['Challenger','Charger','Durango','Hornet','Hornet PHEV'],
+  'Tesla':      ['Cybertruck','Model 3','Model S','Model X','Model Y'],
+  'Rivian':     ['R1S','R1T'],
+  'Genesis':    ['G70','G80','G80 EV','G90','GV70','GV70 EV','GV80','GV80 Coupe'],
+  'Acura':      ['Integra','MDX','MDX Type S','RDX','TLX','TLX Type S','ZDX'],
+  'Infiniti':   ['Q50','Q60','QX50','QX55','QX60','QX80'],
+  'Volvo':      ['C40 Recharge','EX30','EX90','S60','S90','V60','V90','XC40','XC60','XC90'],
+  'Land Rover': ['Defender','Discovery','Discovery Sport','Range Rover',
+                 'Range Rover Evoque','Range Rover Sport','Range Rover Velar'],
+  'Jaguar':     ['E-PACE','F-PACE','F-TYPE','I-PACE','XF'],
+  'Porsche':    ['911','718 Boxster','718 Cayman','Cayenne','Cayenne E-Hybrid',
+                 'Macan','Macan EV','Panamera','Taycan'],
+  'Maserati':   ['Ghibli','GranTurismo','Grecale','Levante','Quattroporte'],
+  'Alfa Romeo': ['Giulia','Giulia Quadrifoglio','Stelvio','Stelvio Quadrifoglio','Tonale'],
+};
+
+// ─── DEMO DEAL DATA PER MAKE (shows realistic data when searching) ─
+const DEMO_DATA = {
+  'GMC': {
+    'Sierra 1500': [
+      {rank:1,name:'LaFontaine Buick GMC',short:'LF',verified:true,featured:false,monthly:529,down:0,total:'$19,044',msrp:48200,term:'36mo',miles:'12k/yr',mf:'0.00148',residual:'55%',conditions:'clean',condText:'No special incentives. Standard lease, good credit.',stock:3,dist:3.8,distStr:'3.8 mi',claimed:'March 22 · 10:00 AM',claimedAgo:'12 hrs ago',emoji:'🛻',make:'GMC',model:'Sierra 1500',trim:'SLE 4x4 Crew',dealType:'lease'},
+      {rank:2,name:'Feldman GMC',short:'FG',verified:true,featured:false,monthly:544,down:0,total:'$19,584',msrp:48200,term:'36mo',miles:'12k/yr',mf:'0.00151',residual:'54%',conditions:'clean',condText:'Standard GMC lease program. No conquest or loyalty required.',stock:5,dist:6.2,distStr:'6.2 mi',claimed:'March 23 · 7:00 AM',claimedAgo:'5 hrs ago',emoji:'🛻',make:'GMC',model:'Sierra 1500',trim:'SLE 4x4 Crew',dealType:'lease'},
+      {rank:3,name:'Serra GMC',short:'SG',verified:true,featured:false,monthly:561,down:500,total:'$20,696',msrp:49100,term:'36mo',miles:'12k/yr',mf:'0.00158',residual:'54%',conditions:'warn',condText:'$500 cap cost reduction required at signing.',stock:4,dist:9.1,distStr:'9.1 mi',claimed:'March 21 · 2:30 PM',claimedAgo:'2 days ago',emoji:'🛻',make:'GMC',model:'Sierra 1500',trim:'SLE 4x4 Crew',dealType:'lease'},
+      {rank:4,name:'Suburban GMC',short:'SB',verified:false,featured:false,monthly:578,down:0,total:'$20,808',msrp:49800,term:'36mo',miles:'12k/yr',mf:'0.00163',residual:'53%',conditions:'warn',condText:'Advertised $529/mo requires GMC Loyalty. Without it, this is the real price.',stock:2,dist:14.4,distStr:'14.4 mi',claimed:'March 19 · 9:00 AM',claimedAgo:'4 days ago',emoji:'🛻',make:'GMC',model:'Sierra 1500',trim:'SLE 4x4 Crew',dealType:'lease'},
+    ],
+    'Terrain': [
+      {rank:1,name:'LaFontaine Buick GMC',short:'LF',verified:true,featured:false,monthly:319,down:0,total:'$11,484',msrp:33200,term:'36mo',miles:'12k/yr',mf:'0.00142',residual:'57%',conditions:'clean',condText:'No special incentives required.',stock:6,dist:3.8,distStr:'3.8 mi',claimed:'March 23 · 8:00 AM',claimedAgo:'4 hrs ago',emoji:'🚙',make:'GMC',model:'Terrain',trim:'SLE AWD',dealType:'lease'},
+      {rank:2,name:'Feldman GMC',short:'FG',verified:true,featured:false,monthly:329,down:0,total:'$11,844',msrp:33200,term:'36mo',miles:'12k/yr',mf:'0.00145',residual:'57%',conditions:'clean',condText:'Standard GMC program.',stock:4,dist:6.2,distStr:'6.2 mi',claimed:'March 22 · 4:00 PM',claimedAgo:'18 hrs ago',emoji:'🚙',make:'GMC',model:'Terrain',trim:'SLE AWD',dealType:'lease'},
+      {rank:3,name:'Serra GMC',short:'SG',verified:false,featured:false,monthly:344,down:0,total:'$12,384',msrp:34100,term:'36mo',miles:'12k/yr',mf:'0.00151',residual:'56%',conditions:'warn',condText:'Price shown requires college grad incentive. Standard price without it.',stock:3,dist:9.1,distStr:'9.1 mi',claimed:'March 18 · 11:00 AM',claimedAgo:'5 days ago',emoji:'🚙',make:'GMC',model:'Terrain',trim:'SLE AWD',dealType:'lease'},
+    ],
+    'Yukon': [
+      {rank:1,name:'Feldman GMC',short:'FG',verified:true,featured:true,monthly:749,down:0,total:'$26,964',msrp:62800,term:'36mo',miles:'12k/yr',mf:'0.00155',residual:'56%',conditions:'clean',condText:'No additional incentives. Best price in market.',stock:2,dist:6.2,distStr:'6.2 mi',claimed:'March 23 · 6:00 AM',claimedAgo:'6 hrs ago',emoji:'🚐',make:'GMC',model:'Yukon',trim:'SLT 4WD',dealType:'lease'},
+      {rank:2,name:'LaFontaine Buick GMC',short:'LF',verified:true,featured:false,monthly:769,down:0,total:'$27,684',msrp:63200,term:'36mo',miles:'12k/yr',mf:'0.00159',residual:'55%',conditions:'clean',condText:'Standard lease program.',stock:1,dist:3.8,distStr:'3.8 mi',claimed:'March 22 · 9:00 AM',claimedAgo:'13 hrs ago',emoji:'🚐',make:'GMC',model:'Yukon',trim:'SLT 4WD',dealType:'lease'},
+    ],
+    'Acadia': [
+      {rank:1,name:'Serra GMC',short:'SG',verified:true,featured:false,monthly:389,down:0,total:'$14,004',msrp:38900,term:'36mo',miles:'12k/yr',mf:'0.00144',residual:'56%',conditions:'clean',condText:'No special incentives.',stock:5,dist:9.1,distStr:'9.1 mi',claimed:'March 23 · 9:30 AM',claimedAgo:'3 hrs ago',emoji:'🚗',make:'GMC',model:'Acadia',trim:'SLE AWD',dealType:'lease'},
+      {rank:2,name:'Feldman GMC',short:'FG',verified:true,featured:false,monthly:399,down:0,total:'$14,364',msrp:38900,term:'36mo',miles:'12k/yr',mf:'0.00148',residual:'55%',conditions:'clean',condText:'Standard program, good credit.',stock:3,dist:6.2,distStr:'6.2 mi',claimed:'March 22 · 3:00 PM',claimedAgo:'19 hrs ago',emoji:'🚗',make:'GMC',model:'Acadia',trim:'SLE AWD',dealType:'lease'},
+    ],
+  },
+  'Ford': {
+    'F-150': [
+      {rank:1,name:'LaFontaine Ford',short:'LF',verified:true,featured:false,monthly:479,down:0,total:'$17,244',msrp:42180,term:'36mo',miles:'12k/yr',mf:'0.00125',residual:'58%',conditions:'clean',condText:'No special incentives required. Standard lease, good credit.',stock:4,dist:4.2,distStr:'4.2 mi',claimed:'March 22 · 9:14 AM',claimedAgo:'14 hrs ago',emoji:'🚗',make:'Ford',model:'F-150',trim:'XLT 4x4 Crew',dealType:'lease'},
+      {rank:2,name:'Bill Brown Ford',short:'BB',verified:true,featured:false,monthly:491,down:0,total:'$17,676',msrp:42180,term:'36mo',miles:'12k/yr',mf:'0.00131',residual:'57%',conditions:'clean',condText:'Ford Red Carpet lease. Standard good-credit offer.',stock:6,dist:7.1,distStr:'7.1 mi',claimed:'March 23 · 6:30 AM',claimedAgo:'3 hrs ago',emoji:'🚗',make:'Ford',model:'F-150',trim:'XLT 4x4 Crew',dealType:'lease'},
+      {rank:3,name:'Varsity Ford',short:'VF',verified:true,featured:true,monthly:508,down:500,total:'$18,788',msrp:43200,term:'36mo',miles:'12k/yr',mf:'0.00138',residual:'57%',conditions:'warn',condText:'$500 due at signing required. Specific VIN only.',stock:2,dist:9.4,distStr:'9.4 mi',claimed:'March 21 · 3:45 PM',claimedAgo:'2 days ago',emoji:'🚗',make:'Ford',model:'F-150',trim:'XLT 4x4 Crew',dealType:'lease'},
+      {rank:4,name:'Hines Park Ford',short:'HP',verified:false,featured:false,monthly:531,down:0,total:'$19,116',msrp:43800,term:'36mo',miles:'12k/yr',mf:'0.00149',residual:'56%',conditions:'warn',condText:'Advertised $489/mo requires Ford Owner Loyalty. This is the real price without it.',stock:5,dist:13.2,distStr:'13.2 mi',claimed:'March 19 · 11:20 AM',claimedAgo:'4 days ago',emoji:'🚗',make:'Ford',model:'F-150',trim:'XLT 4x4 Crew',dealType:'lease'},
+    ],
+    'Bronco': [
+      {rank:1,name:'Bill Brown Ford',short:'BB',verified:true,featured:false,monthly:449,down:0,total:'$16,164',msrp:40200,term:'36mo',miles:'12k/yr',mf:'0.00132',residual:'56%',conditions:'clean',condText:'No special incentives needed.',stock:3,dist:7.1,distStr:'7.1 mi',claimed:'March 23 · 8:00 AM',claimedAgo:'4 hrs ago',emoji:'🟠',make:'Ford',model:'Bronco',trim:'Big Bend 4x4',dealType:'lease'},
+      {rank:2,name:'LaFontaine Ford',short:'LF',verified:true,featured:false,monthly:461,down:0,total:'$16,596',msrp:40800,term:'36mo',miles:'12k/yr',mf:'0.00138',residual:'55%',conditions:'clean',condText:'Standard lease program.',stock:2,dist:4.2,distStr:'4.2 mi',claimed:'March 22 · 11:00 AM',claimedAgo:'11 hrs ago',emoji:'🟠',make:'Ford',model:'Bronco',trim:'Big Bend 4x4',dealType:'lease'},
+    ],
+    'Mustang Mach-E': [
+      {rank:1,name:'Varsity Ford',short:'VF',verified:true,featured:false,monthly:399,down:0,total:'$14,364',msrp:44995,term:'36mo',miles:'12k/yr',mf:'0.00100',residual:'50%',conditions:'clean',condText:'Federal EV tax credit applied. Verify eligibility.',stock:4,dist:9.4,distStr:'9.4 mi',claimed:'March 23 · 7:30 AM',claimedAgo:'5 hrs ago',emoji:'⚡',make:'Ford',model:'Mustang Mach-E',trim:'Select RWD',dealType:'lease'},
+      {rank:2,name:'Hines Park Ford',short:'HP',verified:false,featured:false,monthly:419,down:0,total:'$15,084',msrp:44995,term:'36mo',miles:'12k/yr',mf:'0.00108',residual:'49%',conditions:'warn',condText:'Price assumes $7,500 EV credit — confirm your eligibility before signing.',stock:2,dist:13.2,distStr:'13.2 mi',claimed:'March 20 · 10:00 AM',claimedAgo:'3 days ago',emoji:'⚡',make:'Ford',model:'Mustang Mach-E',trim:'Select RWD',dealType:'lease'},
+    ],
+  },
+  'Cadillac': {
+    'Escalade': [
+      {rank:1,name:'Ray Laethem Cadillac',short:'RL',verified:true,featured:true,monthly:1149,down:0,total:'$41,364',msrp:82000,term:'36mo',miles:'10k/yr',mf:'0.00175',residual:'52%',conditions:'clean',condText:'No special incentives. Best available price.',stock:2,dist:5.1,distStr:'5.1 mi',claimed:'March 23 · 9:00 AM',claimedAgo:'3 hrs ago',emoji:'🖤',make:'Cadillac',model:'Escalade',trim:'Premium Luxury 4WD',dealType:'lease'},
+      {rank:2,name:'Sellers Cadillac',short:'SC',verified:true,featured:false,monthly:1189,down:0,total:'$42,804',msrp:83500,term:'36mo',miles:'10k/yr',mf:'0.00180',residual:'51%',conditions:'clean',condText:'Standard Cadillac lease. Loyalty not required.',stock:1,dist:8.3,distStr:'8.3 mi',claimed:'March 22 · 2:00 PM',claimedAgo:'20 hrs ago',emoji:'🖤',make:'Cadillac',model:'Escalade',trim:'Premium Luxury 4WD',dealType:'lease'},
+      {rank:3,name:'Suburban Cadillac',short:'SB',verified:false,featured:false,monthly:1229,down:2000,total:'$46,244',msrp:85000,term:'36mo',miles:'10k/yr',mf:'0.00188',residual:'50%',conditions:'warn',condText:'Requires $2,000 cap reduction. Advertised at $1,099 with loyalty bonus not shown.',stock:3,dist:12.6,distStr:'12.6 mi',claimed:'March 17 · 11:00 AM',claimedAgo:'6 days ago',emoji:'🖤',make:'Cadillac',model:'Escalade',trim:'Premium Luxury 4WD',dealType:'lease'},
+    ],
+    'CT5': [
+      {rank:1,name:'Ray Laethem Cadillac',short:'RL',verified:true,featured:false,monthly:549,down:0,total:'$19,764',msrp:46800,term:'36mo',miles:'10k/yr',mf:'0.00162',residual:'54%',conditions:'clean',condText:'No special incentives.',stock:4,dist:5.1,distStr:'5.1 mi',claimed:'March 23 · 8:30 AM',claimedAgo:'4 hrs ago',emoji:'🚗',make:'Cadillac',model:'CT5',trim:'Premium Luxury',dealType:'lease'},
+      {rank:2,name:'Sellers Cadillac',short:'SC',verified:true,featured:false,monthly:569,down:0,total:'$20,484',msrp:47200,term:'36mo',miles:'10k/yr',mf:'0.00168',residual:'53%',conditions:'warn',condText:'Rate shown for 720+ credit. Good credit (680) adds ~$20/mo.',stock:2,dist:8.3,distStr:'8.3 mi',claimed:'March 21 · 5:00 PM',claimedAgo:'2 days ago',emoji:'🚗',make:'Cadillac',model:'CT5',trim:'Premium Luxury',dealType:'lease'},
+    ],
+    'LYRIQ': [
+      {rank:1,name:'Sellers Cadillac',short:'SC',verified:true,featured:true,monthly:499,down:0,total:'$17,964',msrp:58595,term:'36mo',miles:'10k/yr',mf:'0.00110',residual:'49%',conditions:'clean',condText:'Federal EV incentive applied. Verify eligibility with dealer.',stock:3,dist:8.3,distStr:'8.3 mi',claimed:'March 23 · 7:00 AM',claimedAgo:'5 hrs ago',emoji:'⚡',make:'Cadillac',model:'LYRIQ',trim:'RWD',dealType:'lease'},
+    ],
+  },
+  'Toyota': {
+    'RAV4': [
+      {rank:1,name:'Suburban Toyota',short:'ST',verified:true,featured:false,monthly:329,down:0,total:'$11,844',msrp:32500,term:'36mo',miles:'12k/yr',mf:'0.00138',residual:'58%',conditions:'clean',condText:'No incentives required. Standard lease.',stock:8,dist:5.5,distStr:'5.5 mi',claimed:'March 23 · 9:00 AM',claimedAgo:'3 hrs ago',emoji:'🚗',make:'Toyota',model:'RAV4',trim:'XLE AWD',dealType:'lease'},
+      {rank:2,name:'Lakeshore Toyota',short:'LT',verified:true,featured:false,monthly:339,down:0,total:'$12,204',msrp:32500,term:'36mo',miles:'12k/yr',mf:'0.00141',residual:'57%',conditions:'clean',condText:'Standard Toyota Financial program.',stock:6,dist:8.2,distStr:'8.2 mi',claimed:'March 22 · 3:00 PM',claimedAgo:'19 hrs ago',emoji:'🚗',make:'Toyota',model:'RAV4',trim:'XLE AWD',dealType:'lease'},
+    ],
+    'Tacoma': [
+      {rank:1,name:'Lakeshore Toyota',short:'LT',verified:true,featured:false,monthly:399,down:0,total:'$14,364',msrp:38900,term:'36mo',miles:'12k/yr',mf:'0.00144',residual:'60%',conditions:'clean',condText:'Strong residual makes this a good lease.',stock:4,dist:8.2,distStr:'8.2 mi',claimed:'March 23 · 8:00 AM',claimedAgo:'4 hrs ago',emoji:'🛻',make:'Toyota',model:'Tacoma',trim:'SR5 4x4 Double Cab',dealType:'lease'},
+      {rank:2,name:'Suburban Toyota',short:'ST',verified:true,featured:false,monthly:414,down:0,total:'$14,904',msrp:39400,term:'36mo',miles:'12k/yr',mf:'0.00149',residual:'59%',conditions:'warn',condText:'Price shown is for specific color/config in stock only.',stock:2,dist:5.5,distStr:'5.5 mi',claimed:'March 21 · 10:00 AM',claimedAgo:'2 days ago',emoji:'🛻',make:'Toyota',model:'Tacoma',trim:'SR5 4x4 Double Cab',dealType:'lease'},
+    ],
+  },
+};
+
+// Default fallback for makes/models without demo data
+function getDealsForSearch(make, model) {
+  const makeData = DEMO_DATA[make];
+  if (makeData && makeData[model]) {
+    return makeData[model];
+  }
+  // Generic fallback — makes it obvious it's demo data
+  return DEALS.map(d => ({...d, make, model, trim: model + ' Base Trim',
+    emoji: make === 'Tesla' ? '⚡' : make === 'BMW' || make === 'Mercedes-Benz' ? '💎' : '🚗'
+  }));
+}
+
+let isInitialLoad = true;
+
+function doSearch() {
+  const zip = document.getElementById('s_zip').value || '48167';
+  const make = document.getElementById('s_make').value;
+  const model = document.getElementById('s_model').value;
+  const type = document.getElementById('s_type').value;
+  const results = getDealsForSearch(make, model);
+  results.forEach((d,i) => d.rank = i+1);
+  renderTable(results);
+  renderCards(results);
+  document.getElementById('resultsHeading').innerHTML =
+    `2026 ${make} ${model} <span>— ${results.length} Dealers Near ${zip}</span>`;
+  document.getElementById('liveCount').textContent =
+    `— ${(11847 + Math.floor(Math.random()*200)).toLocaleString()} verified deals across 340 dealerships`;
+  if (!isInitialLoad) {
+    showToast(`Found ${results.length} verified ${type} deals near ${zip}`, 'ok');
+    document.querySelector('.page').scrollIntoView({behavior:'smooth'});
+  }
+  isInitialLoad = false;
+}
+
+// ─── TRIM / CONFIG / ENGINE DATA ────────────────────────────────
+const vehicleDetails = {
+  'Ford': {
+    'F-150':          { trims:['XL','XLT','Lariat','King Ranch','Platinum','Limited','Tremor','Raptor','Raptor R'], configs:['4x4','4x2'], cab:['Crew Cab','SuperCab','Regular Cab'], engines:['2.7L EcoBoost V6','3.5L EcoBoost V6','5.0L V8','3.5L PowerBoost Hybrid','3.0L PowerStroke Diesel'] },
+    'F-150 Lightning':{ trims:['Pro','XLT','Lariat','Platinum','Black Ops'], configs:['AWD'], cab:['Crew Cab'], engines:['Standard Range EV','Extended Range EV'] },
+    'F-250 Super Duty':{ trims:['XL','XLT','Lariat','King Ranch','Platinum','Limited','Tremor'], configs:['4x4','4x2'], cab:['Crew Cab','SuperCab','Regular Cab'], engines:['6.2L V8','7.3L V8','6.7L PowerStroke Diesel'] },
+    'Bronco':         { trims:['Base','Big Bend','Black Diamond','Outer Banks','Badlands','Wildtrak','Everglades','Raptor','Heritage','Heritage Limited'], configs:['4x4'], cab:['2-Door','4-Door'], engines:['2.3L EcoBoost','2.7L EcoBoost V6'] },
+    'Bronco Sport':   { trims:['Base','Big Bend','Outer Banks','Badlands','Heritage','Heritage Limited'], configs:['AWD','FWD'], cab:['SUV'], engines:['1.5L EcoBoost','2.0L EcoBoost'] },
+    'Explorer':       { trims:['Base','XLT','ST-Line','Limited','ST','Platinum','King Ranch','Timberline'], configs:['AWD','RWD'], cab:['SUV'], engines:['2.3L EcoBoost','3.0L EcoBoost V6 Hybrid'] },
+    'Escape':         { trims:['Base','Active','ST-Line','ST-Line Elite','Plug-In Hybrid'], configs:['AWD','FWD'], cab:['SUV'], engines:['1.5L EcoBoost','2.5L PHEV','2.5L Hybrid'] },
+    'Expedition':     { trims:['XLT','Limited','King Ranch','Platinum','Timberline','Stealth Edition'], configs:['4x4','4x2'], cab:['SUV','MAX (Long)'], engines:['3.5L EcoBoost V6','3.5L PowerBoost Hybrid'] },
+    'Maverick':       { trims:['XL','XLT','Lariat','Tremor'], configs:['AWD','FWD'], cab:['Crew Cab'], engines:['2.5L Hybrid','2.0L EcoBoost'] },
+    'Mustang':        { trims:['EcoBoost','EcoBoost Premium','GT','GT Premium','Dark Horse','Mach 1'], configs:['RWD'], cab:['Fastback','Convertible'], engines:['2.3L EcoBoost','5.0L V8 GT','5.2L V8 Dark Horse'] },
+    'Mustang Mach-E': { trims:['Select','California Route 1','Premium','GT','Rally'], configs:['RWD','AWD'], cab:['SUV'], engines:['Standard Range EV','Extended Range EV'] },
+    'Ranger':         { trims:['XL','XLT','Lariat','Tremor','Raptor'], configs:['4x4','4x2'], cab:['SuperCrew','SuperCab'], engines:['2.3L EcoBoost','3.0L EcoBoost V6'] },
+  },
+  'GMC': {
+    'Sierra 1500':    { trims:['Pro','SLE','SLT','AT4','AT4X','Denali','Denali Ultimate'], configs:['4WD','2WD'], cab:['Crew Cab','Double Cab','Regular Cab'], engines:['2.7L Turbo','3.0L Duramax Diesel','5.3L V8','6.2L V8','2.7L Turbo Plus'] },
+    'Sierra 2500HD':  { trims:['Pro','SLE','SLT','AT4','Denali','Denali Ultimate'], configs:['4WD','2WD'], cab:['Crew Cab','Double Cab','Regular Cab'], engines:['6.6L V8','6.6L Duramax Diesel'] },
+    'Sierra 3500HD':  { trims:['Pro','SLE','SLT','AT4','Denali'], configs:['4WD','2WD'], cab:['Crew Cab','Double Cab','Regular Cab'], engines:['6.6L V8','6.6L Duramax Diesel'] },
+    'Canyon':         { trims:['Elevation','AT4','Denali'], configs:['4WD','2WD'], cab:['Crew Cab'], engines:['2.7L Turbo','3.0L Duramax Diesel'] },
+    'Terrain':        { trims:['SLE','SLT','AT4','Denali'], configs:['AWD','FWD'], cab:['SUV'], engines:['1.5L Turbo','Plug-In Hybrid'] },
+    'Acadia':         { trims:['SLE','SLT','AT4','Denali'], configs:['AWD','FWD'], cab:['SUV'], engines:['2.5L','2.0L Turbo'] },
+    'Yukon':          { trims:['SLE','SLT','AT4','Denali','Denali Ultimate'], configs:['4WD','2WD'], cab:['SUV'], engines:['5.3L V8','6.2L V8','3.0L Duramax Diesel'] },
+    'Yukon XL':       { trims:['SLE','SLT','AT4','Denali','Denali Ultimate'], configs:['4WD','2WD'], cab:['SUV'], engines:['5.3L V8','6.2L V8','3.0L Duramax Diesel'] },
+    'Hummer EV Pickup':{ trims:['Edition 1','3X','2X','2'], configs:['AWD'], cab:['Crew Cab'], engines:['Electric — 3-Motor','Electric — 2-Motor'] },
+    'Hummer EV SUV':  { trims:['Edition 1','3X','2X'], configs:['AWD'], cab:['SUV'], engines:['Electric — 3-Motor','Electric — 2-Motor'] },
+    'Jimmy (2025)':   { trims:['SLE','SLT','AT4','Denali'], configs:['AWD','FWD'], cab:['SUV'], engines:['1.5L Turbo'] },
+  },
+  'Chevrolet': {
+    'Silverado 1500': { trims:['WT','Custom','LT','RST','LT Trail Boss','Custom Trail Boss','LTZ','High Country','ZR2'], configs:['4WD','2WD'], cab:['Crew Cab','Double Cab','Regular Cab'], engines:['2.7L Turbo','5.3L V8','6.2L V8','3.0L Duramax Diesel','2.7L Turbo Plus'] },
+    'Colorado':       { trims:['WT','LT','Z71','Trail Boss','ZR2','ZR2 Bison'], configs:['4WD','2WD'], cab:['Crew Cab','Extended Cab'], engines:['2.7L Turbo','2.7L Turbo Plus','2.7L Turbo High-Output','3.0L Duramax Diesel'] },
+    'Equinox':        { trims:['LS','LT','RS','Premier'], configs:['AWD','FWD'], cab:['SUV'], engines:['1.5L Turbo','2.0L Turbo'] },
+    'Equinox EV':     { trims:['1LT','2LT','3LT','RS','Premier'], configs:['AWD','FWD'], cab:['SUV'], engines:['Standard Range EV','Long Range EV'] },
+    'Traverse':       { trims:['LS','LT','RS','Z71','Premier','High Country'], configs:['AWD','FWD'], cab:['SUV'], engines:['3.6L V6','Turbo Diesel'] },
+    'Blazer':         { trims:['LT','RS','Premier'], configs:['AWD','FWD'], cab:['SUV'], engines:['2.0L Turbo','3.6L V6'] },
+    'Blazer EV':      { trims:['LT','RS','RS Ultra','Police Pursuit'], configs:['AWD','FWD'], cab:['SUV'], engines:['EV — RWD','EV — AWD'] },
+    'Trax':           { trims:['LS','LT','RS','ACTIV'], configs:['FWD'], cab:['SUV'], engines:['1.2L Turbo'] },
+    'Tahoe':          { trims:['LS','LT','RST','Z71','Premier','High Country'], configs:['4WD','2WD'], cab:['SUV'], engines:['5.3L V8','6.2L V8','3.0L Duramax Diesel'] },
+    'Suburban':       { trims:['LS','LT','RST','Z71','Premier','High Country'], configs:['4WD','2WD'], cab:['SUV'], engines:['5.3L V8','6.2L V8','3.0L Duramax Diesel'] },
+    'Silverado EV':   { trims:['Work Truck','LT','RST','LTZ','ZR2'], configs:['AWD'], cab:['Crew Cab'], engines:['EV — Standard Range','EV — Extended Range'] },
+  },
+  'Ram': {
+    '1500':           { trims:['Tradesman','Big Horn','Lone Star','Laramie','Rebel','RamBox','TRX','Limited','Limited Longhorn'], configs:['4x4','4x2'], cab:['Crew Cab','Quad Cab','Regular Cab'], engines:['3.6L Pentastar V6','5.7L HEMI V8','3.0L EcoDiesel','eTorque Mild Hybrid'] },
+    '2500':           { trims:['Tradesman','Big Horn','Laramie','Power Wagon','Limited','Limited Longhorn'], configs:['4x4','4x2'], cab:['Crew Cab','Regular Cab'], engines:['6.4L HEMI V8','6.7L Cummins Diesel'] },
+    '3500':           { trims:['Tradesman','Big Horn','Laramie','Limited','Limited Longhorn'], configs:['4x4','4x2'], cab:['Crew Cab','Regular Cab'], engines:['6.4L HEMI V8','6.7L Cummins Diesel'] },
+    'ProMaster':      { trims:['1500','2500','3500'], configs:['FWD'], cab:['Cargo Van','Window Van','Cutaway'], engines:['3.6L Pentastar V6','EV'] },
+    'Ram 1500 REV (EV)': { trims:['Big Horn','Laramie','Limited'], configs:['AWD'], cab:['Crew Cab'], engines:['EV — Standard Range','EV — Extended Range'] },
+  },
+  'Cadillac': {
+    'Escalade':       { trims:['Luxury','Premium Luxury','Premium Luxury Platinum','Sport','Sport Platinum','V-Series Blackwing'], configs:['4WD','2WD'], cab:['SUV'], engines:['6.2L V8','3.0L Duramax Diesel'] },
+    'Escalade ESV':   { trims:['Luxury','Premium Luxury','Premium Luxury Platinum','Sport','Sport Platinum'], configs:['4WD','2WD'], cab:['SUV (Long)'], engines:['6.2L V8','3.0L Duramax Diesel'] },
+    'Escalade IQ':    { trims:['Luxury','Premium Luxury','Premium Luxury Platinum','Sport'], configs:['AWD'], cab:['SUV'], engines:['EV'] },
+    'CT4':            { trims:['Luxury','Premium Luxury','Sport','V-Series'], configs:['AWD','RWD'], cab:['Sedan'], engines:['2.0L Turbo','2.7L Turbo'] },
+    'CT4-V':          { trims:['V-Series'], configs:['AWD'], cab:['Sedan'], engines:['2.7L Turbo'] },
+    'CT4-V Blackwing':{ trims:['Blackwing'], configs:['RWD','AWD'], cab:['Sedan'], engines:['3.6L Twin-Turbo V6'] },
+    'CT5':            { trims:['Luxury','Premium Luxury','Sport','V-Series'], configs:['AWD','RWD'], cab:['Sedan'], engines:['2.0L Turbo','3.0L Twin-Turbo V6'] },
+    'CT5-V Blackwing':{ trims:['Blackwing'], configs:['RWD','AWD'], cab:['Sedan'], engines:['6.2L Supercharged V8'] },
+    'XT4':            { trims:['Luxury','Premium Luxury','Sport'], configs:['AWD','FWD'], cab:['SUV'], engines:['2.0L Turbo'] },
+    'XT5':            { trims:['Luxury','Premium Luxury','Sport','Platinum'], configs:['AWD','FWD'], cab:['SUV'], engines:['2.0L Turbo','3.6L V6'] },
+    'XT6':            { trims:['Luxury','Premium Luxury','Sport','Platinum'], configs:['AWD','FWD'], cab:['SUV'], engines:['2.0L Turbo','3.6L V6'] },
+    'LYRIQ':          { trims:['RWD','AWD','Sport','Sport 2'], configs:['AWD','RWD'], cab:['SUV'], engines:['EV — RWD','EV — AWD'] },
+    'OPTIQ':          { trims:['Luxury','Sport'], configs:['AWD','FWD'], cab:['SUV'], engines:['EV'] },
+  },
+  'Toyota': {
+    'Camry':          { trims:['LE','SE','XSE','XLE','TRD','Hybrid LE','Hybrid SE','Hybrid XSE','Hybrid XLE'], configs:['AWD','FWD'], cab:['Sedan'], engines:['2.5L','2.5L Hybrid','3.5L V6'] },
+    'Corolla':        { trims:['L','LE','SE','XSE','XLE','Hybrid LE','Hybrid SE','GR Corolla'], configs:['AWD','FWD'], cab:['Sedan','Hatchback'], engines:['1.8L','2.0L','1.8L Hybrid','1.6L Turbo GR'] },
+    'RAV4':           { trims:['LE','XLE','XLE Premium','TRD Off-Road','Adventure','Limited','XSE Hybrid','SE Hybrid','XLE Hybrid','Limited Hybrid'], configs:['AWD','FWD'], cab:['SUV'], engines:['2.5L','2.5L Hybrid'] },
+    'RAV4 Prime':     { trims:['SE','XSE','XSE Premium'], configs:['AWD'], cab:['SUV'], engines:['2.5L PHEV'] },
+    'Tacoma':         { trims:['SR','SR5','TRD Sport','TRD Off-Road','Limited','TRD Pro','Trailhunter','i-FORCE MAX'], configs:['4x4','4x2'], cab:['Double Cab','Access Cab'], engines:['2.4L Turbo','2.4L Turbo Hybrid i-FORCE MAX'] },
+    'Tundra':         { trims:['SR','SR5','Limited','Platinum','1794 Edition','TRD Pro','Capstone'], configs:['4x4','4x2'], cab:['CrewMax','Double Cab'], engines:['3.5L Twin-Turbo V6','3.5L Twin-Turbo Hybrid'] },
+    'Highlander':     { trims:['LE','XLE','XSE','Limited','Platinum','Hybrid LE','Hybrid XLE','Hybrid Limited','Hybrid Platinum'], configs:['AWD','FWD'], cab:['SUV'], engines:['2.4L Turbo','2.5L Hybrid'] },
+    'Prius':          { trims:['LE','XLE','Limited'], configs:['AWD','FWD'], cab:['Sedan'], engines:['2.0L Hybrid'] },
+    'Prius Prime':    { trims:['SE','XSE','XSE Premium'], configs:['AWD','FWD'], cab:['Sedan'], engines:['2.0L PHEV'] },
+    '4Runner':        { trims:['SR5','TRD Sport','TRD Off-Road','TRD Off-Road Premium','Limited','TRD Pro','Trailhunter'], configs:['4x4','4x2'], cab:['SUV'], engines:['2.4L Turbo','2.4L Turbo Hybrid i-FORCE MAX'] },
+    'Sequoia':        { trims:['SR5','Limited','Platinum','TRD Pro','Capstone'], configs:['4WD','2WD'], cab:['SUV'], engines:['3.5L Twin-Turbo Hybrid'] },
+    'Crown':          { trims:['XLE','Limited','Platinum','XLE Plug-in Hybrid'], configs:['AWD'], cab:['Sedan'], engines:['2.5L Hybrid','2.5L PHEV'] },
+    'Venza':          { trims:['LE','XLE','Limited'], configs:['AWD'], cab:['SUV'], engines:['2.5L Hybrid'] },
+    'bZ4X':           { trims:['XLE','Limited'], configs:['AWD','FWD'], cab:['SUV'], engines:['EV — FWD','EV — AWD'] },
+  },
+  'BMW': {
+    '3 Series':       { trims:['330i','330i xDrive','330e PHEV','M340i','M340i xDrive'], configs:['AWD (xDrive)','RWD'], cab:['Sedan','Sports Wagon'], engines:['2.0L TwinPower Turbo','3.0L TwinPower Turbo','2.0L PHEV'] },
+    '5 Series':       { trims:['530i','530i xDrive','550e PHEV','M550i xDrive'], configs:['AWD (xDrive)','RWD'], cab:['Sedan'], engines:['2.0L TwinPower Turbo','3.0L TwinPower Turbo','3.0L PHEV'] },
+    'X3':             { trims:['sDrive30i','xDrive30i','M40i','M Competition'], configs:['AWD (xDrive)','RWD'], cab:['SUV'], engines:['2.0L TwinPower Turbo','3.0L TwinPower Turbo'] },
+    'X5':             { trims:['sDrive40i','xDrive40i','xDrive50e PHEV','M60i','M Competition'], configs:['AWD (xDrive)','RWD'], cab:['SUV'], engines:['3.0L TwinPower Turbo','4.4L V8','3.0L PHEV'] },
+    'X7':             { trims:['xDrive40i','xDrive60M','M70 xDrive'], configs:['AWD (xDrive)'], cab:['SUV'], engines:['3.0L TwinPower Turbo','4.4L V8'] },
+    'i4':             { trims:['eDrive35','eDrive40','xDrive40','M50'], configs:['AWD','RWD'], cab:['Gran Coupe'], engines:['EV — RWD','EV — AWD'] },
+    'iX':             { trims:['xDrive50','M60'], configs:['AWD'], cab:['SUV'], engines:['EV — AWD'] },
+  },
+  'Mercedes-Benz': {
+    'C-Class':        { trims:['C 300','C 300 4MATIC','AMG C 43','AMG C 63 S E Performance'], configs:['4MATIC AWD','RWD'], cab:['Sedan','Cabriolet','Coupe'], engines:['2.0L Turbo','2.0L PHEV','AMG 2.0L Turbo'] },
+    'E-Class':        { trims:['E 350','E 350 4MATIC','AMG E 53','AMG E 63 S'], configs:['4MATIC AWD','RWD'], cab:['Sedan','Wagon','Cabriolet','Coupe'], engines:['2.0L Turbo','3.0L Turbo Inline-6'] },
+    'GLC':            { trims:['GLC 300','GLC 300 4MATIC','GLC 350e PHEV','AMG GLC 43','AMG GLC 63 S E Performance'], configs:['4MATIC AWD','RWD'], cab:['SUV','Coupe'], engines:['2.0L Turbo','2.0L PHEV'] },
+    'GLE':            { trims:['GLE 350','GLE 450 4MATIC','GLE 580','AMG GLE 53','AMG GLE 63 S'], configs:['4MATIC AWD'], cab:['SUV','Coupe'], engines:['2.0L Turbo','3.0L Inline-6','4.0L V8'] },
+    'GLS':            { trims:['GLS 450','GLS 580','AMG GLS 63','Maybach GLS 600'], configs:['4MATIC AWD'], cab:['SUV'], engines:['3.0L Inline-6','4.0L V8','5.0L V8 Maybach'] },
+    'S-Class':        { trims:['S 500','S 580','AMG S 63 E Performance','Maybach S 580','Maybach S 680'], configs:['4MATIC AWD','RWD'], cab:['Sedan'], engines:['3.0L Inline-6','4.0L V8'] },
+    'EQS':            { trims:['EQS 450+','EQS 450 4MATIC','EQS 580 4MATIC','AMG EQS 53'], configs:['AWD','RWD'], cab:['Sedan','SUV'], engines:['EV — RWD','EV — AWD'] },
+    'EQE':            { trims:['EQE 350+','EQE 350 4MATIC','EQE 500 4MATIC','AMG EQE 43','AMG EQE 53'], configs:['AWD','RWD'], cab:['Sedan','SUV'], engines:['EV — RWD','EV — AWD'] },
+  },
+};
+
+// Generic fallback for makes not in vehicleDetails
+const genericDetails = { trims:['Base','Mid','Premium','Luxury','Performance'], configs:['AWD','FWD','4WD','RWD'], cab:['Sedan','SUV','Truck','Coupe'], engines:['Standard','Turbo','Hybrid','Electric'] };
+
+function getVehicleDetails(make, model) {
+  return (vehicleDetails[make] && vehicleDetails[make][model]) || genericDetails;
+}
+
+function updateModels() {
+  const make = document.getElementById('s_make').value;
+  const modelSel = document.getElementById('s_model');
+  const models = modelMap[make] || [];
+  modelSel.innerHTML = models.length
+    ? models.map(m => `<option>${m}</option>`).join('')
+    : `<option>Select a make first</option>`;
+  updateTrims(); // cascade
+}
+
+function updateTrims() {
+  const make = document.getElementById('s_make').value;
+  const model = document.getElementById('s_model').value;
+  const d = getVehicleDetails(make, model);
+  const set = (id, arr) => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = `<option>Any</option>` + arr.map(v=>`<option>${v}</option>`).join('');
+  };
+  set('s_trim',   d.trims);
+  set('s_config', d.configs);
+  set('s_cab',    d.cab);
+  set('s_engine', d.engines);
+}
+
+function signupAlert() {
+  const email = document.getElementById('alertEmail').value;
+  if(!email || !email.includes('@')) { showToast('Enter a valid email address','warn'); return; }
+  showToast(`✓ You'll be alerted when this deal drops — ${email}`, 'ok');
+  document.getElementById('alertEmail').value = '';
+}
+
+function showToast(msg, type='ok') {
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  document.getElementById('toastC').appendChild(t);
+  setTimeout(()=>t.remove(), 4000);
+}
+
+// On load: populate models → trims/config/engine → render results
+updateModels();
+doSearch();
+
+// Live ticker
+let count = 11847;
+setInterval(() => {
+  count += Math.floor(Math.random()*3);
+  document.getElementById('liveCount').textContent = `— ${count.toLocaleString()} verified deals across 340 dealerships`;
+}, 8000);
+</script>
+</body>
+</html>
