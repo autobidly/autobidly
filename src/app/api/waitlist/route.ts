@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'api-key': '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',
+      'api-key': process.env.BREVO_API_KEY || '',
     },
     body: JSON.stringify({
       email,
