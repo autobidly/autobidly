@@ -1,3 +1,5 @@
+"use client";
+
 export default function Home() {
   return (
     <main style={{ fontFamily: 'system-ui, sans-serif', margin: 0, padding: 0 }}>
@@ -135,6 +137,71 @@ export default function Home() {
           ))}
         </div>
       </div>
+
+      {/* WAITLIST */}
+      <section style={{ padding: '64px 40px', background: '#E1F5EE' }}>
+        <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center' }}>
+          <div style={{ display: 'inline-block', background: '#1D9E75', color: '#fff', fontSize: 11, fontWeight: 600, padding: '4px 12px', borderRadius: 99, marginBottom: 16, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Launching in Metro Detroit</div>
+          <h2 style={{ fontSize: 28, fontWeight: 600, color: '#111', letterSpacing: '-0.5px', marginBottom: 12 }}>
+            Be first when we go live.
+          </h2>
+          <p style={{ fontSize: 15, color: '#555', marginBottom: 32, lineHeight: 1.7 }}>
+            We&apos;re launching in Metro Detroit first. Join the waitlist and you&apos;ll be the first to know when real dealer deals are live in your area.
+          </p>
+          <div style={{ display: 'flex', gap: 10, maxWidth: 480, margin: '0 auto', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <input
+              id="waitlist-email"
+              type="email"
+              placeholder="your@email.com"
+              style={{ flex: 1, minWidth: 240, padding: '13px 18px', borderRadius: 99, border: '1.5px solid #9FE1CB', fontSize: 15, outline: 'none', fontFamily: 'system-ui, sans-serif' }}
+            />
+            <button
+              id="waitlist-btn"
+              onClick={async () => {
+                const emailEl = document.getElementById('waitlist-email') as HTMLInputElement;
+                const btn = document.getElementById('waitlist-btn') as HTMLButtonElement;
+                const msg = document.getElementById('waitlist-msg') as HTMLDivElement;
+                const email = emailEl.value;
+                if (!email || !email.includes('@')) {
+                  msg.textContent = 'Please enter a valid email address.';
+                  msg.style.color = '#E24B4A';
+                  return;
+                }
+                btn.textContent = 'Joining...';
+                btn.disabled = true;
+                try {
+                  const res = await fetch('/api/waitlist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email }),
+                  });
+                  if (res.ok) {
+                    msg.textContent = "You're on the list! We'll be in touch when we launch in Metro Detroit.";
+                    msg.style.color = '#0F6E56';
+                    emailEl.value = '';
+                    btn.textContent = "You're in!";
+                  } else {
+                    msg.textContent = 'Something went wrong. Please try again.';
+                    msg.style.color = '#E24B4A';
+                    btn.textContent = 'Join waitlist';
+                    btn.disabled = false;
+                  }
+                } catch {
+                  msg.textContent = 'Something went wrong. Please try again.';
+                  msg.style.color = '#E24B4A';
+                  btn.textContent = 'Join waitlist';
+                  btn.disabled = false;
+                }
+              }}
+              style={{ background: '#1D9E75', color: '#fff', border: 'none', borderRadius: 99, padding: '13px 28px', fontSize: 15, fontWeight: 500, cursor: 'pointer', whiteSpace: 'nowrap' }}
+            >
+              Join waitlist
+            </button>
+          </div>
+          <div id="waitlist-msg" style={{ marginTop: 12, fontSize: 14, minHeight: 20 }}></div>
+          <p style={{ fontSize: 12, color: '#888', marginTop: 12 }}>No spam. No selling your email. Just a heads up when we launch.</p>
+        </div>
+      </section>
 
       {/* DIRTY SECRET */}
       <section style={{ padding: '72px 40px', background: '#f9f9f7' }}>
