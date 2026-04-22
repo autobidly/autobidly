@@ -12,7 +12,7 @@ export default function Home() {
         <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
           <span style={{ fontSize: 14, color: '#666', cursor: 'pointer' }}>How it works</span>
           <span style={{ fontSize: 14, color: '#666', cursor: 'pointer' }}>Browse deals</span>
-          <span style={{ fontSize: 14, color: '#666', cursor: 'pointer' }}>For dealers</span>
+          <a href="/dealer" style={{ fontSize: 14, color: '#666', cursor: 'pointer', textDecoration: 'none' }}>For dealers</a>
           <button style={{ background: '#111', color: '#fff', border: 'none', borderRadius: 99, padding: '9px 22px', fontSize: 14, fontWeight: 500, cursor: 'pointer' }}>Get started</button>
         </div>
       </nav>
