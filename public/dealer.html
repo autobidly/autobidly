@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AutoBidly — Dealer Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #f7f6f3;
+  --surface: #ffffff;
+  --surface2: #f0efe9;
+  --black: #111110;
+  --mid: #3a3a38;
+  --muted: #888880;
+  --border: #e4e3dc;
+  --accent: #e8441a;
+  --accent-soft: #fdf1ee;
+  --accent2: #1a6ee8;
+  --accent2-soft: #eef3fd;
+  --green: #16a34a;
+  --green-soft: #f0fdf4;
+  --amber: #d97706;
+  --amber-soft: #fffbeb;
+  --red: #dc2626;
+  --red-soft: #fef2f2;
+  --verified: #0ea5e9;
+  --verified-soft: #f0f9ff;
+  --shadow: 0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(0,0,0,.04);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,.1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 15px; }
+body {
+  background: var(--bg);
+  color: var(--black);
+  font-family: 'Syne', sans-serif;
+  display: flex; min-height: 100vh;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 240px; min-height: 100vh;
+  background: var(--black);
+  display: flex; flex-direction: column;
+  position: fixed; left: 0; top: 0; bottom: 0;
+  z-index: 50;
+}
+.sidebar-logo {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid #222;
+  display: flex; align-items: center; gap: 10px;
+}
+.logo-mark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px; letter-spacing: 2px; color: white;
+}
+.logo-mark span { color: var(--accent); }
+.logo-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent); animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+
+.sidebar-dealer {
+  padding: 20px 24px;
+  border-bottom: 1px solid #1e1e1e;
+}
+.dealer-avatar {
+  width: 40px; height: 40px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), #c73510);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: white;
+  margin-bottom: 10px;
+}
+.dealer-name { font-size: 13px; font-weight: 700; color: white; line-height: 1.3; }
+.dealer-meta { font-size: 11px; color: #666; margin-top: 2px; }
+.verified-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-top: 8px; padding: 3px 8px; border-radius: 100px;
+  background: rgba(14,165,233,.15); border: 1px solid rgba(14,165,233,.3);
+  font-size: 10px; font-weight: 600; color: var(--verified); letter-spacing: .5px;
+}
+
+.sidebar-nav { padding: 16px 12px; flex: 1; }
+.nav-section-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: #444; padding: 0 12px; margin: 16px 0 6px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 6px; cursor: pointer;
+  transition: background .15s; margin-bottom: 2px; position: relative;
+  border: none; background: none; width: 100%; text-align: left;
+  font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 500; color: #666;
+  text-decoration: none;
+}
+.nav-item:hover { background: #1a1a1a; color: #ccc; }
+.nav-item.active { background: #1e1e1e; color: white; }
+.nav-item.active::before {
+  content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 20px; background: var(--accent); border-radius: 0 2px 2px 0;
+}
+.nav-icon { font-size: 16px; width: 20px; text-align: center; }
+.nav-badge {
+  margin-left: auto; background: var(--accent); color: white;
+  font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.nav-badge.amber { background: var(--amber); }
+.nav-badge.blue { background: var(--accent2); }
+
+.sidebar-credits {
+  margin: 12px; padding: 16px; background: #1a1a1a;
+  border: 1px solid #2a2a2a; border-radius: 8px;
+}
+.credits-label { font-size: 10px; color: #555; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+.credits-count {
+  font-family: 'Bebas Neue', sans-serif; font-size: 36px;
+  color: var(--accent2); line-height: 1;
+}
+.credits-sub { font-size: 11px; color: #555; margin-top: 2px; }
+.credits-btn {
+  width: 100%; margin-top: 12px; padding: 8px;
+  background: rgba(26,110,232,.15); border: 1px solid rgba(26,110,232,.3);
+  border-radius: 4px; color: var(--accent2); font-size: 12px; font-weight: 600;
+  font-family: 'Syne', sans-serif; cursor: pointer; transition: all .2s;
+}
+.credits-btn:hover { background: var(--accent2); color: white; }
+
+/* ── MAIN ── */
+.main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; }
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 0 32px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 40;
+}
+.topbar-title { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1px; }
+.topbar-title span { color: var(--accent); }
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.topbar-notif {
+  position: relative; width: 38px; height: 38px; border-radius: 8px;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 18px; transition: background .2s;
+}
+.topbar-notif:hover { background: var(--border); }
+.notif-dot {
+  position: absolute; top: 6px; right: 6px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--accent); border: 2px solid var(--surface);
+  animation: pulse 2s infinite;
+}
+.topbar-status {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px; background: var(--green-soft);
+  border: 1px solid rgba(22,163,74,.2); border-radius: 100px;
+  font-size: 12px; font-weight: 600; color: var(--green);
+}
+.status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+
+/* ── CONTENT ── */
+.content { padding: 32px; }
+
+/* ── STATS ROW ── */
+.stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 28px; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 20px; box-shadow: var(--shadow);
+  position: relative; overflow: hidden;
+}
+.stat-card::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 3px; background: var(--border);
+}
+.stat-card.accent::after { background: var(--accent); }
+.stat-card.blue::after { background: var(--accent2); }
+.stat-card.green::after { background: var(--green); }
+.stat-card.amber::after { background: var(--amber); }
+.stat-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 38px; line-height: 1; color: var(--black); }
+.stat-value.accent { color: var(--accent); }
+.stat-value.blue { color: var(--accent2); }
+.stat-value.green { color: var(--green); }
+.stat-value.amber { color: var(--amber); }
+.stat-change { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.stat-change.up { color: var(--green); }
+.stat-change.down { color: var(--red); }
+
+/* ── SECTION HEADER ── */
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px;
+}
+.section-header h2 {
+  font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px;
+}
+.section-header h2 span { color: var(--accent); }
+.header-actions { display: flex; gap: 8px; align-items: center; }
+.pill-btn {
+  padding: 7px 16px; border-radius: 100px; font-size: 12px; font-weight: 600;
+  font-family: 'Syne', sans-serif; cursor: pointer; transition: all .15s; border: none;
+}
+.pill-btn.outline { background: var(--surface); border: 1px solid var(--border); color: var(--mid); }
+.pill-btn.outline:hover { border-color: var(--black); color: var(--black); }
+.pill-btn.solid { background: var(--black); color: white; }
+.pill-btn.solid:hover { background: var(--accent); }
+.pill-btn.accent { background: var(--accent); color: white; }
+.pill-btn.accent:hover { background: #c73510; }
+
+/* ── GRID LAYOUT ── */
+.dashboard-grid { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
+.dashboard-grid-full { grid-column: 1 / -1; }
+
+/* ── LEAD INBOX ── */
+.panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; box-shadow: var(--shadow); overflow: hidden;
+}
+.panel-header {
+  padding: 18px 24px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.panel-title { font-size: 13px; font-weight: 700; letter-spacing: .5px; display: flex; align-items: center; gap: 8px; }
+.panel-count {
+  background: var(--accent); color: white;
+  font-size: 11px; font-weight: 700; padding: 2px 8px;
+  border-radius: 100px; font-family: 'JetBrains Mono', monospace;
+}
+.panel-count.blue { background: var(--accent2); }
+.panel-count.green { background: var(--green); }
+
+.tab-row {
+  display: flex; border-bottom: 1px solid var(--border);
+  padding: 0 24px; background: var(--surface2);
+}
+.tab {
+  padding: 12px 0; margin-right: 24px; font-size: 12px; font-weight: 600;
+  color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent;
+  transition: all .15s; white-space: nowrap;
+}
+.tab.active { color: var(--black); border-bottom-color: var(--accent); }
+
+/* ── LEAD ITEM ── */
+.lead-item {
+  padding: 20px 24px; border-bottom: 1px solid var(--border);
+  display: flex; gap: 16px; cursor: pointer; transition: background .15s;
+  position: relative;
+}
+.lead-item:hover { background: var(--surface2); }
+.lead-item.unread { background: #fffef9; }
+.unread-dot {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+}
+.lead-avatar {
+  width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 700; font-family: 'Bebas Neue', sans-serif;
+}
+.lead-avatar.blue { background: var(--accent2-soft); color: var(--accent2); }
+.lead-avatar.green { background: var(--green-soft); color: var(--green); }
+.lead-avatar.amber { background: var(--amber-soft); color: var(--amber); }
+.lead-avatar.red { background: var(--red-soft); color: var(--red); }
+.lead-body { flex: 1; min-width: 0; }
+.lead-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+.lead-name { font-size: 14px; font-weight: 700; }
+.lead-time { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
+.lead-vehicle { font-size: 13px; color: var(--mid); margin-bottom: 6px; }
+.lead-terms { display: flex; gap: 6px; flex-wrap: wrap; }
+.lead-tag {
+  padding: 3px 8px; border-radius: 3px; font-size: 11px; font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+}
+.lead-tag.price { background: var(--green-soft); color: var(--green); border: 1px solid rgba(22,163,74,.2); }
+.lead-tag.neutral { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+.lead-tag.incentive { background: var(--accent2-soft); color: var(--accent2); border: 1px solid rgba(26,110,232,.2); }
+.lead-actions { display: flex; gap: 8px; align-items: center; }
+.lead-cost {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--muted); white-space: nowrap;
+}
+.unlock-btn {
+  padding: 7px 14px; background: var(--accent); color: white;
+  border: none; border-radius: 5px; font-size: 12px; font-weight: 700;
+  font-family: 'Syne', sans-serif; cursor: pointer; transition: all .2s;
+  white-space: nowrap;
+}
+.unlock-btn:hover { background: #c73510; transform: translateY(-1px); }
+.unlock-btn.unlocked {
+  background: var(--green-soft); color: var(--green);
+  border: 1px solid rgba(22,163,74,.3);
+}
+.lead-expanded {
+  display: none; padding: 16px 24px 20px 82px;
+  border-bottom: 1px solid var(--border); background: var(--surface2);
+}
+.lead-expanded.show { display: block; }
+.expanded-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+.exp-field { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 12px; }
+.exp-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+.exp-value { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--black); font-weight: 500; }
+.exp-value.accent { color: var(--accent); }
+.exp-actions { display: flex; gap: 10px; }
+.exp-btn {
+  padding: 9px 20px; border-radius: 6px; font-size: 13px; font-weight: 600;
+  font-family: 'Syne', sans-serif; cursor: pointer; transition: all .2s;
+}
+.exp-btn.primary { background: var(--black); color: white; border: none; }
+.exp-btn.primary:hover { background: var(--accent); }
+.exp-btn.outline { background: white; color: var(--mid); border: 1px solid var(--border); }
+.exp-btn.outline:hover { border-color: var(--black); }
+.exp-btn.green-btn { background: var(--green-soft); color: var(--green); border: 1px solid rgba(22,163,74,.3); }
+
+/* ── OFFER MATCHING ── */
+.offer-match-item {
+  padding: 18px 20px; border-bottom: 1px solid var(--border);
+  transition: background .15s; cursor: pointer;
+}
+.offer-match-item:hover { background: var(--surface2); }
+.offer-match-item:last-child { border-bottom: none; }
+.om-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.om-vehicle { font-size: 14px; font-weight: 700; }
+.om-badge {
+  font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 100px;
+  letter-spacing: .5px; white-space: nowrap;
+}
+.om-badge.new { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(232,68,26,.2); }
+.om-badge.match { background: var(--green-soft); color: var(--green); border: 1px solid rgba(22,163,74,.2); }
+.om-badge.close { background: var(--amber-soft); color: var(--amber); border: 1px solid rgba(217,119,6,.2); }
+.om-terms { display: flex; gap: 10px; margin-bottom: 10px; }
+.om-term { font-size: 12px; color: var(--muted); font-family: 'JetBrains Mono', monospace; }
+.om-term strong { color: var(--black); }
+.om-match-bar { background: var(--surface2); border-radius: 100px; height: 6px; overflow: hidden; margin-bottom: 8px; }
+.om-match-fill { height: 100%; border-radius: 100px; transition: width .8s ease; }
+.om-match-fill.high { background: var(--green); }
+.om-match-fill.med { background: var(--amber); }
+.om-match-meta { display: flex; justify-content: space-between; align-items: center; }
+.om-match-pct { font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+.om-match-pct.high { color: var(--green); }
+.om-match-pct.med { color: var(--amber); }
+.om-respond-btn {
+  padding: 6px 14px; border-radius: 4px; font-size: 12px; font-weight: 600;
+  font-family: 'Syne', sans-serif; cursor: pointer; border: none; transition: all .15s;
+  background: var(--black); color: white;
+}
+.om-respond-btn:hover { background: var(--accent); }
+
+/* ── NOTIFICATION PANEL ── */
+.notif-item {
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-icon {
+  width: 34px; height: 34px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.notif-icon.email { background: var(--accent2-soft); }
+.notif-icon.sms { background: var(--green-soft); }
+.notif-icon.push { background: var(--amber-soft); }
+.notif-icon.app { background: var(--accent-soft); }
+.notif-text { flex: 1; }
+.notif-msg { font-size: 13px; color: var(--mid); line-height: 1.5; }
+.notif-msg strong { color: var(--black); }
+.notif-time { font-size: 11px; color: var(--muted); font-family: 'JetBrains Mono', monospace; margin-top: 3px; }
+.notif-channel {
+  font-size: 10px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase;
+  padding: 2px 7px; border-radius: 3px; flex-shrink: 0; align-self: flex-start; margin-top: 2px;
+}
+.notif-channel.email { background: var(--accent2-soft); color: var(--accent2); }
+.notif-channel.sms { background: var(--green-soft); color: var(--green); }
+.notif-channel.push { background: var(--amber-soft); color: var(--amber); }
+.notif-channel.app { background: var(--accent-soft); color: var(--accent); }
+
+/* ── CREDIT ACTIVITY ── */
+.credit-item {
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+}
+.credit-item:last-child { border-bottom: none; }
+.credit-icon {
+  width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 16px;
+}
+.credit-icon.spend { background: var(--accent-soft); }
+.credit-icon.earn { background: var(--green-soft); }
+.credit-icon.bundle { background: var(--accent2-soft); }
+.credit-info { flex: 1; }
+.credit-desc { font-size: 13px; color: var(--mid); }
+.credit-desc strong { color: var(--black); }
+.credit-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.credit-amount { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600; }
+.credit-amount.neg { color: var(--accent); }
+.credit-amount.pos { color: var(--green); }
+
+/* ── NOTIFICATION SETTINGS ── */
+.notif-settings { padding: 20px; }
+.notif-setting-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 0; border-bottom: 1px solid var(--border);
+}
+.notif-setting-row:last-child { border-bottom: none; }
+.ns-left { display: flex; gap: 12px; align-items: center; }
+.ns-icon { font-size: 20px; }
+.ns-text strong { display: block; font-size: 13px; color: var(--black); }
+.ns-text p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.toggle-switch { position: relative; width: 42px; height: 24px; cursor: pointer; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-track {
+  position: absolute; inset: 0; background: #ddd; border-radius: 100px;
+  transition: background .2s;
+}
+.toggle-track::after {
+  content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%;
+  background: white; top: 3px; left: 3px; transition: transform .2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.toggle-switch input:checked + .toggle-track { background: var(--green); }
+.toggle-switch input:checked + .toggle-track::after { transform: translateX(18px); }
+
+/* ── VERIFICATION STATUS ── */
+.verify-card {
+  background: var(--verified-soft); border: 1px solid rgba(14,165,233,.25);
+  border-radius: 10px; padding: 20px; margin-bottom: 24px;
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.verify-icon { font-size: 32px; flex-shrink: 0; }
+.verify-content { flex: 1; }
+.verify-title { font-size: 14px; font-weight: 700; color: var(--verified); margin-bottom: 4px; }
+.verify-desc { font-size: 13px; color: #0369a1; line-height: 1.6; }
+.verify-checks { display: flex; gap: 16px; margin-top: 12px; flex-wrap: wrap; }
+.verify-check { display: flex; gap: 6px; align-items: center; font-size: 12px; color: #0369a1; }
+.verify-check .ck { color: var(--green); font-weight: 700; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,.5); backdrop-filter: blur(4px);
+  align-items: center; justify-content: center; padding: 24px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 32px; max-width: 500px; width: 100%;
+  box-shadow: var(--shadow-lg); animation: slideUp .2s ease;
+}
+@keyframes slideUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+.modal-close {
+  float: right; background: none; border: none; font-size: 20px;
+  cursor: pointer; color: var(--muted); transition: color .2s;
+}
+.modal-close:hover { color: var(--black); }
+.modal h3 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; margin-bottom: 4px; clear: both; }
+.modal h3 span { color: var(--accent); }
+.modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+.bundle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
+.bundle-card {
+  border: 2px solid var(--border); border-radius: 8px; padding: 16px; cursor: pointer;
+  text-align: center; transition: all .15s; position: relative;
+}
+.bundle-card:hover, .bundle-card.selected { border-color: var(--accent2); background: var(--accent2-soft); }
+.bundle-card.popular::before {
+  content: 'POPULAR'; position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+  background: var(--accent2); color: white; font-size: 9px; font-weight: 700;
+  padding: 2px 8px; border-radius: 100px; letter-spacing: 1px;
+}
+.bundle-credits { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--black); line-height: 1; }
+.bundle-label { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+.bundle-price { font-size: 18px; font-weight: 700; color: var(--accent2); }
+.bundle-per { font-size: 11px; color: var(--muted); }
+.bundle-savings { font-size: 11px; color: var(--green); font-weight: 600; margin-top: 4px; }
+.modal-buy-btn {
+  width: 100%; padding: 14px; background: var(--accent2); color: white;
+  border: none; border-radius: 8px; font-size: 15px; font-weight: 700;
+  font-family: 'Syne', sans-serif; cursor: pointer; transition: background .2s;
+}
+.modal-buy-btn:hover { background: #1558c0; }
+
+/* ── TOAST ── */
+.toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 300; display: flex; flex-direction: column; gap: 10px; }
+.toast {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 20px; border-radius: 8px;
+  font-size: 13px; font-weight: 600; max-width: 340px;
+  box-shadow: var(--shadow-lg); animation: toastIn .3s ease;
+  border: 1px solid transparent;
+}
+@keyframes toastIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+.toast.success { background: white; color: var(--green); border-color: rgba(22,163,74,.2); }
+.toast.info { background: white; color: var(--accent2); border-color: rgba(26,110,232,.2); }
+.toast.warning { background: white; color: var(--amber); border-color: rgba(217,119,6,.2); }
+.toast-icon { font-size: 18px; }
+
+/* tabs content */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-dot"></div>
+    <div class="logo-mark">DEAL<span>DRIVE</span></div>
+  </div>
+  <div class="sidebar-dealer">
+    <div class="dealer-avatar">WB</div>
+    <div class="dealer-name">West Bloomfield BMW</div>
+    <div class="dealer-meta">Dealer ID: DD-2841 · Detroit Metro</div>
+    <div class="verified-badge">✓ VERIFIED DEALER</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Main</div>
+    <button class="nav-item active" onclick="switchView('overview')">
+      <span class="nav-icon">▦</span> Overview
+    </button>
+    <button class="nav-item" onclick="switchView('leads')">
+      <span class="nav-icon">📥</span> Lead Inbox
+      <span class="nav-badge">7</span>
+    </button>
+    <button class="nav-item" onclick="switchView('offers')">
+      <span class="nav-icon">🎯</span> Offer Matching
+      <span class="nav-badge amber">12</span>
+    </button>
+    <button class="nav-item" onclick="switchView('inventory')">
+      <span class="nav-icon">🚗</span> My Inventory
+    </button>
+    <div class="nav-section-label">Account</div>
+    <button class="nav-item" onclick="switchView('notifications')">
+      <span class="nav-icon">🔔</span> Notifications
+      <span class="nav-badge blue">4</span>
+    </button>
+    <button class="nav-item" onclick="switchView('credits')">
+      <span class="nav-icon">💳</span> Credits & Billing
+    </button>
+    <button class="nav-item" onclick="switchView('verification')">
+      <span class="nav-icon">✓</span> Verification
+    </button>
+    <button class="nav-item" onclick="switchView('settings')">
+      <span class="nav-icon">⚙</span> Settings
+    </button>
+  </nav>
+  <div class="sidebar-credits">
+    <div class="credits-label">Lead Credits</div>
+    <div class="credits-count">47</div>
+    <div class="credits-sub">~$7 per lead unlock</div>
+    <button class="credits-btn" onclick="openCreditModal()">+ Buy Credits</button>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbarTitle">DEALER <span>OVERVIEW</span></div>
+    <div class="topbar-right">
+      <div class="topbar-notif" onclick="switchView('notifications')" title="Notifications">
+        🔔 <div class="notif-dot"></div>
+      </div>
+      <div class="topbar-status">
+        <div class="status-dot"></div> Listing Active
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══════════ OVERVIEW ══════════ -->
+    <div id="view-overview" class="tab-content active">
+      <div class="stats-row">
+        <div class="stat-card accent">
+          <div class="stat-label">New Leads Today</div>
+          <div class="stat-value accent">7</div>
+          <div class="stat-change up">↑ 3 from yesterday</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-label">Offer Matches</div>
+          <div class="stat-value blue">12</div>
+          <div class="stat-change up">↑ 5 this week</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Deals Closed</div>
+          <div class="stat-value green">4</div>
+          <div class="stat-change">This month</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-label">Credits Used</div>
+          <div class="stat-value amber">$329</div>
+          <div class="stat-change">This month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Response Rate</div>
+          <div class="stat-value">94%</div>
+          <div class="stat-change up">Top 10% of dealers</div>
+        </div>
+      </div>
+
+      <div class="verify-card">
+        <div class="verify-icon">🛡️</div>
+        <div class="verify-content">
+          <div class="verify-title">✓ Verified Dealer Badge — Active</div>
+          <div class="verify-desc">Your dealership is fully verified. Buyers see your badge on every listing and lead response, increasing contact rate by an average of 38%.</div>
+          <div class="verify-checks">
+            <div class="verify-check"><span class="ck">✓</span> License verified</div>
+            <div class="verify-check"><span class="ck">✓</span> Address confirmed</div>
+            <div class="verify-check"><span class="ck">✓</span> Phone verified</div>
+            <div class="verify-check"><span class="ck">✓</span> Deal claimed this week: <strong>3</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div>
+          <div class="section-header">
+            <h2>RECENT <span>LEADS</span></h2>
+            <button class="pill-btn solid" onclick="switchView('leads')">View All →</button>
+          </div>
+          <div class="panel">
+            <div id="overviewLeads"></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-header">
+            <h2>TOP <span>MATCHES</span></h2>
+            <button class="pill-btn solid" onclick="switchView('offers')">View All →</button>
+          </div>
+          <div class="panel">
+            <div id="overviewMatches"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ LEAD INBOX ══════════ -->
+    <div id="view-leads" class="tab-content">
+      <div class="section-header">
+        <h2>LEAD <span>INBOX</span></h2>
+        <div class="header-actions">
+          <button class="pill-btn outline">Filter</button>
+          <button class="pill-btn outline">Sort: Newest</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="tab-row">
+          <div class="tab active" onclick="setLeadTab(this,'all')">All Leads (7)</div>
+          <div class="tab" onclick="setLeadTab(this,'new')">New (3)</div>
+          <div class="tab" onclick="setLeadTab(this,'unlocked')">Unlocked (4)</div>
+          <div class="tab" onclick="setLeadTab(this,'closed')">Closed</div>
+        </div>
+        <div id="leadList"></div>
+      </div>
+    </div>
+
+    <!-- ══════════ OFFER MATCHING ══════════ -->
+    <div id="view-offers" class="tab-content">
+      <div class="section-header">
+        <h2>OFFER <span>MATCHING</span></h2>
+        <div class="header-actions">
+          <span style="font-size:12px;color:var(--muted)">Auto-matched to your inventory</span>
+          <button class="pill-btn outline">Filter</button>
+        </div>
+      </div>
+      <div class="dashboard-grid">
+        <div>
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">🎯 Buyer Offers Matching Your Stock <span class="panel-count blue">12</span></div>
+            </div>
+            <div id="offerMatchList"></div>
+          </div>
+        </div>
+        <div>
+          <div class="panel" style="margin-bottom:20px">
+            <div class="panel-header">
+              <div class="panel-title">⚡ Matching Logic</div>
+            </div>
+            <div style="padding:20px;font-size:13px;color:var(--mid);line-height:1.7">
+              <p style="margin-bottom:12px">AutoBidly automatically matches buyer offers to your inventory based on:</p>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Vehicle make, model & trim</div>
+                <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Monthly payment ± 10% tolerance</div>
+                <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Lease term & mileage</div>
+                <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Buyer ZIP vs. your radius</div>
+                <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Incentive eligibility</div>
+              </div>
+              <div style="margin-top:20px;padding:14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
+                <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Match Score Guide</div>
+                <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><div style="width:12px;height:12px;border-radius:50%;background:var(--green)"></div><span style="font-size:12px"><strong>80–100%</strong> — High match, respond now</span></div>
+                <div style="display:flex;gap:8px;align-items:center"><div style="width:12px;height:12px;border-radius:50%;background:var(--amber)"></div><span style="font-size:12px"><strong>50–79%</strong> — Close match, negotiate possible</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">🔔 Alert Settings</div>
+            </div>
+            <div style="padding:16px 20px;font-size:13px;color:var(--mid)">
+              <p style="margin-bottom:14px">You'll be pinged instantly when a new buyer offer matches your inventory via:</p>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <div style="display:flex;gap:8px;align-items:center;padding:10px;background:var(--green-soft);border-radius:6px;border:1px solid rgba(22,163,74,.2)"><span>📧</span><span style="font-size:12px;color:var(--green);font-weight:600">Email — dealer@wbbmw.com</span></div>
+                <div style="display:flex;gap:8px;align-items:center;padding:10px;background:var(--green-soft);border-radius:6px;border:1px solid rgba(22,163,74,.2)"><span>💬</span><span style="font-size:12px;color:var(--green);font-weight:600">SMS — +1 (248) 555-0194</span></div>
+                <div style="display:flex;gap:8px;align-items:center;padding:10px;background:var(--green-soft);border-radius:6px;border:1px solid rgba(22,163,74,.2)"><span>📲</span><span style="font-size:12px;color:var(--green);font-weight:600">Push — AutoBidly App</span></div>
+                <div style="display:flex;gap:8px;align-items:center;padding:10px;background:var(--green-soft);border-radius:6px;border:1px solid rgba(22,163,74,.2)"><span>🔴</span><span style="font-size:12px;color:var(--green);font-weight:600">In-App — Dashboard alert</span></div>
+              </div>
+              <button class="pill-btn outline" style="margin-top:14px;width:100%" onclick="switchView('notifications')">Edit Notification Settings →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ NOTIFICATIONS ══════════ -->
+    <div id="view-notifications" class="tab-content">
+      <div class="section-header">
+        <h2>NOTIFICATION <span>CENTER</span></h2>
+      </div>
+      <div class="dashboard-grid">
+        <div>
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">📬 Recent Alerts <span class="panel-count">4</span></div>
+            </div>
+            <div id="notifList"></div>
+          </div>
+        </div>
+        <div>
+          <div class="panel">
+            <div class="panel-header">
+              <div class="panel-title">⚙️ Channel Settings</div>
+            </div>
+            <div class="notif-settings">
+              <div class="notif-setting-row">
+                <div class="ns-left">
+                  <span class="ns-icon">📧</span>
+                  <div class="ns-text">
+                    <strong>Email Notifications</strong>
+                    <p>dealer@wbbmw.com</p>
+                  </div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked onchange="showToast('Email notifications updated','success')"/>
+                  <div class="toggle-track"></div>
+                </label>
+              </div>
+              <div class="notif-setting-row">
+                <div class="ns-left">
+                  <span class="ns-icon">💬</span>
+                  <div class="ns-text">
+                    <strong>SMS / Text Message</strong>
+                    <p>+1 (248) 555-0194</p>
+                  </div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked onchange="showToast('SMS notifications updated','success')"/>
+                  <div class="toggle-track"></div>
+                </label>
+              </div>
+              <div class="notif-setting-row">
+                <div class="ns-left">
+                  <span class="ns-icon">📲</span>
+                  <div class="ns-text">
+                    <strong>Push Notifications</strong>
+                    <p>AutoBidly mobile app</p>
+                  </div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked onchange="showToast('Push notifications updated','success')"/>
+                  <div class="toggle-track"></div>
+                </label>
+              </div>
+              <div class="notif-setting-row">
+                <div class="ns-left">
+                  <span class="ns-icon">🔴</span>
+                  <div class="ns-text">
+                    <strong>In-App Dashboard</strong>
+                    <p>Badge + alert banner</p>
+                  </div>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked onchange="showToast('In-app alerts updated','success')"/>
+                  <div class="toggle-track"></div>
+                </label>
+              </div>
+              <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border)">
+                <div style="font-size:12px;font-weight:700;letter-spacing:.5px;margin-bottom:12px">ALERT ME WHEN:</div>
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <label style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mid);cursor:pointer">
+                    New buyer offer matches my inventory
+                    <label class="toggle-switch"><input type="checkbox" checked/><div class="toggle-track"></div></label>
+                  </label>
+                  <label style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mid);cursor:pointer">
+                    Buyer views my listing
+                    <label class="toggle-switch"><input type="checkbox" checked/><div class="toggle-track"></div></label>
+                  </label>
+                  <label style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mid);cursor:pointer">
+                    Buyer submits contact form
+                    <label class="toggle-switch"><input type="checkbox" checked/><div class="toggle-track"></div></label>
+                  </label>
+                  <label style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mid);cursor:pointer">
+                    Credits running low (&lt; 10)
+                    <label class="toggle-switch"><input type="checkbox" checked/><div class="toggle-track"></div></label>
+                  </label>
+                  <label style="display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mid);cursor:pointer">
+                    Deal marked as closed
+                    <label class="toggle-switch"><input type="checkbox"/><div class="toggle-track"></div></label>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ CREDITS ══════════ -->
+    <div id="view-credits" class="tab-content">
+      <div class="section-header">
+        <h2>CREDITS & <span>BILLING</span></h2>
+        <button class="pill-btn accent" onclick="openCreditModal()">+ Buy Credits</button>
+      </div>
+      <div class="stats-row" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-card blue">
+          <div class="stat-label">Credits Remaining</div>
+          <div class="stat-value blue">47</div>
+          <div class="stat-change">~$329 value</div>
+        </div>
+        <div class="stat-card accent">
+          <div class="stat-label">Spent This Month</div>
+          <div class="stat-value accent">$329</div>
+          <div class="stat-change">47 leads unlocked</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-label">Closed Deals</div>
+          <div class="stat-value green">4</div>
+          <div class="stat-change">$82/deal avg. cost</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">ROI Estimate</div>
+          <div class="stat-value">18×</div>
+          <div class="stat-change up">vs. traditional leads</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div>
+          <div class="section-header" style="margin-top:8px"><h2>CREDIT <span>ACTIVITY</span></h2></div>
+          <div class="panel">
+            <div id="creditActivity"></div>
+          </div>
+        </div>
+        <div>
+          <div class="panel" style="margin-top:46px">
+            <div class="panel-header">
+              <div class="panel-title">💡 How Credits Work</div>
+            </div>
+            <div style="padding:20px;font-size:13px;color:var(--mid);line-height:1.7">
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <div style="padding:14px;background:var(--accent-soft);border-radius:8px;border-left:3px solid var(--accent)">
+                  <strong style="color:var(--black)">🖱️ Click to View</strong><br>
+                  Buyer clicks "Contact Dealer" → <strong>1 credit ($7)</strong> deducted. You see their vehicle request.
+                </div>
+                <div style="padding:14px;background:var(--accent2-soft);border-radius:8px;border-left:3px solid var(--accent2)">
+                  <strong style="color:var(--black)">📋 Form Submission</strong><br>
+                  Buyer submits full inquiry form → <strong>2 credits ($14)</strong>. You get their contact info.
+                </div>
+                <div style="padding:14px;background:var(--amber-soft);border-radius:8px;border-left:3px solid var(--amber)">
+                  <strong style="color:var(--black)">📦 Bundle Savings</strong><br>
+                  Pre-buy 50+ credits and save up to <strong>25%</strong> per lead.
+                </div>
+                <div style="padding:14px;background:var(--green-soft);border-radius:8px;border-left:3px solid var(--green)">
+                  <strong style="color:var(--black)">🏆 Close & Report</strong><br>
+                  Mark a deal closed to earn <strong>2 bonus credits</strong> and build your close rate score.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ VERIFICATION ══════════ -->
+    <div id="view-verification" class="tab-content">
+      <div class="section-header"><h2>DEALER <span>VERIFICATION</span></h2></div>
+      <div class="verify-card" style="margin-bottom:28px">
+        <div class="verify-icon">🛡️</div>
+        <div class="verify-content">
+          <div class="verify-title">✓ FULLY VERIFIED — Badge Active</div>
+          <div class="verify-desc">Your Verified Dealer Badge appears on all listings and lead responses. Buyers are 38% more likely to contact verified dealers. Badge renews automatically as long as your account remains active.</div>
+          <div class="verify-checks" style="margin-top:16px;flex-direction:column;gap:10px">
+            <div class="verify-check"><span class="ck">✓</span> <strong>Dealer License</strong> — Michigan #DD-2841 · Verified Jun 2024</div>
+            <div class="verify-check"><span class="ck">✓</span> <strong>Physical Address</strong> — 5900 Orchard Lake Rd, West Bloomfield, MI</div>
+            <div class="verify-check"><span class="ck">✓</span> <strong>Phone Number</strong> — (248) 555-0100 · Verified via call</div>
+            <div class="verify-check"><span class="ck">✓</span> <strong>Business Identity</strong> — Articles of incorporation on file</div>
+            <div class="verify-check"><span class="ck">✓</span> <strong>Deal Activity</strong> — 3 deals claimed this week · Timestamp active</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel" style="max-width:600px">
+        <div class="panel-header"><div class="panel-title">📅 Deal Timestamp History</div></div>
+        <div id="timestampList"></div>
+      </div>
+    </div>
+
+    <!-- PLACEHOLDER VIEWS -->
+    <div id="view-inventory" class="tab-content">
+      <div class="section-header"><h2>MY <span>INVENTORY</span></h2></div>
+      <div class="panel" style="padding:60px;text-align:center;color:var(--muted)">
+        <div style="font-size:48px;margin-bottom:16px">🚗</div>
+        <div style="font-size:18px;font-weight:700;color:var(--black);margin-bottom:8px">Inventory Manager</div>
+        <div style="font-size:14px;margin-bottom:24px">Post your in-stock vehicles with real prices. Buyers search your live inventory.</div>
+        <button class="pill-btn accent">+ Add Vehicle Listing</button>
+      </div>
+    </div>
+    <div id="view-settings" class="tab-content">
+      <div class="section-header"><h2>DEALER <span>SETTINGS</span></h2></div>
+      <div class="panel" style="padding:60px;text-align:center;color:var(--muted)">
+        <div style="font-size:48px;margin-bottom:16px">⚙️</div>
+        <div style="font-size:18px;font-weight:700;color:var(--black);margin-bottom:8px">Account Settings</div>
+        <div style="font-size:14px">Profile, contact info, service radius, and subscription management.</div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- CREDIT MODAL -->
+<div class="modal-overlay" id="creditModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeCreditModal()">✕</button>
+    <h3>BUY <span>LEAD CREDITS</span></h3>
+    <p class="modal-sub">Credits never expire. Pre-buy bundles for the best per-lead rate.</p>
+    <div class="bundle-grid">
+      <div class="bundle-card" onclick="selectBundle(this,10,'$70')">
+        <div class="bundle-credits">10</div>
+        <div class="bundle-label">credits</div>
+        <div class="bundle-price">$70</div>
+        <div class="bundle-per">$7.00 / lead</div>
+      </div>
+      <div class="bundle-card popular" onclick="selectBundle(this,50,'$299')">
+        <div class="bundle-credits">50</div>
+        <div class="bundle-label">credits</div>
+        <div class="bundle-price">$299</div>
+        <div class="bundle-per">$5.98 / lead</div>
+        <div class="bundle-savings">Save 15%</div>
+      </div>
+      <div class="bundle-card" onclick="selectBundle(this,100,'$525')">
+        <div class="bundle-credits">100</div>
+        <div class="bundle-label">credits</div>
+        <div class="bundle-price">$525</div>
+        <div class="bundle-per">$5.25 / lead</div>
+        <div class="bundle-savings">Save 25%</div>
+      </div>
+    </div>
+    <button class="modal-buy-btn" id="buyBtn" onclick="completePurchase()">Select a Bundle</button>
+    <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:12px">Secure checkout · Credits available instantly</p>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ── DATA ──
+const leads = [
+  { id:1, name:'Michael T.', initials:'MT', color:'blue', vehicle:'2025 BMW 330i xDrive', trim:'M-Sport · Black · 36mo', maxPayment:'$449/mo', down:'$0', miles:'10k/yr', zip:'48167', dist:'3.2 mi', time:'8 min ago', unlocked:false, incentives:'Lease Loyalty', notes:'Needs delivery by end of month', unread:true },
+  { id:2, name:'Sarah K.', initials:'SK', color:'green', vehicle:'2025 BMW X3 xDrive30i', trim:'Premium · White · 36mo', maxPayment:'$529/mo', down:'$1,000', miles:'12k/yr', zip:'48322', dist:'6.1 mi', time:'22 min ago', unlocked:true, incentives:'Employee Pricing', notes:'Flexible on color', unread:true },
+  { id:3, name:'James R.', initials:'JR', color:'amber', vehicle:'2025 BMW 530i', trim:'Luxury Line · Grey · 48mo', maxPayment:'$599/mo', down:'$2,000', miles:'15k/yr', zip:'48334', dist:'8.4 mi', time:'1 hr ago', unlocked:false, incentives:'None', notes:'', unread:false },
+  { id:4, name:'Lisa M.', initials:'LM', color:'red', vehicle:'2025 BMW X5 xDrive40i', trim:'M-Sport · Black · 36mo', maxPayment:'$849/mo', down:'$0', miles:'10k/yr', zip:'48307', dist:'12.1 mi', time:'2 hr ago', unlocked:true, incentives:'Military', notes:'Trade-in available', unread:false },
+  { id:5, name:'David P.', initials:'DP', color:'blue', vehicle:'2025 BMW 230i Coupe', trim:'M-Sport · Blue · 24mo', maxPayment:'$399/mo', down:'$0', miles:'12k/yr', zip:'48375', dist:'4.8 mi', time:'3 hr ago', unlocked:false, incentives:'College Grad', notes:'First lease', unread:true },
+  { id:6, name:'Emily W.', initials:'EW', color:'green', vehicle:'2025 BMW iX xDrive50', trim:'Sport · White · 36mo', maxPayment:'$999/mo', down:'$3,000', miles:'10k/yr', zip:'48168', dist:'2.9 mi', time:'5 hr ago', unlocked:true, incentives:'None', notes:'Interested in home delivery', unread:false },
+  { id:7, name:'Robert C.', initials:'RC', color:'amber', vehicle:'2025 BMW M340i', trim:'xDrive · Black Sapphire · 36mo', maxPayment:'$699/mo', down:'$0', miles:'10k/yr', zip:'48326', dist:'9.2 mi', time:'Yesterday', unlocked:false, incentives:'Conquest', notes:'Coming from Mercedes', unread:false },
+];
+
+const offerMatches = [
+  { vehicle:'2025 BMW 330i xDrive', trim:'M-Sport · Any Color · 36mo', payment:'$449/mo', down:'$0', miles:'10k', zip:'48167', matchPct:95, matchClass:'high', badge:'match', dist:'3.2 mi', count:1 },
+  { vehicle:'2025 BMW X3 xDrive30i', trim:'Any Trim · White Pref · 36mo', payment:'$499/mo', down:'$1,000', miles:'12k', zip:'48322', matchPct:88, matchClass:'high', badge:'match', dist:'6.1 mi', count:3 },
+  { vehicle:'2025 BMW X5 xDrive40i', trim:'M-Sport · 36mo', payment:'$799/mo', down:'$0', miles:'10k', zip:'48307', matchPct:72, matchClass:'med', badge:'close', dist:'12.1 mi', count:1 },
+  { vehicle:'2025 BMW 530i xDrive', trim:'Luxury Line · 48mo', payment:'$579/mo', down:'$2,000', miles:'15k', zip:'48334', matchPct:85, matchClass:'high', badge:'new', dist:'8.4 mi', count:2 },
+  { vehicle:'2025 BMW 230i Coupe', trim:'M-Sport · 24mo', payment:'$379/mo', down:'$0', miles:'12k', zip:'48375', matchPct:61, matchClass:'med', badge:'new', dist:'4.8 mi', count:1 },
+];
+
+const notifications = [
+  { channel:'push', icon:'📲', msg:'<strong>New offer match!</strong> Buyer in 48167 wants a 2025 BMW 330i at $449/mo. 95% match to your stock.', time:'8 min ago' },
+  { channel:'sms', icon:'💬', msg:'<strong>Sarah K. submitted inquiry</strong> for the X3 xDrive30i. 2 credits deducted. Tap to view contact info.', time:'22 min ago' },
+  { channel:'email', icon:'📧', msg:'<strong>3 new leads</strong> received today. Your response rate is 94% — top 10% of dealers on AutoBidly.', time:'1 hr ago' },
+  { channel:'app', icon:'🔴', msg:'<strong>Credits reminder:</strong> You have 47 credits remaining. Buy a bundle to lock in your $5.98/lead rate.', time:'3 hr ago' },
+];
+
+const creditActivity = [
+  { type:'spend', icon:'🔓', desc:'Unlocked lead — <strong>Sarah K.</strong> (X3 xDrive30i)', sub:'Form submission · 2 credits', amount:'-2', time:'22 min ago' },
+  { type:'earn', icon:'🏆', desc:'Closed deal bonus — <strong>Lisa M.</strong> (X5 xDrive40i)', sub:'Marked closed · +2 bonus credits', amount:'+2', time:'2 days ago' },
+  { type:'spend', icon:'🔓', desc:'Unlocked lead — <strong>Emily W.</strong> (iX xDrive50)', sub:'Click unlock · 1 credit', amount:'-1', time:'3 days ago' },
+  { type:'bundle', icon:'📦', desc:'Purchased <strong>50 credit bundle</strong>', sub:'$299 charged · Visa ···6411', amount:'+50', time:'1 week ago' },
+  { type:'spend', icon:'🔓', desc:'Unlocked lead — <strong>Robert C.</strong> (M340i)', sub:'Form submission · 2 credits', amount:'-2', time:'1 week ago' },
+  { type:'earn', icon:'🏆', desc:'Closed deal bonus — <strong>David P.</strong> (230i Coupe)', sub:'Marked closed · +2 bonus credits', amount:'+2', time:'2 weeks ago' },
+];
+
+const timestamps = [
+  { vehicle:'2025 BMW X3 xDrive30i', dealer:'West Bloomfield BMW', claimed:'March 21, 2026 · 2:14 PM', status:'active' },
+  { vehicle:'2025 BMW 330i xDrive', dealer:'West Bloomfield BMW', claimed:'March 19, 2026 · 10:52 AM', status:'active' },
+  { vehicle:'2025 BMW 530i Sedan', dealer:'West Bloomfield BMW', claimed:'March 17, 2026 · 4:33 PM', status:'active' },
+  { vehicle:'2025 BMW X5 xDrive40i', dealer:'West Bloomfield BMW', claimed:'March 10, 2026 · 11:20 AM', status:'expired' },
+];
+
+// ── RENDER LEADS ──
+function renderLeads(container, list, max) {
+  const items = max ? list.slice(0, max) : list;
+  return items.map((l,i) => `
+    <div class="lead-item ${l.unread?'unread':''}" onclick="toggleLead(${l.id})">
+      ${l.unread ? '<div class="unread-dot"></div>' : ''}
+      <div class="lead-avatar ${l.color}">${l.initials}</div>
+      <div class="lead-body">
+        <div class="lead-top">
+          <div class="lead-name">${l.name}</div>
+          <div class="lead-time">${l.time}</div>
+        </div>
+        <div class="lead-vehicle">${l.vehicle} — ${l.trim}</div>
+        <div class="lead-terms">
+          <span class="lead-tag price">${l.maxPayment}</span>
+          <span class="lead-tag neutral">${l.down} down</span>
+          <span class="lead-tag neutral">${l.miles}</span>
+          <span class="lead-tag neutral">📍 ${l.dist}</span>
+          ${l.incentives !== 'None' ? `<span class="lead-tag incentive">${l.incentives}</span>` : ''}
+        </div>
+      </div>
+      <div class="lead-actions">
+        ${l.unlocked
+          ? '<button class="unlock-btn unlocked">✓ Unlocked</button>'
+          : `<span class="lead-cost">1–2 credits</span><button class="unlock-btn" onclick="event.stopPropagation();unlockLead(${l.id})">🔓 Unlock</button>`
+        }
+      </div>
+    </div>
+    <div class="lead-expanded" id="lead-exp-${l.id}">
+      <div class="expanded-grid">
+        <div class="exp-field"><div class="exp-label">Max Payment</div><div class="exp-value accent">${l.maxPayment}</div></div>
+        <div class="exp-field"><div class="exp-label">Down Payment</div><div class="exp-value">${l.down}</div></div>
+        <div class="exp-field"><div class="exp-label">Annual Miles</div><div class="exp-value">${l.miles}</div></div>
+        <div class="exp-field"><div class="exp-label">Location</div><div class="exp-value">${l.zip} · ${l.dist}</div></div>
+        <div class="exp-field"><div class="exp-label">Incentives</div><div class="exp-value">${l.incentives}</div></div>
+        <div class="exp-field"><div class="exp-label">Notes</div><div class="exp-value">${l.notes || '—'}</div></div>
+      </div>
+      <div class="exp-actions">
+        ${l.unlocked
+          ? `<button class="exp-btn primary" onclick="showToast('Opening chat with ${l.name}','info')">💬 Message Buyer</button>
+             <button class="exp-btn outline" onclick="showToast('Deal saved','success')">Save Deal</button>
+             <button class="exp-btn green-btn" onclick="showToast('Deal marked closed! +2 bonus credits earned 🎉','success')">✓ Mark Closed</button>`
+          : `<button class="exp-btn primary" onclick="unlockLead(${l.id})">🔓 Unlock Full Details</button>
+             <button class="exp-btn outline">Save for Later</button>`
+        }
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── RENDER OFFER MATCHES ──
+function renderOfferMatches(container, list, max) {
+  const items = max ? list.slice(0, max) : list;
+  return items.map(o => `
+    <div class="offer-match-item">
+      <div class="om-top">
+        <div class="om-vehicle">${o.vehicle}</div>
+        <span class="om-badge ${o.badge}">${o.badge === 'match' ? '✓ STRONG MATCH' : o.badge === 'close' ? '~ CLOSE MATCH' : '★ NEW'}</span>
+      </div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">${o.trim}</div>
+      <div class="om-terms">
+        <span class="om-term"><strong>${o.payment}</strong> max</span>
+        <span class="om-term"><strong>${o.down}</strong> down</span>
+        <span class="om-term"><strong>${o.miles}k</strong> mi/yr</span>
+        <span class="om-term">📍 ${o.dist}</span>
+      </div>
+      <div class="om-match-bar"><div class="om-match-fill ${o.matchClass}" style="width:${o.matchPct}%"></div></div>
+      <div class="om-match-meta">
+        <span class="om-match-pct ${o.matchClass}">${o.matchPct}% match</span>
+        <button class="om-respond-btn" onclick="respondOffer('${o.vehicle}')">Respond →</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── INIT ──
+document.getElementById('overviewLeads').innerHTML = renderLeads('overviewLeads', leads, 3);
+document.getElementById('leadList').innerHTML = renderLeads('leadList', leads);
+document.getElementById('overviewMatches').innerHTML = renderOfferMatches('overviewMatches', offerMatches, 3);
+document.getElementById('offerMatchList').innerHTML = renderOfferMatches('offerMatchList', offerMatches);
+
+document.getElementById('notifList').innerHTML = notifications.map(n => `
+  <div class="notif-item">
+    <div class="notif-icon ${n.channel}">${n.icon}</div>
+    <div class="notif-text">
+      <div class="notif-msg">${n.msg}</div>
+      <div class="notif-time">${n.time}</div>
+    </div>
+    <span class="notif-channel ${n.channel}">${n.channel}</span>
+  </div>
+`).join('');
+
+document.getElementById('creditActivity').innerHTML = creditActivity.map(c => `
+  <div class="credit-item">
+    <div class="credit-icon ${c.type}">${c.icon}</div>
+    <div class="credit-info">
+      <div class="credit-desc">${c.desc}</div>
+      <div class="credit-sub">${c.sub} · ${c.time}</div>
+    </div>
+    <div class="credit-amount ${c.amount.startsWith('-') ? 'neg' : 'pos'}">${c.amount}</div>
+  </div>
+`).join('');
+
+document.getElementById('timestampList').innerHTML = timestamps.map(t => `
+  <div class="credit-item">
+    <div class="credit-icon ${t.status === 'active' ? 'earn' : 'spend'}">${t.status === 'active' ? '✅' : '⏱️'}</div>
+    <div class="credit-info">
+      <div class="credit-desc"><strong>${t.vehicle}</strong></div>
+      <div class="credit-sub">Claimed: ${t.claimed}</div>
+    </div>
+    <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:${t.status==='active'?'var(--green-soft)':'var(--surface2)'};color:${t.status==='active'?'var(--green)':'var(--muted)'};border:1px solid ${t.status==='active'?'rgba(22,163,74,.2)':'var(--border)'}">${t.status === 'active' ? '● ACTIVE' : 'EXPIRED'}</span>
+  </div>
+`).join('');
+
+// ── INTERACTIONS ──
+const views = ['overview','leads','offers','notifications','credits','verification','inventory','settings'];
+const titles = { overview:'DEALER <span>OVERVIEW</span>', leads:'LEAD <span>INBOX</span>', offers:'OFFER <span>MATCHING</span>', notifications:'NOTIFICATION <span>CENTER</span>', credits:'CREDITS & <span>BILLING</span>', verification:'DEALER <span>VERIFICATION</span>', inventory:'MY <span>INVENTORY</span>', settings:'DEALER <span>SETTINGS</span>' };
+
+function switchView(v) {
+  views.forEach(id => {
+    document.getElementById('view-'+id).classList.toggle('active', id === v);
+  });
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el => {
+    if (el.getAttribute('onclick')?.includes(`'${v}'`)) el.classList.add('active');
+  });
+  document.getElementById('topbarTitle').innerHTML = titles[v] || v.toUpperCase();
+}
+
+function toggleLead(id) {
+  const el = document.getElementById('lead-exp-'+id);
+  el.classList.toggle('show');
+}
+
+function unlockLead(id) {
+  const lead = leads.find(l => l.id === id);
+  lead.unlocked = true;
+  document.getElementById('leadList').innerHTML = renderLeads('leadList', leads);
+  document.getElementById('overviewLeads').innerHTML = renderLeads('overviewLeads', leads, 3);
+  showToast(`Lead unlocked — ${lead.name}'s details revealed. 1 credit deducted.`, 'success');
+  setTimeout(() => {
+    document.getElementById('lead-exp-'+id).classList.add('show');
+  }, 100);
+}
+
+function respondOffer(vehicle) {
+  showToast(`Response sent to buyer requesting ${vehicle}!`, 'success');
+}
+
+function setLeadTab(el, type) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const filtered = type === 'all' ? leads
+    : type === 'new' ? leads.filter(l => l.unread)
+    : type === 'unlocked' ? leads.filter(l => l.unlocked)
+    : [];
+  document.getElementById('leadList').innerHTML = renderLeads('leadList', filtered);
+}
+
+let selectedBundle = null;
+function selectBundle(el, credits, price) {
+  document.querySelectorAll('.bundle-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedBundle = { credits, price };
+  document.getElementById('buyBtn').textContent = `Buy ${credits} Credits for ${price}`;
+}
+
+function completePurchase() {
+  if (!selectedBundle) { showToast('Please select a bundle first', 'warning'); return; }
+  closeCreditModal();
+  showToast(`${selectedBundle.credits} credits added! ${selectedBundle.price} charged to Visa ···6411`, 'success');
+  selectedBundle = null;
+}
+
+function openCreditModal() { document.getElementById('creditModal').classList.add('open'); }
+function closeCreditModal() { document.getElementById('creditModal').classList.remove('open'); }
+document.getElementById('creditModal').addEventListener('click', e => { if (e.target === document.getElementById('creditModal')) closeCreditModal(); });
+
+function showToast(msg, type='success') {
+  const icons = { success:'✓', info:'ℹ', warning:'⚠' };
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span class="toast-icon">${icons[type]}</span>${msg}`;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+// Simulate incoming match notification after 3s
+setTimeout(() => {
+  showToast('🎯 New offer match! Buyer in 48375 wants a 230i Coupe at $399/mo', 'info');
+}, 3000);
+</script>
+</body>
+</html>
