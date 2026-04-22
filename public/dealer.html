@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>AutoBidly â€” Dealer Dashboard</title>
+<title>AutoBidly — Dealer Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 :root {
@@ -16,7 +16,7 @@
   --border: #e4e3dc;
   --accent: #1D9E75;
   --accent-soft: #fdf1ee;
-  --accent2: #0F6E56;
+  --accent2: #1a6ee8;
   --accent2-soft: #eef3fd;
   --green: #16a34a;
   --green-soft: #f0fdf4;
@@ -38,7 +38,7 @@ body {
   display: flex; min-height: 100vh;
 }
 
-/* â”€â”€ SIDEBAR â”€â”€ */
+/* ── SIDEBAR ── */
 .sidebar {
   width: 240px; min-height: 100vh;
   background: var(--black);
@@ -55,10 +55,10 @@ body {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 22px; letter-spacing: 2px; color: white;
 }
-.logo-mark span { color: #1D9E75; }
+.logo-mark span { color: var(--accent); }
 .logo-dot {
   width: 7px; height: 7px; border-radius: 50%;
-  background: #1D9E75; animation: pulse 2s infinite;
+  background: var(--accent); animation: pulse 2s infinite;
 }
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
 
@@ -68,7 +68,7 @@ body {
 }
 .dealer-avatar {
   width: 40px; height: 40px; border-radius: 8px;
-  background: linear-gradient(135deg, #1D9E75, #0F6E56);
+  background: linear-gradient(135deg, var(--accent), #0F6E56);
   display: flex; align-items: center; justify-content: center;
   font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: white;
   margin-bottom: 10px;
@@ -99,11 +99,11 @@ body {
 .nav-item.active { background: #1e1e1e; color: white; }
 .nav-item.active::before {
   content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-  width: 3px; height: 20px; background: #1D9E75; border-radius: 0 2px 2px 0;
+  width: 3px; height: 20px; background: var(--accent); border-radius: 0 2px 2px 0;
 }
 .nav-icon { font-size: 16px; width: 20px; text-align: center; }
 .nav-badge {
-  margin-left: auto; background: #1D9E75; color: white;
+  margin-left: auto; background: var(--accent); color: white;
   font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 100px;
   font-family: 'JetBrains Mono', monospace;
 }
@@ -128,10 +128,10 @@ body {
 }
 .credits-btn:hover { background: var(--accent2); color: white; }
 
-/* â”€â”€ MAIN â”€â”€ */
+/* ── MAIN ── */
 .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; }
 
-/* â”€â”€ TOPBAR â”€â”€ */
+/* ── TOPBAR ── */
 .topbar {
   background: var(--surface); border-bottom: 1px solid var(--border);
   padding: 0 32px; height: 64px;
@@ -139,7 +139,7 @@ body {
   position: sticky; top: 0; z-index: 40;
 }
 .topbar-title { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 1px; }
-.topbar-title span { color: #1D9E75; }
+.topbar-title span { color: var(--accent); }
 .topbar-right { display: flex; align-items: center; gap: 16px; }
 .topbar-notif {
   position: relative; width: 38px; height: 38px; border-radius: 8px;
@@ -151,7 +151,7 @@ body {
 .notif-dot {
   position: absolute; top: 6px; right: 6px;
   width: 8px; height: 8px; border-radius: 50%;
-  background: #1D9E75; border: 2px solid var(--surface);
+  background: var(--accent); border: 2px solid var(--surface);
   animation: pulse 2s infinite;
 }
 .topbar-status {
@@ -162,10 +162,10 @@ body {
 }
 .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
 
-/* â”€â”€ CONTENT â”€â”€ */
+/* ── CONTENT ── */
 .content { padding: 32px; }
 
-/* â”€â”€ STATS ROW â”€â”€ */
+/* ── STATS ROW ── */
 .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 28px; }
 .stat-card {
   background: var(--surface); border: 1px solid var(--border);
@@ -176,13 +176,13 @@ body {
   content: ''; position: absolute; bottom: 0; left: 0; right: 0;
   height: 3px; background: var(--border);
 }
-.stat-card.accent::after { background: #1D9E75; }
+.stat-card.accent::after { background: var(--accent); }
 .stat-card.blue::after { background: var(--accent2); }
 .stat-card.green::after { background: var(--green); }
 .stat-card.amber::after { background: var(--amber); }
 .stat-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
 .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 38px; line-height: 1; color: var(--black); }
-.stat-value.accent { color: #1D9E75; }
+.stat-value.accent { color: var(--accent); }
 .stat-value.blue { color: var(--accent2); }
 .stat-value.green { color: var(--green); }
 .stat-value.amber { color: var(--amber); }
@@ -190,7 +190,7 @@ body {
 .stat-change.up { color: var(--green); }
 .stat-change.down { color: var(--red); }
 
-/* â”€â”€ SECTION HEADER â”€â”€ */
+/* ── SECTION HEADER ── */
 .section-header {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 16px;
@@ -198,7 +198,7 @@ body {
 .section-header h2 {
   font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px;
 }
-.section-header h2 span { color: #1D9E75; }
+.section-header h2 span { color: var(--accent); }
 .header-actions { display: flex; gap: 8px; align-items: center; }
 .pill-btn {
   padding: 7px 16px; border-radius: 100px; font-size: 12px; font-weight: 600;
@@ -207,15 +207,15 @@ body {
 .pill-btn.outline { background: var(--surface); border: 1px solid var(--border); color: var(--mid); }
 .pill-btn.outline:hover { border-color: var(--black); color: var(--black); }
 .pill-btn.solid { background: var(--black); color: white; }
-.pill-btn.solid:hover { background: #1D9E75; }
-.pill-btn.accent { background: #1D9E75; color: white; }
+.pill-btn.solid:hover { background: var(--accent); }
+.pill-btn.accent { background: var(--accent); color: white; }
 .pill-btn.accent:hover { background: #0F6E56; }
 
-/* â”€â”€ GRID LAYOUT â”€â”€ */
+/* ── GRID LAYOUT ── */
 .dashboard-grid { display: grid; grid-template-columns: 1fr 380px; gap: 24px; }
 .dashboard-grid-full { grid-column: 1 / -1; }
 
-/* â”€â”€ LEAD INBOX â”€â”€ */
+/* ── LEAD INBOX ── */
 .panel {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: 10px; box-shadow: var(--shadow); overflow: hidden;
@@ -226,7 +226,7 @@ body {
 }
 .panel-title { font-size: 13px; font-weight: 700; letter-spacing: .5px; display: flex; align-items: center; gap: 8px; }
 .panel-count {
-  background: #1D9E75; color: white;
+  background: var(--accent); color: white;
   font-size: 11px; font-weight: 700; padding: 2px 8px;
   border-radius: 100px; font-family: 'JetBrains Mono', monospace;
 }
@@ -242,9 +242,9 @@ body {
   color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent;
   transition: all .15s; white-space: nowrap;
 }
-.tab.active { color: var(--black); border-bottom-color: #1D9E75; }
+.tab.active { color: var(--black); border-bottom-color: var(--accent); }
 
-/* â”€â”€ LEAD ITEM â”€â”€ */
+/* ── LEAD ITEM ── */
 .lead-item {
   padding: 20px 24px; border-bottom: 1px solid var(--border);
   display: flex; gap: 16px; cursor: pointer; transition: background .15s;
@@ -254,7 +254,7 @@ body {
 .lead-item.unread { background: #fffef9; }
 .unread-dot {
   position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
-  width: 6px; height: 6px; border-radius: 50%; background: #1D9E75;
+  width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
 }
 .lead-avatar {
   width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
@@ -284,7 +284,7 @@ body {
   color: var(--muted); white-space: nowrap;
 }
 .unlock-btn {
-  padding: 7px 14px; background: #1D9E75; color: white;
+  padding: 7px 14px; background: var(--accent); color: white;
   border: none; border-radius: 5px; font-size: 12px; font-weight: 700;
   font-family: 'Syne', sans-serif; cursor: pointer; transition: all .2s;
   white-space: nowrap;
@@ -303,19 +303,19 @@ body {
 .exp-field { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 12px; }
 .exp-label { font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
 .exp-value { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--black); font-weight: 500; }
-.exp-value.accent { color: #1D9E75; }
+.exp-value.accent { color: var(--accent); }
 .exp-actions { display: flex; gap: 10px; }
 .exp-btn {
   padding: 9px 20px; border-radius: 6px; font-size: 13px; font-weight: 600;
   font-family: 'Syne', sans-serif; cursor: pointer; transition: all .2s;
 }
 .exp-btn.primary { background: var(--black); color: white; border: none; }
-.exp-btn.primary:hover { background: #1D9E75; }
+.exp-btn.primary:hover { background: var(--accent); }
 .exp-btn.outline { background: white; color: var(--mid); border: 1px solid var(--border); }
 .exp-btn.outline:hover { border-color: var(--black); }
 .exp-btn.green-btn { background: var(--green-soft); color: var(--green); border: 1px solid rgba(22,163,74,.3); }
 
-/* â”€â”€ OFFER MATCHING â”€â”€ */
+/* ── OFFER MATCHING ── */
 .offer-match-item {
   padding: 18px 20px; border-bottom: 1px solid var(--border);
   transition: background .15s; cursor: pointer;
@@ -328,7 +328,7 @@ body {
   font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 100px;
   letter-spacing: .5px; white-space: nowrap;
 }
-.om-badge.new { background: var(--accent-soft); color: #1D9E75; border: 1px solid rgba(232,68,26,.2); }
+.om-badge.new { background: var(--accent-soft); color: var(--accent); border: 1px solid rgba(232,68,26,.2); }
 .om-badge.match { background: var(--green-soft); color: var(--green); border: 1px solid rgba(22,163,74,.2); }
 .om-badge.close { background: var(--amber-soft); color: var(--amber); border: 1px solid rgba(217,119,6,.2); }
 .om-terms { display: flex; gap: 10px; margin-bottom: 10px; }
@@ -347,9 +347,9 @@ body {
   font-family: 'Syne', sans-serif; cursor: pointer; border: none; transition: all .15s;
   background: var(--black); color: white;
 }
-.om-respond-btn:hover { background: #1D9E75; }
+.om-respond-btn:hover { background: var(--accent); }
 
-/* â”€â”€ NOTIFICATION PANEL â”€â”€ */
+/* ── NOTIFICATION PANEL ── */
 .notif-item {
   padding: 14px 20px; border-bottom: 1px solid var(--border);
   display: flex; gap: 12px; align-items: flex-start;
@@ -374,9 +374,9 @@ body {
 .notif-channel.email { background: var(--accent2-soft); color: var(--accent2); }
 .notif-channel.sms { background: var(--green-soft); color: var(--green); }
 .notif-channel.push { background: var(--amber-soft); color: var(--amber); }
-.notif-channel.app { background: var(--accent-soft); color: #1D9E75; }
+.notif-channel.app { background: var(--accent-soft); color: var(--accent); }
 
-/* â”€â”€ CREDIT ACTIVITY â”€â”€ */
+/* ── CREDIT ACTIVITY ── */
 .credit-item {
   padding: 14px 20px; border-bottom: 1px solid var(--border);
   display: flex; align-items: center; gap: 12px;
@@ -394,10 +394,10 @@ body {
 .credit-desc strong { color: var(--black); }
 .credit-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
 .credit-amount { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600; }
-.credit-amount.neg { color: #1D9E75; }
+.credit-amount.neg { color: var(--accent); }
 .credit-amount.pos { color: var(--green); }
 
-/* â”€â”€ NOTIFICATION SETTINGS â”€â”€ */
+/* ── NOTIFICATION SETTINGS ── */
 .notif-settings { padding: 20px; }
 .notif-setting-row {
   display: flex; align-items: center; justify-content: space-between;
@@ -422,7 +422,7 @@ body {
 .toggle-switch input:checked + .toggle-track { background: var(--green); }
 .toggle-switch input:checked + .toggle-track::after { transform: translateX(18px); }
 
-/* â”€â”€ VERIFICATION STATUS â”€â”€ */
+/* ── VERIFICATION STATUS ── */
 .verify-card {
   background: var(--verified-soft); border: 1px solid rgba(14,165,233,.25);
   border-radius: 10px; padding: 20px; margin-bottom: 24px;
@@ -436,7 +436,7 @@ body {
 .verify-check { display: flex; gap: 6px; align-items: center; font-size: 12px; color: #0369a1; }
 .verify-check .ck { color: var(--green); font-weight: 700; }
 
-/* â”€â”€ MODAL â”€â”€ */
+/* ── MODAL ── */
 .modal-overlay {
   display: none; position: fixed; inset: 0; z-index: 200;
   background: rgba(0,0,0,.5); backdrop-filter: blur(4px);
@@ -455,7 +455,7 @@ body {
 }
 .modal-close:hover { color: var(--black); }
 .modal h3 { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 1px; margin-bottom: 4px; clear: both; }
-.modal h3 span { color: #1D9E75; }
+.modal h3 span { color: var(--accent); }
 .modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
 .bundle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px; }
 .bundle-card {
@@ -480,7 +480,7 @@ body {
 }
 .modal-buy-btn:hover { background: #1558c0; }
 
-/* â”€â”€ TOAST â”€â”€ */
+/* ── TOAST ── */
 .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 300; display: flex; flex-direction: column; gap: 10px; }
 .toast {
   display: flex; align-items: center; gap: 10px;
@@ -506,43 +506,43 @@ body {
 <aside class="sidebar">
   <div class="sidebar-logo">
     <div class="logo-dot"></div>
-    <div class="logo-mark">Auto<span>Bidly</span></div>
+    <div class="logo-mark">DEAL<span>DRIVE</span></div>
   </div>
   <div class="sidebar-dealer">
     <div class="dealer-avatar">WB</div>
     <div class="dealer-name">West Bloomfield BMW</div>
-    <div class="dealer-meta">Dealer ID: DD-2841 Â· Detroit Metro</div>
-    <div class="verified-badge">âœ“ VERIFIED DEALER</div>
+    <div class="dealer-meta">Dealer ID: DD-2841 · Detroit Metro</div>
+    <div class="verified-badge">✓ VERIFIED DEALER</div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-section-label">Main</div>
     <button class="nav-item active" onclick="switchView('overview')">
-      <span class="nav-icon">â–¦</span> Overview
+      <span class="nav-icon">▦</span> Overview
     </button>
     <button class="nav-item" onclick="switchView('leads')">
-      <span class="nav-icon">ðŸ“¥</span> Lead Inbox
+      <span class="nav-icon">📥</span> Lead Inbox
       <span class="nav-badge">7</span>
     </button>
     <button class="nav-item" onclick="switchView('offers')">
-      <span class="nav-icon">ðŸŽ¯</span> Offer Matching
+      <span class="nav-icon">🎯</span> Offer Matching
       <span class="nav-badge amber">12</span>
     </button>
     <button class="nav-item" onclick="switchView('inventory')">
-      <span class="nav-icon">ðŸš—</span> My Inventory
+      <span class="nav-icon">🚗</span> My Inventory
     </button>
     <div class="nav-section-label">Account</div>
     <button class="nav-item" onclick="switchView('notifications')">
-      <span class="nav-icon">ðŸ””</span> Notifications
+      <span class="nav-icon">🔔</span> Notifications
       <span class="nav-badge blue">4</span>
     </button>
     <button class="nav-item" onclick="switchView('credits')">
-      <span class="nav-icon">ðŸ’³</span> Credits & Billing
+      <span class="nav-icon">💳</span> Credits & Billing
     </button>
     <button class="nav-item" onclick="switchView('verification')">
-      <span class="nav-icon">âœ“</span> Verification
+      <span class="nav-icon">✓</span> Verification
     </button>
     <button class="nav-item" onclick="switchView('settings')">
-      <span class="nav-icon">âš™</span> Settings
+      <span class="nav-icon">⚙</span> Settings
     </button>
   </nav>
   <div class="sidebar-credits">
@@ -559,7 +559,7 @@ body {
     <div class="topbar-title" id="topbarTitle">DEALER <span>OVERVIEW</span></div>
     <div class="topbar-right">
       <div class="topbar-notif" onclick="switchView('notifications')" title="Notifications">
-        ðŸ”” <div class="notif-dot"></div>
+        🔔 <div class="notif-dot"></div>
       </div>
       <div class="topbar-status">
         <div class="status-dot"></div> Listing Active
@@ -569,18 +569,18 @@ body {
 
   <div class="content">
 
-    <!-- â•â•â•â•â•â•â•â•â•â• OVERVIEW â•â•â•â•â•â•â•â•â•â• -->
+    <!-- ══════════ OVERVIEW ══════════ -->
     <div id="view-overview" class="tab-content active">
       <div class="stats-row">
         <div class="stat-card accent">
           <div class="stat-label">New Leads Today</div>
           <div class="stat-value accent">7</div>
-          <div class="stat-change up">â†‘ 3 from yesterday</div>
+          <div class="stat-change up">↑ 3 from yesterday</div>
         </div>
         <div class="stat-card blue">
           <div class="stat-label">Offer Matches</div>
           <div class="stat-value blue">12</div>
-          <div class="stat-change up">â†‘ 5 this week</div>
+          <div class="stat-change up">↑ 5 this week</div>
         </div>
         <div class="stat-card green">
           <div class="stat-label">Deals Closed</div>
@@ -600,15 +600,15 @@ body {
       </div>
 
       <div class="verify-card">
-        <div class="verify-icon">ðŸ›¡ï¸</div>
+        <div class="verify-icon">🛡️</div>
         <div class="verify-content">
-          <div class="verify-title">âœ“ Verified Dealer Badge â€” Active</div>
+          <div class="verify-title">✓ Verified Dealer Badge — Active</div>
           <div class="verify-desc">Your dealership is fully verified. Buyers see your badge on every listing and lead response, increasing contact rate by an average of 38%.</div>
           <div class="verify-checks">
-            <div class="verify-check"><span class="ck">âœ“</span> License verified</div>
-            <div class="verify-check"><span class="ck">âœ“</span> Address confirmed</div>
-            <div class="verify-check"><span class="ck">âœ“</span> Phone verified</div>
-            <div class="verify-check"><span class="ck">âœ“</span> Deal claimed this week: <strong>3</strong></div>
+            <div class="verify-check"><span class="ck">✓</span> License verified</div>
+            <div class="verify-check"><span class="ck">✓</span> Address confirmed</div>
+            <div class="verify-check"><span class="ck">✓</span> Phone verified</div>
+            <div class="verify-check"><span class="ck">✓</span> Deal claimed this week: <strong>3</strong></div>
           </div>
         </div>
       </div>
@@ -617,7 +617,7 @@ body {
         <div>
           <div class="section-header">
             <h2>RECENT <span>LEADS</span></h2>
-            <button class="pill-btn solid" onclick="switchView('leads')">View All â†’</button>
+            <button class="pill-btn solid" onclick="switchView('leads')">View All →</button>
           </div>
           <div class="panel">
             <div id="overviewLeads"></div>
@@ -626,7 +626,7 @@ body {
         <div>
           <div class="section-header">
             <h2>TOP <span>MATCHES</span></h2>
-            <button class="pill-btn solid" onclick="switchView('offers')">View All â†’</button>
+            <button class="pill-btn solid" onclick="switchView('offers')">View All →</button>
           </div>
           <div class="panel">
             <div id="overviewMatches"></div>
@@ -635,7 +635,7 @@ body {
       </div>
     </div>
 
-    <!-- â•â•â•â•â•â•â•â•â•â• LEAD INBOX â•â•â•â•â•â•â•â•â•â• -->
+    <!-- ══════════ LEAD INBOX ══════════ -->
     <div id="view-leads" class="tab-content">
       <div class="section-header">
         <h2>LEAD <span>INBOX</span></h2>
@@ -655,7 +655,7 @@ body {
       </div>
     </div>
 
-    <!-- â•â•â•â•â•â•â•â•â•â• OFFER MATCHING â•â•â•â•â•â•â•â•â•â• -->
+    <!-- ══════════ OFFER MATCHING ══════════ -->
     <div id="view-offers" class="tab-content">
       <div class="section-header">
         <h2>OFFER <span>MATCHING</span></h2>
@@ -668,7 +668,7 @@ body {
         <div>
           <div class="panel">
             <div class="panel-header">
-              <div class="panel-title">ðŸŽ¯ Buyer Offers Matching Your Stock <span class="panel-count blue">12</span></div>
+              <div class="panel-title">🎯 Buyer Offers Matching Your Stock <span class="panel-count blue">12</span></div>
             </div>
             <div id="offerMatchList"></div>
           </div>
@@ -676,44 +676,44 @@ body {
         <div>
           <div class="panel" style="margin-bottom:20px">
             <div class="panel-header">
-              <div class="panel-title">âš¡ Matching Logic</div>
+              <div class="panel-title">⚡ Matching Logic</div>
             </div>
             <div style="padding:20px;font-size:13px;color:var(--mid);line-height:1.7">
               <p style="margin-bottom:12px">AutoBidly automatically matches buyer offers to your inventory based on:</p>
               <div style="display:flex;flex-direction:column;gap:8px">
-                <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--green);font-weight:700">âœ“</span> Vehicle make, model & trim</div>
-                <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--green);font-weight:700">âœ“</span> Monthly payment Â± 10% tolerance</div>
-                <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--green);font-weight:700">âœ“</span> Lease term & mileage</div>
-                <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--green);font-weight:700">âœ“</span> Buyer ZIP vs. your radius</div>
-                <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--green);font-weight:700">âœ“</span> Incentive eligibility</div>
+                <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Vehicle make, model & trim</div>
+                <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Monthly payment ± 10% tolerance</div>
+                <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Lease term & mileage</div>
+                <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Buyer ZIP vs. your radius</div>
+                <div style="display:flex;gap:10px;align-items:center"><span style="color:var(--green);font-weight:700">✓</span> Incentive eligibility</div>
               </div>
               <div style="margin-top:20px;padding:14px;background:var(--surface2);border-radius:8px;border:1px solid var(--border)">
                 <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Match Score Guide</div>
-                <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><div style="width:12px;height:12px;border-radius:50%;background:var(--green)"></div><span style="font-size:12px"><strong>80â€“100%</strong> â€” High match, respond now</span></div>
-                <div style="display:flex;gap:8px;align-items:center"><div style="width:12px;height:12px;border-radius:50%;background:var(--amber)"></div><span style="font-size:12px"><strong>50â€“79%</strong> â€” Close match, negotiate possible</span></div>
+                <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px"><div style="width:12px;height:12px;border-radius:50%;background:var(--green)"></div><span style="font-size:12px"><strong>80–100%</strong> — High match, respond now</span></div>
+                <div style="display:flex;gap:8px;align-items:center"><div style="width:12px;height:12px;border-radius:50%;background:var(--amber)"></div><span style="font-size:12px"><strong>50–79%</strong> — Close match, negotiate possible</span></div>
               </div>
             </div>
           </div>
           <div class="panel">
             <div class="panel-header">
-              <div class="panel-title">ðŸ”” Alert Settings</div>
+              <div class="panel-title">🔔 Alert Settings</div>
             </div>
             <div style="padding:16px 20px;font-size:13px;color:var(--mid)">
               <p style="margin-bottom:14px">You'll be pinged instantly when a new buyer offer matches your inventory via:</p>
               <div style="display:flex;flex-direction:column;gap:10px">
-                <div style="display:flex;gap:8px;align-items:center;padding:10px;background:var(--green-soft);border-radius:6px;border:1px solid rgba(22,163,74,.2)"><span>ðŸ“§</span><span style="font-size:12px;color:var(--green);font-weight:600">Email â€” dealer@wbbmw.com</span></div>
-                <div style="display:flex;gap:8px;align-items:center;padding:10px;background:var(--green-soft);border-radius:6px;border:1px solid rgba(22,163,74,.2)"><span>ðŸ’¬</span><span style="font-size:12px;color:var(--green);font-weight:600">SMS â€” +1 (248) 555-0194</span></div>
-                <div style="display:flex;gap:8px;align-items:center;padding:10px;background:var(--green-soft);border-radius:6px;border:1px solid rgba(22,163,74,.2)"><span>ðŸ“²</span><span style="font-size:12px;color:var(--green);font-weight:600">Push â€” AutoBidly App</span></div>
-                <div style="display:flex;gap:8px;align-items:center;padding:10px;background:var(--green-soft);border-radius:6px;border:1px solid rgba(22,163,74,.2)"><span>ðŸ”´</span><span style="font-size:12px;color:var(--green);font-weight:600">In-App â€” Dashboard alert</span></div>
+                <div style="display:flex;gap:8px;align-items:center;padding:10px;background:var(--green-soft);border-radius:6px;border:1px solid rgba(22,163,74,.2)"><span>📧</span><span style="font-size:12px;color:var(--green);font-weight:600">Email — dealer@wbbmw.com</span></div>
+                <div style="display:flex;gap:8px;align-items:center;padding:10px;background:var(--green-soft);border-radius:6px;border:1px solid rgba(22,163,74,.2)"><span>💬</span><span style="font-size:12px;color:var(--green);font-weight:600">SMS — +1 (248) 555-0194</span></div>
+                <div style="display:flex;gap:8px;align-items:center;padding:10px;background:var(--green-soft);border-radius:6px;border:1px solid rgba(22,163,74,.2)"><span>📲</span><span style="font-size:12px;color:var(--green);font-weight:600">Push — AutoBidly App</span></div>
+                <div style="display:flex;gap:8px;align-items:center;padding:10px;background:var(--green-soft);border-radius:6px;border:1px solid rgba(22,163,74,.2)"><span>🔴</span><span style="font-size:12px;color:var(--green);font-weight:600">In-App — Dashboard alert</span></div>
               </div>
-              <button class="pill-btn outline" style="margin-top:14px;width:100%" onclick="switchView('notifications')">Edit Notification Settings â†’</button>
+              <button class="pill-btn outline" style="margin-top:14px;width:100%" onclick="switchView('notifications')">Edit Notification Settings →</button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- â•â•â•â•â•â•â•â•â•â• NOTIFICATIONS â•â•â•â•â•â•â•â•â•â• -->
+    <!-- ══════════ NOTIFICATIONS ══════════ -->
     <div id="view-notifications" class="tab-content">
       <div class="section-header">
         <h2>NOTIFICATION <span>CENTER</span></h2>
@@ -722,7 +722,7 @@ body {
         <div>
           <div class="panel">
             <div class="panel-header">
-              <div class="panel-title">ðŸ“¬ Recent Alerts <span class="panel-count">4</span></div>
+              <div class="panel-title">📬 Recent Alerts <span class="panel-count">4</span></div>
             </div>
             <div id="notifList"></div>
           </div>
@@ -730,12 +730,12 @@ body {
         <div>
           <div class="panel">
             <div class="panel-header">
-              <div class="panel-title">âš™ï¸ Channel Settings</div>
+              <div class="panel-title">⚙️ Channel Settings</div>
             </div>
             <div class="notif-settings">
               <div class="notif-setting-row">
                 <div class="ns-left">
-                  <span class="ns-icon">ðŸ“§</span>
+                  <span class="ns-icon">📧</span>
                   <div class="ns-text">
                     <strong>Email Notifications</strong>
                     <p>dealer@wbbmw.com</p>
@@ -748,7 +748,7 @@ body {
               </div>
               <div class="notif-setting-row">
                 <div class="ns-left">
-                  <span class="ns-icon">ðŸ’¬</span>
+                  <span class="ns-icon">💬</span>
                   <div class="ns-text">
                     <strong>SMS / Text Message</strong>
                     <p>+1 (248) 555-0194</p>
@@ -761,7 +761,7 @@ body {
               </div>
               <div class="notif-setting-row">
                 <div class="ns-left">
-                  <span class="ns-icon">ðŸ“²</span>
+                  <span class="ns-icon">📲</span>
                   <div class="ns-text">
                     <strong>Push Notifications</strong>
                     <p>AutoBidly mobile app</p>
@@ -774,7 +774,7 @@ body {
               </div>
               <div class="notif-setting-row">
                 <div class="ns-left">
-                  <span class="ns-icon">ðŸ”´</span>
+                  <span class="ns-icon">🔴</span>
                   <div class="ns-text">
                     <strong>In-App Dashboard</strong>
                     <p>Badge + alert banner</p>
@@ -816,7 +816,7 @@ body {
       </div>
     </div>
 
-    <!-- â•â•â•â•â•â•â•â•â•â• CREDITS â•â•â•â•â•â•â•â•â•â• -->
+    <!-- ══════════ CREDITS ══════════ -->
     <div id="view-credits" class="tab-content">
       <div class="section-header">
         <h2>CREDITS & <span>BILLING</span></h2>
@@ -840,7 +840,7 @@ body {
         </div>
         <div class="stat-card">
           <div class="stat-label">ROI Estimate</div>
-          <div class="stat-value">18Ã—</div>
+          <div class="stat-value">18×</div>
           <div class="stat-change up">vs. traditional leads</div>
         </div>
       </div>
@@ -855,24 +855,24 @@ body {
         <div>
           <div class="panel" style="margin-top:46px">
             <div class="panel-header">
-              <div class="panel-title">ðŸ’¡ How Credits Work</div>
+              <div class="panel-title">💡 How Credits Work</div>
             </div>
             <div style="padding:20px;font-size:13px;color:var(--mid);line-height:1.7">
               <div style="display:flex;flex-direction:column;gap:14px">
-                <div style="padding:14px;background:var(--accent-soft);border-radius:8px;border-left:3px solid #1D9E75">
-                  <strong style="color:var(--black)">ðŸ–±ï¸ Click to View</strong><br>
-                  Buyer clicks "Contact Dealer" â†’ <strong>1 credit ($7)</strong> deducted. You see their vehicle request.
+                <div style="padding:14px;background:var(--accent-soft);border-radius:8px;border-left:3px solid var(--accent)">
+                  <strong style="color:var(--black)">🖱️ Click to View</strong><br>
+                  Buyer clicks "Contact Dealer" → <strong>1 credit ($7)</strong> deducted. You see their vehicle request.
                 </div>
                 <div style="padding:14px;background:var(--accent2-soft);border-radius:8px;border-left:3px solid var(--accent2)">
-                  <strong style="color:var(--black)">ðŸ“‹ Form Submission</strong><br>
-                  Buyer submits full inquiry form â†’ <strong>2 credits ($14)</strong>. You get their contact info.
+                  <strong style="color:var(--black)">📋 Form Submission</strong><br>
+                  Buyer submits full inquiry form → <strong>2 credits ($14)</strong>. You get their contact info.
                 </div>
                 <div style="padding:14px;background:var(--amber-soft);border-radius:8px;border-left:3px solid var(--amber)">
-                  <strong style="color:var(--black)">ðŸ“¦ Bundle Savings</strong><br>
+                  <strong style="color:var(--black)">📦 Bundle Savings</strong><br>
                   Pre-buy 50+ credits and save up to <strong>25%</strong> per lead.
                 </div>
                 <div style="padding:14px;background:var(--green-soft);border-radius:8px;border-left:3px solid var(--green)">
-                  <strong style="color:var(--black)">ðŸ† Close & Report</strong><br>
+                  <strong style="color:var(--black)">🏆 Close & Report</strong><br>
                   Mark a deal closed to earn <strong>2 bonus credits</strong> and build your close rate score.
                 </div>
               </div>
@@ -882,25 +882,25 @@ body {
       </div>
     </div>
 
-    <!-- â•â•â•â•â•â•â•â•â•â• VERIFICATION â•â•â•â•â•â•â•â•â•â• -->
+    <!-- ══════════ VERIFICATION ══════════ -->
     <div id="view-verification" class="tab-content">
       <div class="section-header"><h2>DEALER <span>VERIFICATION</span></h2></div>
       <div class="verify-card" style="margin-bottom:28px">
-        <div class="verify-icon">ðŸ›¡ï¸</div>
+        <div class="verify-icon">🛡️</div>
         <div class="verify-content">
-          <div class="verify-title">âœ“ FULLY VERIFIED â€” Badge Active</div>
+          <div class="verify-title">✓ FULLY VERIFIED — Badge Active</div>
           <div class="verify-desc">Your Verified Dealer Badge appears on all listings and lead responses. Buyers are 38% more likely to contact verified dealers. Badge renews automatically as long as your account remains active.</div>
           <div class="verify-checks" style="margin-top:16px;flex-direction:column;gap:10px">
-            <div class="verify-check"><span class="ck">âœ“</span> <strong>Dealer License</strong> â€” Michigan #DD-2841 Â· Verified Jun 2024</div>
-            <div class="verify-check"><span class="ck">âœ“</span> <strong>Physical Address</strong> â€” 5900 Orchard Lake Rd, West Bloomfield, MI</div>
-            <div class="verify-check"><span class="ck">âœ“</span> <strong>Phone Number</strong> â€” (248) 555-0100 Â· Verified via call</div>
-            <div class="verify-check"><span class="ck">âœ“</span> <strong>Business Identity</strong> â€” Articles of incorporation on file</div>
-            <div class="verify-check"><span class="ck">âœ“</span> <strong>Deal Activity</strong> â€” 3 deals claimed this week Â· Timestamp active</div>
+            <div class="verify-check"><span class="ck">✓</span> <strong>Dealer License</strong> — Michigan #DD-2841 · Verified Jun 2024</div>
+            <div class="verify-check"><span class="ck">✓</span> <strong>Physical Address</strong> — 5900 Orchard Lake Rd, West Bloomfield, MI</div>
+            <div class="verify-check"><span class="ck">✓</span> <strong>Phone Number</strong> — (248) 555-0100 · Verified via call</div>
+            <div class="verify-check"><span class="ck">✓</span> <strong>Business Identity</strong> — Articles of incorporation on file</div>
+            <div class="verify-check"><span class="ck">✓</span> <strong>Deal Activity</strong> — 3 deals claimed this week · Timestamp active</div>
           </div>
         </div>
       </div>
       <div class="panel" style="max-width:600px">
-        <div class="panel-header"><div class="panel-title">ðŸ“… Deal Timestamp History</div></div>
+        <div class="panel-header"><div class="panel-title">📅 Deal Timestamp History</div></div>
         <div id="timestampList"></div>
       </div>
     </div>
@@ -909,7 +909,7 @@ body {
     <div id="view-inventory" class="tab-content">
       <div class="section-header"><h2>MY <span>INVENTORY</span></h2></div>
       <div class="panel" style="padding:60px;text-align:center;color:var(--muted)">
-        <div style="font-size:48px;margin-bottom:16px">ðŸš—</div>
+        <div style="font-size:48px;margin-bottom:16px">🚗</div>
         <div style="font-size:18px;font-weight:700;color:var(--black);margin-bottom:8px">Inventory Manager</div>
         <div style="font-size:14px;margin-bottom:24px">Post your in-stock vehicles with real prices. Buyers search your live inventory.</div>
         <button class="pill-btn accent">+ Add Vehicle Listing</button>
@@ -918,7 +918,7 @@ body {
     <div id="view-settings" class="tab-content">
       <div class="section-header"><h2>DEALER <span>SETTINGS</span></h2></div>
       <div class="panel" style="padding:60px;text-align:center;color:var(--muted)">
-        <div style="font-size:48px;margin-bottom:16px">âš™ï¸</div>
+        <div style="font-size:48px;margin-bottom:16px">⚙️</div>
         <div style="font-size:18px;font-weight:700;color:var(--black);margin-bottom:8px">Account Settings</div>
         <div style="font-size:14px">Profile, contact info, service radius, and subscription management.</div>
       </div>
@@ -930,7 +930,7 @@ body {
 <!-- CREDIT MODAL -->
 <div class="modal-overlay" id="creditModal">
   <div class="modal">
-    <button class="modal-close" onclick="closeCreditModal()">âœ•</button>
+    <button class="modal-close" onclick="closeCreditModal()">✕</button>
     <h3>BUY <span>LEAD CREDITS</span></h3>
     <p class="modal-sub">Credits never expire. Pre-buy bundles for the best per-lead rate.</p>
     <div class="bundle-grid">
@@ -956,56 +956,56 @@ body {
       </div>
     </div>
     <button class="modal-buy-btn" id="buyBtn" onclick="completePurchase()">Select a Bundle</button>
-    <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:12px">Secure checkout Â· Credits available instantly</p>
+    <p style="font-size:12px;color:var(--muted);text-align:center;margin-top:12px">Secure checkout · Credits available instantly</p>
   </div>
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-// â”€â”€ DATA â”€â”€
+// ── DATA ──
 const leads = [
-  { id:1, name:'Michael T.', initials:'MT', color:'blue', vehicle:'2025 BMW 330i xDrive', trim:'M-Sport Â· Black Â· 36mo', maxPayment:'$449/mo', down:'$0', miles:'10k/yr', zip:'48167', dist:'3.2 mi', time:'8 min ago', unlocked:false, incentives:'Lease Loyalty', notes:'Needs delivery by end of month', unread:true },
-  { id:2, name:'Sarah K.', initials:'SK', color:'green', vehicle:'2025 BMW X3 xDrive30i', trim:'Premium Â· White Â· 36mo', maxPayment:'$529/mo', down:'$1,000', miles:'12k/yr', zip:'48322', dist:'6.1 mi', time:'22 min ago', unlocked:true, incentives:'Employee Pricing', notes:'Flexible on color', unread:true },
-  { id:3, name:'James R.', initials:'JR', color:'amber', vehicle:'2025 BMW 530i', trim:'Luxury Line Â· Grey Â· 48mo', maxPayment:'$599/mo', down:'$2,000', miles:'15k/yr', zip:'48334', dist:'8.4 mi', time:'1 hr ago', unlocked:false, incentives:'None', notes:'', unread:false },
-  { id:4, name:'Lisa M.', initials:'LM', color:'red', vehicle:'2025 BMW X5 xDrive40i', trim:'M-Sport Â· Black Â· 36mo', maxPayment:'$849/mo', down:'$0', miles:'10k/yr', zip:'48307', dist:'12.1 mi', time:'2 hr ago', unlocked:true, incentives:'Military', notes:'Trade-in available', unread:false },
-  { id:5, name:'David P.', initials:'DP', color:'blue', vehicle:'2025 BMW 230i Coupe', trim:'M-Sport Â· Blue Â· 24mo', maxPayment:'$399/mo', down:'$0', miles:'12k/yr', zip:'48375', dist:'4.8 mi', time:'3 hr ago', unlocked:false, incentives:'College Grad', notes:'First lease', unread:true },
-  { id:6, name:'Emily W.', initials:'EW', color:'green', vehicle:'2025 BMW iX xDrive50', trim:'Sport Â· White Â· 36mo', maxPayment:'$999/mo', down:'$3,000', miles:'10k/yr', zip:'48168', dist:'2.9 mi', time:'5 hr ago', unlocked:true, incentives:'None', notes:'Interested in home delivery', unread:false },
-  { id:7, name:'Robert C.', initials:'RC', color:'amber', vehicle:'2025 BMW M340i', trim:'xDrive Â· Black Sapphire Â· 36mo', maxPayment:'$699/mo', down:'$0', miles:'10k/yr', zip:'48326', dist:'9.2 mi', time:'Yesterday', unlocked:false, incentives:'Conquest', notes:'Coming from Mercedes', unread:false },
+  { id:1, name:'Michael T.', initials:'MT', color:'blue', vehicle:'2025 BMW 330i xDrive', trim:'M-Sport · Black · 36mo', maxPayment:'$449/mo', down:'$0', miles:'10k/yr', zip:'48167', dist:'3.2 mi', time:'8 min ago', unlocked:false, incentives:'Lease Loyalty', notes:'Needs delivery by end of month', unread:true },
+  { id:2, name:'Sarah K.', initials:'SK', color:'green', vehicle:'2025 BMW X3 xDrive30i', trim:'Premium · White · 36mo', maxPayment:'$529/mo', down:'$1,000', miles:'12k/yr', zip:'48322', dist:'6.1 mi', time:'22 min ago', unlocked:true, incentives:'Employee Pricing', notes:'Flexible on color', unread:true },
+  { id:3, name:'James R.', initials:'JR', color:'amber', vehicle:'2025 BMW 530i', trim:'Luxury Line · Grey · 48mo', maxPayment:'$599/mo', down:'$2,000', miles:'15k/yr', zip:'48334', dist:'8.4 mi', time:'1 hr ago', unlocked:false, incentives:'None', notes:'', unread:false },
+  { id:4, name:'Lisa M.', initials:'LM', color:'red', vehicle:'2025 BMW X5 xDrive40i', trim:'M-Sport · Black · 36mo', maxPayment:'$849/mo', down:'$0', miles:'10k/yr', zip:'48307', dist:'12.1 mi', time:'2 hr ago', unlocked:true, incentives:'Military', notes:'Trade-in available', unread:false },
+  { id:5, name:'David P.', initials:'DP', color:'blue', vehicle:'2025 BMW 230i Coupe', trim:'M-Sport · Blue · 24mo', maxPayment:'$399/mo', down:'$0', miles:'12k/yr', zip:'48375', dist:'4.8 mi', time:'3 hr ago', unlocked:false, incentives:'College Grad', notes:'First lease', unread:true },
+  { id:6, name:'Emily W.', initials:'EW', color:'green', vehicle:'2025 BMW iX xDrive50', trim:'Sport · White · 36mo', maxPayment:'$999/mo', down:'$3,000', miles:'10k/yr', zip:'48168', dist:'2.9 mi', time:'5 hr ago', unlocked:true, incentives:'None', notes:'Interested in home delivery', unread:false },
+  { id:7, name:'Robert C.', initials:'RC', color:'amber', vehicle:'2025 BMW M340i', trim:'xDrive · Black Sapphire · 36mo', maxPayment:'$699/mo', down:'$0', miles:'10k/yr', zip:'48326', dist:'9.2 mi', time:'Yesterday', unlocked:false, incentives:'Conquest', notes:'Coming from Mercedes', unread:false },
 ];
 
 const offerMatches = [
-  { vehicle:'2025 BMW 330i xDrive', trim:'M-Sport Â· Any Color Â· 36mo', payment:'$449/mo', down:'$0', miles:'10k', zip:'48167', matchPct:95, matchClass:'high', badge:'match', dist:'3.2 mi', count:1 },
-  { vehicle:'2025 BMW X3 xDrive30i', trim:'Any Trim Â· White Pref Â· 36mo', payment:'$499/mo', down:'$1,000', miles:'12k', zip:'48322', matchPct:88, matchClass:'high', badge:'match', dist:'6.1 mi', count:3 },
-  { vehicle:'2025 BMW X5 xDrive40i', trim:'M-Sport Â· 36mo', payment:'$799/mo', down:'$0', miles:'10k', zip:'48307', matchPct:72, matchClass:'med', badge:'close', dist:'12.1 mi', count:1 },
-  { vehicle:'2025 BMW 530i xDrive', trim:'Luxury Line Â· 48mo', payment:'$579/mo', down:'$2,000', miles:'15k', zip:'48334', matchPct:85, matchClass:'high', badge:'new', dist:'8.4 mi', count:2 },
-  { vehicle:'2025 BMW 230i Coupe', trim:'M-Sport Â· 24mo', payment:'$379/mo', down:'$0', miles:'12k', zip:'48375', matchPct:61, matchClass:'med', badge:'new', dist:'4.8 mi', count:1 },
+  { vehicle:'2025 BMW 330i xDrive', trim:'M-Sport · Any Color · 36mo', payment:'$449/mo', down:'$0', miles:'10k', zip:'48167', matchPct:95, matchClass:'high', badge:'match', dist:'3.2 mi', count:1 },
+  { vehicle:'2025 BMW X3 xDrive30i', trim:'Any Trim · White Pref · 36mo', payment:'$499/mo', down:'$1,000', miles:'12k', zip:'48322', matchPct:88, matchClass:'high', badge:'match', dist:'6.1 mi', count:3 },
+  { vehicle:'2025 BMW X5 xDrive40i', trim:'M-Sport · 36mo', payment:'$799/mo', down:'$0', miles:'10k', zip:'48307', matchPct:72, matchClass:'med', badge:'close', dist:'12.1 mi', count:1 },
+  { vehicle:'2025 BMW 530i xDrive', trim:'Luxury Line · 48mo', payment:'$579/mo', down:'$2,000', miles:'15k', zip:'48334', matchPct:85, matchClass:'high', badge:'new', dist:'8.4 mi', count:2 },
+  { vehicle:'2025 BMW 230i Coupe', trim:'M-Sport · 24mo', payment:'$379/mo', down:'$0', miles:'12k', zip:'48375', matchPct:61, matchClass:'med', badge:'new', dist:'4.8 mi', count:1 },
 ];
 
 const notifications = [
-  { channel:'push', icon:'ðŸ“²', msg:'<strong>New offer match!</strong> Buyer in 48167 wants a 2025 BMW 330i at $449/mo. 95% match to your stock.', time:'8 min ago' },
-  { channel:'sms', icon:'ðŸ’¬', msg:'<strong>Sarah K. submitted inquiry</strong> for the X3 xDrive30i. 2 credits deducted. Tap to view contact info.', time:'22 min ago' },
-  { channel:'email', icon:'ðŸ“§', msg:'<strong>3 new leads</strong> received today. Your response rate is 94% â€” top 10% of dealers on AutoBidly.', time:'1 hr ago' },
-  { channel:'app', icon:'ðŸ”´', msg:'<strong>Credits reminder:</strong> You have 47 credits remaining. Buy a bundle to lock in your $5.98/lead rate.', time:'3 hr ago' },
+  { channel:'push', icon:'📲', msg:'<strong>New offer match!</strong> Buyer in 48167 wants a 2025 BMW 330i at $449/mo. 95% match to your stock.', time:'8 min ago' },
+  { channel:'sms', icon:'💬', msg:'<strong>Sarah K. submitted inquiry</strong> for the X3 xDrive30i. 2 credits deducted. Tap to view contact info.', time:'22 min ago' },
+  { channel:'email', icon:'📧', msg:'<strong>3 new leads</strong> received today. Your response rate is 94% — top 10% of dealers on AutoBidly.', time:'1 hr ago' },
+  { channel:'app', icon:'🔴', msg:'<strong>Credits reminder:</strong> You have 47 credits remaining. Buy a bundle to lock in your $5.98/lead rate.', time:'3 hr ago' },
 ];
 
 const creditActivity = [
-  { type:'spend', icon:'ðŸ”“', desc:'Unlocked lead â€” <strong>Sarah K.</strong> (X3 xDrive30i)', sub:'Form submission Â· 2 credits', amount:'-2', time:'22 min ago' },
-  { type:'earn', icon:'ðŸ†', desc:'Closed deal bonus â€” <strong>Lisa M.</strong> (X5 xDrive40i)', sub:'Marked closed Â· +2 bonus credits', amount:'+2', time:'2 days ago' },
-  { type:'spend', icon:'ðŸ”“', desc:'Unlocked lead â€” <strong>Emily W.</strong> (iX xDrive50)', sub:'Click unlock Â· 1 credit', amount:'-1', time:'3 days ago' },
-  { type:'bundle', icon:'ðŸ“¦', desc:'Purchased <strong>50 credit bundle</strong>', sub:'$299 charged Â· Visa Â·Â·Â·6411', amount:'+50', time:'1 week ago' },
-  { type:'spend', icon:'ðŸ”“', desc:'Unlocked lead â€” <strong>Robert C.</strong> (M340i)', sub:'Form submission Â· 2 credits', amount:'-2', time:'1 week ago' },
-  { type:'earn', icon:'ðŸ†', desc:'Closed deal bonus â€” <strong>David P.</strong> (230i Coupe)', sub:'Marked closed Â· +2 bonus credits', amount:'+2', time:'2 weeks ago' },
+  { type:'spend', icon:'🔓', desc:'Unlocked lead — <strong>Sarah K.</strong> (X3 xDrive30i)', sub:'Form submission · 2 credits', amount:'-2', time:'22 min ago' },
+  { type:'earn', icon:'🏆', desc:'Closed deal bonus — <strong>Lisa M.</strong> (X5 xDrive40i)', sub:'Marked closed · +2 bonus credits', amount:'+2', time:'2 days ago' },
+  { type:'spend', icon:'🔓', desc:'Unlocked lead — <strong>Emily W.</strong> (iX xDrive50)', sub:'Click unlock · 1 credit', amount:'-1', time:'3 days ago' },
+  { type:'bundle', icon:'📦', desc:'Purchased <strong>50 credit bundle</strong>', sub:'$299 charged · Visa ···6411', amount:'+50', time:'1 week ago' },
+  { type:'spend', icon:'🔓', desc:'Unlocked lead — <strong>Robert C.</strong> (M340i)', sub:'Form submission · 2 credits', amount:'-2', time:'1 week ago' },
+  { type:'earn', icon:'🏆', desc:'Closed deal bonus — <strong>David P.</strong> (230i Coupe)', sub:'Marked closed · +2 bonus credits', amount:'+2', time:'2 weeks ago' },
 ];
 
 const timestamps = [
-  { vehicle:'2025 BMW X3 xDrive30i', dealer:'West Bloomfield BMW', claimed:'March 21, 2026 Â· 2:14 PM', status:'active' },
-  { vehicle:'2025 BMW 330i xDrive', dealer:'West Bloomfield BMW', claimed:'March 19, 2026 Â· 10:52 AM', status:'active' },
-  { vehicle:'2025 BMW 530i Sedan', dealer:'West Bloomfield BMW', claimed:'March 17, 2026 Â· 4:33 PM', status:'active' },
-  { vehicle:'2025 BMW X5 xDrive40i', dealer:'West Bloomfield BMW', claimed:'March 10, 2026 Â· 11:20 AM', status:'expired' },
+  { vehicle:'2025 BMW X3 xDrive30i', dealer:'West Bloomfield BMW', claimed:'March 21, 2026 · 2:14 PM', status:'active' },
+  { vehicle:'2025 BMW 330i xDrive', dealer:'West Bloomfield BMW', claimed:'March 19, 2026 · 10:52 AM', status:'active' },
+  { vehicle:'2025 BMW 530i Sedan', dealer:'West Bloomfield BMW', claimed:'March 17, 2026 · 4:33 PM', status:'active' },
+  { vehicle:'2025 BMW X5 xDrive40i', dealer:'West Bloomfield BMW', claimed:'March 10, 2026 · 11:20 AM', status:'expired' },
 ];
 
-// â”€â”€ RENDER LEADS â”€â”€
+// ── RENDER LEADS ──
 function renderLeads(container, list, max) {
   const items = max ? list.slice(0, max) : list;
   return items.map((l,i) => `
@@ -1017,19 +1017,19 @@ function renderLeads(container, list, max) {
           <div class="lead-name">${l.name}</div>
           <div class="lead-time">${l.time}</div>
         </div>
-        <div class="lead-vehicle">${l.vehicle} â€” ${l.trim}</div>
+        <div class="lead-vehicle">${l.vehicle} — ${l.trim}</div>
         <div class="lead-terms">
           <span class="lead-tag price">${l.maxPayment}</span>
           <span class="lead-tag neutral">${l.down} down</span>
           <span class="lead-tag neutral">${l.miles}</span>
-          <span class="lead-tag neutral">ðŸ“ ${l.dist}</span>
+          <span class="lead-tag neutral">📍 ${l.dist}</span>
           ${l.incentives !== 'None' ? `<span class="lead-tag incentive">${l.incentives}</span>` : ''}
         </div>
       </div>
       <div class="lead-actions">
         ${l.unlocked
-          ? '<button class="unlock-btn unlocked">âœ“ Unlocked</button>'
-          : `<span class="lead-cost">1â€“2 credits</span><button class="unlock-btn" onclick="event.stopPropagation();unlockLead(${l.id})">ðŸ”“ Unlock</button>`
+          ? '<button class="unlock-btn unlocked">✓ Unlocked</button>'
+          : `<span class="lead-cost">1–2 credits</span><button class="unlock-btn" onclick="event.stopPropagation();unlockLead(${l.id})">🔓 Unlock</button>`
         }
       </div>
     </div>
@@ -1038,16 +1038,16 @@ function renderLeads(container, list, max) {
         <div class="exp-field"><div class="exp-label">Max Payment</div><div class="exp-value accent">${l.maxPayment}</div></div>
         <div class="exp-field"><div class="exp-label">Down Payment</div><div class="exp-value">${l.down}</div></div>
         <div class="exp-field"><div class="exp-label">Annual Miles</div><div class="exp-value">${l.miles}</div></div>
-        <div class="exp-field"><div class="exp-label">Location</div><div class="exp-value">${l.zip} Â· ${l.dist}</div></div>
+        <div class="exp-field"><div class="exp-label">Location</div><div class="exp-value">${l.zip} · ${l.dist}</div></div>
         <div class="exp-field"><div class="exp-label">Incentives</div><div class="exp-value">${l.incentives}</div></div>
-        <div class="exp-field"><div class="exp-label">Notes</div><div class="exp-value">${l.notes || 'â€”'}</div></div>
+        <div class="exp-field"><div class="exp-label">Notes</div><div class="exp-value">${l.notes || '—'}</div></div>
       </div>
       <div class="exp-actions">
         ${l.unlocked
-          ? `<button class="exp-btn primary" onclick="showToast('Opening chat with ${l.name}','info')">ðŸ’¬ Message Buyer</button>
+          ? `<button class="exp-btn primary" onclick="showToast('Opening chat with ${l.name}','info')">💬 Message Buyer</button>
              <button class="exp-btn outline" onclick="showToast('Deal saved','success')">Save Deal</button>
-             <button class="exp-btn green-btn" onclick="showToast('Deal marked closed! +2 bonus credits earned ðŸŽ‰','success')">âœ“ Mark Closed</button>`
-          : `<button class="exp-btn primary" onclick="unlockLead(${l.id})">ðŸ”“ Unlock Full Details</button>
+             <button class="exp-btn green-btn" onclick="showToast('Deal marked closed! +2 bonus credits earned 🎉','success')">✓ Mark Closed</button>`
+          : `<button class="exp-btn primary" onclick="unlockLead(${l.id})">🔓 Unlock Full Details</button>
              <button class="exp-btn outline">Save for Later</button>`
         }
       </div>
@@ -1055,32 +1055,32 @@ function renderLeads(container, list, max) {
   `).join('');
 }
 
-// â”€â”€ RENDER OFFER MATCHES â”€â”€
+// ── RENDER OFFER MATCHES ──
 function renderOfferMatches(container, list, max) {
   const items = max ? list.slice(0, max) : list;
   return items.map(o => `
     <div class="offer-match-item">
       <div class="om-top">
         <div class="om-vehicle">${o.vehicle}</div>
-        <span class="om-badge ${o.badge}">${o.badge === 'match' ? 'âœ“ STRONG MATCH' : o.badge === 'close' ? '~ CLOSE MATCH' : 'â˜… NEW'}</span>
+        <span class="om-badge ${o.badge}">${o.badge === 'match' ? '✓ STRONG MATCH' : o.badge === 'close' ? '~ CLOSE MATCH' : '★ NEW'}</span>
       </div>
       <div style="font-size:12px;color:var(--muted);margin-bottom:8px">${o.trim}</div>
       <div class="om-terms">
         <span class="om-term"><strong>${o.payment}</strong> max</span>
         <span class="om-term"><strong>${o.down}</strong> down</span>
         <span class="om-term"><strong>${o.miles}k</strong> mi/yr</span>
-        <span class="om-term">ðŸ“ ${o.dist}</span>
+        <span class="om-term">📍 ${o.dist}</span>
       </div>
       <div class="om-match-bar"><div class="om-match-fill ${o.matchClass}" style="width:${o.matchPct}%"></div></div>
       <div class="om-match-meta">
         <span class="om-match-pct ${o.matchClass}">${o.matchPct}% match</span>
-        <button class="om-respond-btn" onclick="respondOffer('${o.vehicle}')">Respond â†’</button>
+        <button class="om-respond-btn" onclick="respondOffer('${o.vehicle}')">Respond →</button>
       </div>
     </div>
   `).join('');
 }
 
-// â”€â”€ INIT â”€â”€
+// ── INIT ──
 document.getElementById('overviewLeads').innerHTML = renderLeads('overviewLeads', leads, 3);
 document.getElementById('leadList').innerHTML = renderLeads('leadList', leads);
 document.getElementById('overviewMatches').innerHTML = renderOfferMatches('overviewMatches', offerMatches, 3);
@@ -1102,7 +1102,7 @@ document.getElementById('creditActivity').innerHTML = creditActivity.map(c => `
     <div class="credit-icon ${c.type}">${c.icon}</div>
     <div class="credit-info">
       <div class="credit-desc">${c.desc}</div>
-      <div class="credit-sub">${c.sub} Â· ${c.time}</div>
+      <div class="credit-sub">${c.sub} · ${c.time}</div>
     </div>
     <div class="credit-amount ${c.amount.startsWith('-') ? 'neg' : 'pos'}">${c.amount}</div>
   </div>
@@ -1110,16 +1110,16 @@ document.getElementById('creditActivity').innerHTML = creditActivity.map(c => `
 
 document.getElementById('timestampList').innerHTML = timestamps.map(t => `
   <div class="credit-item">
-    <div class="credit-icon ${t.status === 'active' ? 'earn' : 'spend'}">${t.status === 'active' ? 'âœ…' : 'â±ï¸'}</div>
+    <div class="credit-icon ${t.status === 'active' ? 'earn' : 'spend'}">${t.status === 'active' ? '✅' : '⏱️'}</div>
     <div class="credit-info">
       <div class="credit-desc"><strong>${t.vehicle}</strong></div>
       <div class="credit-sub">Claimed: ${t.claimed}</div>
     </div>
-    <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:${t.status==='active'?'var(--green-soft)':'var(--surface2)'};color:${t.status==='active'?'var(--green)':'var(--muted)'};border:1px solid ${t.status==='active'?'rgba(22,163,74,.2)':'var(--border)'}">${t.status === 'active' ? 'â— ACTIVE' : 'EXPIRED'}</span>
+    <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;background:${t.status==='active'?'var(--green-soft)':'var(--surface2)'};color:${t.status==='active'?'var(--green)':'var(--muted)'};border:1px solid ${t.status==='active'?'rgba(22,163,74,.2)':'var(--border)'}">${t.status === 'active' ? '● ACTIVE' : 'EXPIRED'}</span>
   </div>
 `).join('');
 
-// â”€â”€ INTERACTIONS â”€â”€
+// ── INTERACTIONS ──
 const views = ['overview','leads','offers','notifications','credits','verification','inventory','settings'];
 const titles = { overview:'DEALER <span>OVERVIEW</span>', leads:'LEAD <span>INBOX</span>', offers:'OFFER <span>MATCHING</span>', notifications:'NOTIFICATION <span>CENTER</span>', credits:'CREDITS & <span>BILLING</span>', verification:'DEALER <span>VERIFICATION</span>', inventory:'MY <span>INVENTORY</span>', settings:'DEALER <span>SETTINGS</span>' };
 
@@ -1144,7 +1144,7 @@ function unlockLead(id) {
   lead.unlocked = true;
   document.getElementById('leadList').innerHTML = renderLeads('leadList', leads);
   document.getElementById('overviewLeads').innerHTML = renderLeads('overviewLeads', leads, 3);
-  showToast(`Lead unlocked â€” ${lead.name}'s details revealed. 1 credit deducted.`, 'success');
+  showToast(`Lead unlocked — ${lead.name}'s details revealed. 1 credit deducted.`, 'success');
   setTimeout(() => {
     document.getElementById('lead-exp-'+id).classList.add('show');
   }, 100);
@@ -1175,7 +1175,7 @@ function selectBundle(el, credits, price) {
 function completePurchase() {
   if (!selectedBundle) { showToast('Please select a bundle first', 'warning'); return; }
   closeCreditModal();
-  showToast(`${selectedBundle.credits} credits added! ${selectedBundle.price} charged to Visa Â·Â·Â·6411`, 'success');
+  showToast(`${selectedBundle.credits} credits added! ${selectedBundle.price} charged to Visa ···6411`, 'success');
   selectedBundle = null;
 }
 
@@ -1184,7 +1184,7 @@ function closeCreditModal() { document.getElementById('creditModal').classList.r
 document.getElementById('creditModal').addEventListener('click', e => { if (e.target === document.getElementById('creditModal')) closeCreditModal(); });
 
 function showToast(msg, type='success') {
-  const icons = { success:'âœ“', info:'â„¹', warning:'âš ' };
+  const icons = { success:'✓', info:'ℹ', warning:'⚠' };
   const t = document.createElement('div');
   t.className = `toast ${type}`;
   t.innerHTML = `<span class="toast-icon">${icons[type]}</span>${msg}`;
@@ -1194,7 +1194,7 @@ function showToast(msg, type='success') {
 
 // Simulate incoming match notification after 3s
 setTimeout(() => {
-  showToast('ðŸŽ¯ New offer match! Buyer in 48375 wants a 230i Coupe at $399/mo', 'info');
+  showToast('🎯 New offer match! Buyer in 48375 wants a 230i Coupe at $399/mo', 'info');
 }, 3000);
 </script>
 </body>
