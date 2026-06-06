@@ -10,7 +10,7 @@ export default function Home() {
           Auto<span style={{ color: '#1D9E75' }}>Bidly</span>
         </div>
         <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
-          <a href="#how-it-works" style={{ fontSize: 14, color: '#666', cursor: 'pointer', textDecoration: 'none' }}>How it works</a>
+          <a href="/how-it-works" style={{ fontSize: 14, color: '#666', cursor: 'pointer', textDecoration: 'none' }}>How it works</a>
           <a href="/deals" style={{ fontSize: 14, color: '#666', cursor: 'pointer', textDecoration: 'none' }}>Browse deals</a>
           <a href="/dealer" style={{ fontSize: 14, color: '#666', cursor: 'pointer', textDecoration: 'none' }}>For dealers</a>
           <a href="/profile" style={{ fontSize: 14, color: '#1D9E75', cursor: 'pointer', textDecoration: 'none', fontWeight: 500 }}>My Lease Passport</a>
