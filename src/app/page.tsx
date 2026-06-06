@@ -155,13 +155,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* AUTOBIDLY CERTIFIED DEAL */}
-      <section style={{ padding: '40px 40px', background: '#fff', borderBottom: '1px solid #eee' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#111', color: '#fff', fontSize: 11, fontWeight: 600, padding: '5px 14px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#1D9E75', display: 'inline-block' }}></span>
-              
       {/* TICKER */}
       <div style={{ background: '#085041', padding: '13px 0', overflow: 'hidden', whiteSpace: 'nowrap' }}>
         <div style={{ display: 'inline-flex', gap: 56, animation: 'scroll 22s linear infinite' }}>
@@ -279,7 +272,7 @@ export default function Home() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section style={{ padding: '72px 40px', background: '#fff' }}>
+      <section id="how-it-works" style={{ padding: '72px 40px', background: '#fff' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <span style={{ display: 'inline-block', background: '#E1F5EE', color: '#0F6E56', fontSize: 12, fontWeight: 500, padding: '4px 12px', borderRadius: 99, marginBottom: 16 }}>How it works</span>
           <h2 style={{ fontSize: 30, fontWeight: 600, color: '#111', letterSpacing: '-0.5px', marginBottom: 8 }}>From browser to keys in 4 steps.</h2>
