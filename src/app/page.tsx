@@ -14,7 +14,7 @@ export default function Home() {
           <a href="/deals" style={{ fontSize: 14, color: '#666', cursor: 'pointer', textDecoration: 'none' }}>Browse deals</a>
           <a href="/dealer" style={{ fontSize: 14, color: '#666', cursor: 'pointer', textDecoration: 'none' }}>For dealers</a>
           <a href="/profile" style={{ fontSize: 14, color: '#1D9E75', cursor: 'pointer', textDecoration: 'none', fontWeight: 500 }}>My Lease Passport</a>
-          <button style={{ background: '#111', color: '#fff', border: 'none', borderRadius: 99, padding: '9px 22px', fontSize: 14, fontWeight: 500, cursor: 'pointer' }}>Get started</button>
+          <a href="/profile" style={{ background: '#111', color: '#fff', border: 'none', borderRadius: 99, padding: '9px 22px', fontSize: 14, fontWeight: 500, cursor: 'pointer', textDecoration: 'none' }}>Get started</a>
         </div>
       </nav>
 
