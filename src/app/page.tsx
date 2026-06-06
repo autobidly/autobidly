@@ -161,37 +161,7 @@ export default function Home() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: '#111', color: '#fff', fontSize: 11, fontWeight: 600, padding: '5px 14px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
               <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#1D9E75', display: 'inline-block' }}></span>
-              AutoBidly Certified Deal
-            </div>
-            <span style={{ fontSize: 12, color: '#999' }}>Verified by AutoBidly · Metro Detroit · This week only</span>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 40, alignItems: 'center', background: '#f9f9f7', borderRadius: 16, padding: '28px 32px', border: '1.5px solid #1D9E75' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: 32, alignItems: 'center' }}>
-              <div style={{ width: 56, height: 56, borderRadius: 12, background: '#E1F5EE', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28 }}>🚙</div>
-              <div>
-                <div style={{ fontSize: 11, color: '#1D9E75', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>2025 Buick Enclave Avenir AWD</div>
-                <div style={{ fontSize: 20, fontWeight: 600, color: '#111', marginBottom: 4 }}>$499/mo · $0 down · 36mo</div>
-                <div style={{ fontSize: 13, color: '#666', marginBottom: 8 }}>Feldman Buick GMC · West Bloomfield, MI · 12,000 mi/yr</div>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  {['GM Employee eligible', 'Conquest eligible', 'Lease loyalty eligible', 'Verified VIN on lot'].map((tag, i) => (
-                    <span key={i} style={{ fontSize: 11, padding: '3px 10px', borderRadius: 99, background: '#E1F5EE', color: '#0F6E56', border: '1px solid #9FE1CB' }}>{tag}</span>
-                  ))}
-                </div>
-              </div>
-              <div style={{ textAlign: 'center', padding: '0 24px', borderLeft: '1px solid #eee' }}>
-                <div style={{ fontSize: 11, color: '#999', marginBottom: 4 }}>Expires in</div>
-                <div style={{ fontSize: 28, fontWeight: 700, color: '#111', fontFamily: 'monospace' }}>4d 12h</div>
-                <div style={{ fontSize: 11, color: '#999', marginTop: 4 }}>This week only</div>
-              </div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10, minWidth: 160 }}>
-              <a href="/bidlock" style={{ background: '#1D9E75', color: '#fff', borderRadius: 99, padding: '13px 24px', fontSize: 14, fontWeight: 500, textDecoration: 'none', textAlign: 'center', display: 'block' }}>Lock this deal →</a>
-              <div style={{ fontSize: 11, color: '#999', textAlign: 'center' }}>✓ AutoBidly verified · Free to lock</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
+              
       {/* TICKER */}
       <div style={{ background: '#085041', padding: '13px 0', overflow: 'hidden', whiteSpace: 'nowrap' }}>
         <div style={{ display: 'inline-flex', gap: 56, animation: 'scroll 22s linear infinite' }}>
