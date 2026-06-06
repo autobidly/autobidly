@@ -137,6 +137,27 @@ export default function BidLockPage() {
                       <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#666', fontSize: 14 }}>$</span>
                       <input type="number" value={form.payment} onChange={e => update('payment', e.target.value)} placeholder="495" style={{ width: '100%', padding: '10px 12px 10px 24px', borderRadius: 8, border: '1px solid #ddd', fontSize: 14, background: '#f9f9f7' }} />
                     </div>
+                    {form.payment && (() => {
+                      const p = parseInt(form.payment);
+                      const make = form.make.toLowerCase();
+                      const market = make.includes('bmw') || make.includes('mercedes') || make.includes('audi') || make.includes('lexus') || make.includes('porsche') ? 750
+                        : make.includes('cadillac') || make.includes('lincoln') || make.includes('genesis') ? 650
+                        : 499;
+                      const ratio = p / market;
+                      const strong = ratio >= 0.92;
+                      const fair = ratio >= 0.78 && ratio < 0.92;
+                      const suggested = Math.round(market * 0.92);
+                      return (
+                        <div style={{ marginTop: 8, padding: '10px 14px', borderRadius: 8, background: strong ? '#E1F5EE' : fair ? '#FFFBEB' : '#FEF2F2', border: `1px solid ${strong ? '#9FE1CB' : fair ? '#FCD34D' : '#FECACA'}` }}>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: strong ? '#0F6E56' : fair ? '#92400E' : '#991B1B', marginBottom: 2 }}>
+                            {strong ? '✓ Strong bid' : fair ? '~ Fair bid' : '✗ Weak bid'}
+                          </div>
+                          <div style={{ fontSize: 12, color: strong ? '#1D9E75' : fair ? '#B45309' : '#DC2626' }}>
+                            {strong ? 'This payment is competitive. High chance of same-day acceptance.' : fair ? `Slightly below market. Consider $${suggested}/mo for a stronger chance.` : `Below what dealers are accepting. Try $${suggested}/mo or higher.`}
+                          </div>
+                        </div>
+                      );
+                    })()}
                   </div>
                   <div>
                     <label style={{ fontSize: 12, color: '#666', display: 'block', marginBottom: 6 }}>Down payment</label>
