@@ -49,7 +49,7 @@ export default function Home() {
             </p>
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
               <a href="/deals" style={{ background: '#111', color: '#fff', border: 'none', borderRadius: 99, padding: '14px 32px', fontSize: 15, fontWeight: 500, cursor: 'pointer', textDecoration: 'none', display: 'inline-block' }}>See my best deals</a>
-              <button style={{ background: 'transparent', color: '#111', border: '1.5px solid #ccc', borderRadius: 99, padding: '14px 32px', fontSize: 15, fontWeight: 500, cursor: 'pointer' }}>Submit a bid</button>
+              <a href="/bidlock" style={{ background: 'transparent', color: '#111', border: '1.5px solid #ccc', borderRadius: 99, padding: '14px 32px', fontSize: 15, fontWeight: 500, cursor: 'pointer', textDecoration: 'none', display: 'inline-block' }}>Submit a bid</a>
             </div>
           </div>
 
