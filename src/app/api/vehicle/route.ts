@@ -42,6 +42,8 @@ export async function GET(req: NextRequest) {
       );
       const data = await res.json();
       const trimList = [...new Set(data.data?.map((t: any) => t.trim).filter(Boolean) || [])] as string[];
+      const msrpMap: Record<string, number> = {};
+      data.data?.forEach((t: any) => { if (t.trim && t.msrp) msrpMap[t.trim] = t.msrp; });
 
       // Also get available body styles for this model
       const bodyRes = await fetch(
@@ -49,10 +51,24 @@ export async function GET(req: NextRequest) {
         { headers }
       );
       const bodyData = await bodyRes.json();
-      const bodyTypes = [...new Set(bodyData.data?.map((b: any) => b.type).filter(Boolean) || [])] as string[];
-      const driveTypes = [...new Set(bodyData.data?.map((b: any) => b.drive_type).filter(Boolean) || [])] as string[];
+      const rawBodyTypes = [...new Set(bodyData.data?.map((b: any) => b.type).filter(Boolean) || [])] as string[];
+      
+      const bodyTypeMap: Record<string, string> = {
+        'Truck (SuperCrew)': 'Crew Cab',
+        'Truck (SuperCab)': 'SuperCab',
+        'Truck (Regular Cab)': 'Regular Cab',
+        'Sport Utility': 'SUV',
+        'Passenger Van': 'Van',
+        'Cargo Van': 'Van',
+        'Extended Cab Pickup': 'SuperCab',
+        'Crew Cab Pickup': 'Crew Cab',
+        'Regular Cab Pickup': 'Regular Cab',
+      };
 
-      return NextResponse.json({ trims: trimList, bodyTypes, driveTypes });
+      const bodyTypes = [...new Set(rawBodyTypes.map(b => bodyTypeMap[b] || b))] as string[];
+      const driveTypes = [] as string[];
+
+      return NextResponse.json({ trims: trimList, bodyTypes, driveTypes, msrpMap });
     }
 
     if (type === 'trimdetails' && make && model && trim) {
