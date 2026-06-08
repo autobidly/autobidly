@@ -6,11 +6,13 @@ export default function BidLockPage() {
   const [submitted, setSubmitted] = useState(false);
   const [models, setModels] = useState<string[]>([]);
   const [trims, setTrims] = useState<string[]>([]);
+  const [availableBodies, setAvailableBodies] = useState<string[]>([]);
+  const [availableDrives, setAvailableDrives] = useState<string[]>([]);
   const [loadingModels, setLoadingModels] = useState(false);
   const [loadingTrims, setLoadingTrims] = useState(false);
 
   const [form, setForm] = useState({
-    make: "Ford", model: "", trim: "", config: "4x4", cab: "Crew Cab",
+    make: "Ford", model: "", trim: "", config: "", cab: "",
     color: "", term: "36", miles: "12000",
     payment: "", down: "0", zip: "",
     loyalty: false, employee: false, conquest: false, military: false, costco: false,
@@ -21,13 +23,78 @@ export default function BidLockPage() {
 
   const makes = ['Ford','Chevrolet','GMC','Ram','Toyota','Honda','BMW','Mercedes-Benz','Cadillac','Buick','Jeep','Kia','Hyundai','Nissan','Lexus','Audi','Porsche','Subaru','Mazda','Volkswagen','Infiniti'];
 
+  function getDrives(make: string, model: string, trim: string, body: string): string[] {
+    const m = make.toLowerCase();
+    const t = trim.toLowerCase();
+    const mo = model.toLowerCase();
+    const b = body.toLowerCase();
+
+    if (m.includes('porsche')) {
+      return t.includes('carrera 4') || t.includes('targa 4') || t.includes('4 gts') ? ['AWD'] : ['RWD'];
+    }
+    if (m.includes('mazda')) {
+      return mo.includes('mx-5') || mo.includes('miata') ? ['RWD'] : ['AWD', 'FWD'];
+    }
+    if (m.includes('bmw')) {
+      return t.includes('xdrive') ? ['AWD'] : t.includes('m3') || t.includes('m4') || t.includes('m5') ? ['RWD', 'AWD'] : ['RWD', 'AWD'];
+    }
+    if (m.includes('mercedes')) {
+      return t.includes('4matic') ? ['AWD'] : ['RWD', 'AWD'];
+    }
+    if (m.includes('audi')) return ['AWD'];
+    if (m.includes('subaru')) return ['AWD'];
+    if (m.includes('volkswagen')) {
+      return t.includes('4motion') ? ['AWD'] : ['FWD', 'AWD'];
+    }
+    if (m.includes('lexus')) {
+      return b.includes('coupe') ? ['RWD', 'AWD'] : ['AWD', 'FWD'];
+    }
+    if (m.includes('infiniti')) {
+      return ['RWD', 'AWD'];
+    }
+    if (m.includes('ford')) {
+      if (mo.includes('mustang')) return ['RWD'];
+      if (mo.includes('bronco sport') || mo.includes('escape') || mo.includes('edge') || mo.includes('explorer')) return ['AWD', 'FWD'];
+      return ['4x4', '4x2'];
+    }
+    if (m.includes('chevrolet') || m.includes('gmc')) {
+      if (b.includes('sedan') || b.includes('coupe') || mo.includes('camaro') || mo.includes('corvette')) return ['RWD'];
+      if (mo.includes('equinox') || mo.includes('traverse') || mo.includes('trax') || mo.includes('blazer') || mo.includes('terrain') || mo.includes('acadia')) return ['AWD', 'FWD'];
+      return ['4x4', '4x2'];
+    }
+    if (m.includes('ram')) return ['4x4', '4x2'];
+    if (m.includes('jeep')) return ['4x4', 'AWD', '4x2'];
+    if (m.includes('toyota')) {
+      if (mo.includes('camry') || mo.includes('corolla') || mo.includes('prius')) return ['AWD', 'FWD'];
+      if (mo.includes('tacoma') || mo.includes('tundra') || mo.includes('4runner')) return ['4x4', '4x2'];
+      return ['AWD', 'FWD'];
+    }
+    if (m.includes('honda')) return ['AWD', 'FWD'];
+    if (m.includes('hyundai') || m.includes('kia') || m.includes('genesis')) return ['AWD', 'FWD'];
+    if (m.includes('nissan')) {
+      if (mo.includes('370z') || mo.includes('gt-r')) return ['RWD'];
+      if (mo.includes('frontier') || mo.includes('titan')) return ['4x4', '4x2'];
+      return ['AWD', 'FWD'];
+    }
+    if (m.includes('cadillac')) {
+      if (b.includes('sedan') || b.includes('coupe')) return ['RWD', 'AWD'];
+      return ['AWD', '4x4'];
+    }
+    if (m.includes('buick')) return ['AWD', 'FWD'];
+    return ['AWD', 'FWD', 'RWD'];
+  }
+
   useEffect(() => {
     if (!form.make) return;
     setLoadingModels(true);
     setModels([]);
     setTrims([]);
+    setAvailableBodies([]);
+    setAvailableDrives([]);
     update('model', '');
     update('trim', '');
+    update('config', '');
+    update('cab', '');
     fetch(`/api/vehicle?type=models&make=${encodeURIComponent(form.make)}`)
       .then(r => r.json())
       .then(data => {
@@ -41,26 +108,63 @@ export default function BidLockPage() {
     if (!form.make || !form.model) return;
     setLoadingTrims(true);
     setTrims([]);
+    setAvailableBodies([]);
+    setAvailableDrives([]);
     update('trim', '');
+    update('config', '');
+    update('cab', '');
     fetch(`/api/vehicle?type=trims&make=${encodeURIComponent(form.make)}&model=${encodeURIComponent(form.model)}`)
       .then(r => r.json())
       .then(data => {
         setTrims(data.trims || []);
+        setAvailableBodies(data.bodyTypes || []);
         setLoadingTrims(false);
       })
       .catch(() => setLoadingTrims(false));
   }, [form.make, form.model]);
+
+  useEffect(() => {
+    if (!form.make || !form.model || !form.trim) return;
+    fetch(`/api/vehicle?type=trimdetails&make=${encodeURIComponent(form.make)}&model=${encodeURIComponent(form.model)}&trim=${encodeURIComponent(form.trim)}`)
+      .then(r => r.json())
+      .then(data => {
+        let cab = '';
+        if (data.body) {
+          const body = data.body.toLowerCase();
+          if (body.includes('crew')) cab = 'Crew Cab';
+          else if (body.includes('super') || body.includes('extended')) cab = 'SuperCab';
+          else if (body.includes('regular')) cab = 'Regular Cab';
+          else if (body.includes('suv') || body.includes('sport utility')) cab = 'SUV';
+          else if (body.includes('sedan')) cab = 'Sedan';
+          else if (body.includes('coupe')) cab = 'Coupe';
+          else if (body.includes('convert') || body.includes('cabrio') || body.includes('roadster')) cab = 'Convertible';
+          else if (body.includes('cross')) cab = 'Crossover';
+          else if (body.includes('hatch')) cab = 'Hatchback';
+          else if (body.includes('wagon')) cab = 'Wagon';
+          else if (body.includes('van') || body.includes('minivan')) cab = 'Minivan';
+          else cab = data.body;
+        }
+        if (cab) {
+          update('cab', cab);
+          setAvailableBodies([cab]);
+        }
+        const drives = getDrives(form.make, form.model, form.trim, cab);
+        setAvailableDrives(drives);
+        update('config', drives[0]);
+      })
+      .catch(() => {});
+  }, [form.trim]);
 
   const incentiveCount = [form.loyalty, form.employee, form.conquest, form.military, form.costco].filter(Boolean).length;
 
   const selectStyle = { width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #ddd', fontSize: 14, background: '#f9f9f7', fontFamily: 'system-ui' } as any;
   const inputStyle = { ...selectStyle };
   const labelStyle = { fontSize: 12, color: '#666', display: 'block', marginBottom: 6 } as any;
+  const lockedStyle = { ...inputStyle, background: '#E1F5EE', color: '#0F6E56', fontWeight: 500, cursor: 'default', display: 'flex', justifyContent: 'space-between', alignItems: 'center' } as any;
 
   return (
     <main style={{ fontFamily: 'system-ui, sans-serif', background: '#f9f9f7', minHeight: '100vh' }}>
 
-      {/* NAV */}
       <nav style={{ background: '#fff', borderBottom: '1px solid #eee', padding: '16px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <a href="/" style={{ fontSize: 20, fontWeight: 600, textDecoration: 'none', color: '#111' }}>
           Auto<span style={{ color: '#1D9E75' }}>Bidly</span>
@@ -76,7 +180,7 @@ export default function BidLockPage() {
       {submitted ? (
         <div style={{ maxWidth: 560, margin: '80px auto', padding: '0 20px', textAlign: 'center' }}>
           <div style={{ width: 72, height: 72, borderRadius: '50%', background: '#E1F5EE', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', fontSize: 32 }}>✓</div>
-          <h1 style={{ fontSize: 28, fontWeight: 600, color: '#111', marginBottom: 12, letterSpacing: '-0.5px' }}>Your BidLock™ is live!</h1>
+          <h1 style={{ fontSize: 28, fontWeight: 600, color: '#111', marginBottom: 12 }}>Your BidLock™ is live!</h1>
           <p style={{ fontSize: 16, color: '#555', lineHeight: 1.7, marginBottom: 32 }}>
             Your offer has been sent to dealers near <strong>{form.zip}</strong>. We'll text and email you the moment a dealer accepts.
           </p>
@@ -112,7 +216,6 @@ export default function BidLockPage() {
             <p style={{ fontSize: 15, color: '#555', lineHeight: 1.7 }}>Tell us exactly what you want. Dealers compete. The first to accept is bound to your price.</p>
           </div>
 
-          {/* STEP INDICATOR */}
           <div style={{ display: 'flex', gap: 8, marginBottom: 32, alignItems: 'center', justifyContent: 'center' }}>
             {[1,2,3].map(s => (
               <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -127,7 +230,6 @@ export default function BidLockPage() {
 
           <div style={{ background: '#fff', borderRadius: 16, border: '1px solid #eee', padding: 32 }}>
 
-            {/* STEP 1 — VEHICLE */}
             {step === 1 && (
               <div>
                 <h2 style={{ fontSize: 18, fontWeight: 600, color: '#111', marginBottom: 24 }}>What vehicle do you want?</h2>
@@ -154,15 +256,25 @@ export default function BidLockPage() {
                   </div>
                   <div>
                     <label style={labelStyle}>Config</label>
-                    <select value={form.config} onChange={e => update('config', e.target.value)} style={selectStyle}>
-                      {['4x4','4x2','AWD','FWD','RWD'].map(c => <option key={c}>{c}</option>)}
-                    </select>
+                    {availableDrives.length === 1 ? (
+                      <div style={lockedStyle}>{form.config} <span style={{ fontSize: 11, fontWeight: 400 }}>✓ auto-filled</span></div>
+                    ) : (
+                      <select value={form.config} onChange={e => update('config', e.target.value)} style={selectStyle} disabled={availableDrives.length === 0}>
+                        {availableDrives.length === 0 && <option value="">Select trim first</option>}
+                        {availableDrives.map(c => <option key={c}>{c}</option>)}
+                      </select>
+                    )}
                   </div>
                   <div>
                     <label style={labelStyle}>Cab / Body</label>
-                    <select value={form.cab} onChange={e => update('cab', e.target.value)} style={selectStyle}>
-                      {['Crew Cab','SuperCab','Regular Cab','SUV','Sedan','Coupe','Convertible','Crossover','Minivan'].map(c => <option key={c}>{c}</option>)}
-                    </select>
+                    {availableBodies.length === 1 ? (
+                      <div style={lockedStyle}>{form.cab} <span style={{ fontSize: 11, fontWeight: 400 }}>✓ auto-filled</span></div>
+                    ) : (
+                      <select value={form.cab} onChange={e => update('cab', e.target.value)} style={selectStyle} disabled={availableBodies.length === 0}>
+                        {availableBodies.length === 0 && <option value="">Select trim first</option>}
+                        {availableBodies.map(c => <option key={c}>{c}</option>)}
+                      </select>
+                    )}
                   </div>
                   <div>
                     <label style={labelStyle}>Preferred color (optional)</label>
@@ -170,12 +282,11 @@ export default function BidLockPage() {
                   </div>
                 </div>
                 <div style={{ marginTop: 24, display: 'flex', justifyContent: 'flex-end' }}>
-                  <button onClick={() => setStep(2)} disabled={!form.model} style={{ background: form.model ? '#111' : '#ccc', color: '#fff', border: 'none', borderRadius: 99, padding: '12px 32px', fontSize: 15, fontWeight: 500, cursor: form.model ? 'pointer' : 'not-allowed' }}>Next — your deal →</button>
+                  <button onClick={() => setStep(2)} disabled={!form.model || !form.trim} style={{ background: form.model && form.trim ? '#111' : '#ccc', color: '#fff', border: 'none', borderRadius: 99, padding: '12px 32px', fontSize: 15, fontWeight: 500, cursor: form.model && form.trim ? 'pointer' : 'not-allowed' }}>Next — your deal →</button>
                 </div>
               </div>
             )}
 
-            {/* STEP 2 — DEAL TERMS */}
             {step === 2 && (
               <div>
                 <h2 style={{ fontSize: 18, fontWeight: 600, color: '#111', marginBottom: 24 }}>What deal do you want?</h2>
@@ -266,7 +377,6 @@ export default function BidLockPage() {
               </div>
             )}
 
-            {/* STEP 3 — CONTACT */}
             {step === 3 && (
               <div>
                 <h2 style={{ fontSize: 18, fontWeight: 600, color: '#111', marginBottom: 8 }}>Almost there — your contact info</h2>
