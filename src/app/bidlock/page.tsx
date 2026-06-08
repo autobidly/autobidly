@@ -9,6 +9,7 @@ export default function BidLockPage() {
   const [availableBodies, setAvailableBodies] = useState<string[]>([]);
   const [availableDrives, setAvailableDrives] = useState<string[]>([]);
   const [msrpMap, setMsrpMap] = useState<Record<string, number>>({});
+  const [isTruck, setIsTruck] = useState(false);
   const [loadingModels, setLoadingModels] = useState(false);
   const [loadingTrims, setLoadingTrims] = useState(false);
 
@@ -37,7 +38,6 @@ export default function BidLockPage() {
     if (r.includes('wagon')) return 'Wagon';
     if (r.includes('minivan') || r.includes('passenger van')) return 'Minivan';
     if (r.includes('van')) return 'Van';
-    if (r.includes('truck')) return 'Truck';
     return raw;
   }
 
@@ -95,6 +95,7 @@ export default function BidLockPage() {
     setAvailableBodies([]);
     setAvailableDrives([]);
     setMsrpMap({});
+    setIsTruck(false);
     update('model', '');
     update('trim', '');
     update('config', '');
@@ -112,6 +113,7 @@ export default function BidLockPage() {
     setAvailableBodies([]);
     setAvailableDrives([]);
     setMsrpMap({});
+    setIsTruck(false);
     update('trim', '');
     update('config', '');
     update('cab', '');
@@ -119,10 +121,12 @@ export default function BidLockPage() {
       .then(r => r.json())
       .then(data => {
         setTrims(data.trims || []);
-        const mapped = [...new Set((data.bodyTypes || []).map(mapBody))] as string[];
-        setAvailableBodies(mapped);
-        if (mapped.length === 1) update('cab', mapped[0]);
         setMsrpMap(data.msrpMap || {});
+        setIsTruck(data.isTruck || false);
+        const bodies = data.bodyTypes || [];
+        setAvailableBodies(bodies);
+        // Auto-select first body option
+        if (bodies.length === 1) update('cab', bodies[0]);
         setLoadingTrims(false);
       })
       .catch(() => setLoadingTrims(false));
@@ -133,9 +137,12 @@ export default function BidLockPage() {
     fetch(`/api/vehicle?type=trimdetails&make=${encodeURIComponent(form.make)}&model=${encodeURIComponent(form.model)}&trim=${encodeURIComponent(form.trim)}`)
       .then(r => r.json())
       .then(data => {
-        if (data.body) {
+        // For trucks: NEVER override availableBodies — just set drives
+        // For cars: use trim-specific body and lock to it
+        if (!data.isTruck && data.body) {
           const cab = mapBody(data.body);
           update('cab', cab);
+          setAvailableBodies([cab]);
         }
         const drives = getDrives(form.make, form.model, form.trim);
         setAvailableDrives(drives);
