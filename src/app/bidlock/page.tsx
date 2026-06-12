@@ -12,6 +12,12 @@ export default function BidLockPage() {
   const [isTruck, setIsTruck] = useState(false);
   const [loadingModels, setLoadingModels] = useState(false);
   const [loadingTrims, setLoadingTrims] = useState(false);
+  const [codeSent, setCodeSent] = useState(false);
+  const [codeInput, setCodeInput] = useState('');
+  const [phoneVerified, setPhoneVerified] = useState(false);
+  const [sendingCode, setSendingCode] = useState(false);
+  const [verifyingCode, setVerifyingCode] = useState(false);
+  const [verifyError, setVerifyError] = useState('');
 
   const [form, setForm] = useState({
     make: "Ford", model: "", trim: "", config: "", cab: "",
@@ -125,7 +131,6 @@ export default function BidLockPage() {
         setIsTruck(data.isTruck || false);
         const bodies = data.bodyTypes || [];
         setAvailableBodies(bodies);
-        // Auto-select first body option
         if (bodies.length === 1) update('cab', bodies[0]);
         setLoadingTrims(false);
       })
@@ -137,8 +142,6 @@ export default function BidLockPage() {
     fetch(`/api/vehicle?type=trimdetails&make=${encodeURIComponent(form.make)}&model=${encodeURIComponent(form.model)}&trim=${encodeURIComponent(form.trim)}`)
       .then(r => r.json())
       .then(data => {
-        // For trucks: NEVER override availableBodies — just set drives
-        // For cars: use trim-specific body and lock to it
         if (!data.isTruck && data.body) {
           const cab = mapBody(data.body);
           update('cab', cab);
@@ -154,6 +157,51 @@ export default function BidLockPage() {
         update('config', drives[0]);
       });
   }, [form.trim]);
+
+  async function sendCode() {
+    if (!form.phone || form.phone.length < 10) return;
+    setSendingCode(true);
+    setVerifyError('');
+    try {
+      const res = await fetch('/api/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: form.phone, action: 'send' }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCodeSent(true);
+      } else {
+        setVerifyError(data.error || 'Failed to send code.');
+      }
+    } catch {
+      setVerifyError('Failed to send code. Please try again.');
+    }
+    setSendingCode(false);
+  }
+
+  async function verifyCode() {
+    if (!codeInput || codeInput.length !== 6) return;
+    setVerifyingCode(true);
+    setVerifyError('');
+    try {
+      const res = await fetch('/api/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: form.phone, action: 'verify', code: codeInput }),
+      });
+      const data = await res.json();
+      if (data.verified) {
+        setPhoneVerified(true);
+        setVerifyError('');
+      } else {
+        setVerifyError(data.error || 'Incorrect code.');
+      }
+    } catch {
+      setVerifyError('Verification failed. Please try again.');
+    }
+    setVerifyingCode(false);
+  }
 
   const incentiveCount = [form.loyalty, form.employee, form.conquest, form.military, form.costco].filter(Boolean).length;
   const selectStyle = { width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #ddd', fontSize: 14, background: '#f9f9f7', fontFamily: 'system-ui' } as any;
@@ -306,9 +354,7 @@ export default function BidLockPage() {
                       const { strong, fair, suggested, msrp } = getBidStrength(form.payment, form.trim, form.make);
                       return (
                         <div style={{ marginTop: 8, padding: '10px 14px', borderRadius: 8, background: strong ? '#E1F5EE' : fair ? '#FFFBEB' : '#FEF2F2', border: `1px solid ${strong ? '#9FE1CB' : fair ? '#FCD34D' : '#FECACA'}` }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: strong ? '#0F6E56' : fair ? '#92400E' : '#991B1B', marginBottom: 2 }}>
-                            {strong ? '✓ Strong bid' : fair ? '~ Fair bid' : '✗ Weak bid'}
-                          </div>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: strong ? '#0F6E56' : fair ? '#92400E' : '#991B1B', marginBottom: 2 }}>{strong ? '✓ Strong bid' : fair ? '~ Fair bid' : '✗ Weak bid'}</div>
                           <div style={{ fontSize: 12, color: strong ? '#1D9E75' : fair ? '#B45309' : '#DC2626' }}>
                             {msrp > 0 ? `Based on MSRP of $${msrp.toLocaleString()}. ` : ''}
                             {strong ? 'This payment is competitive. High chance of same-day acceptance.' : fair ? `Slightly below market. Consider $${suggested}/mo for a stronger chance.` : `Below what dealers are accepting. Try $${suggested}/mo or higher.`}
@@ -388,9 +434,57 @@ export default function BidLockPage() {
                   </div>
                   <div>
                     <label style={labelStyle}>Phone</label>
-                    <input type="tel" value={form.phone} onChange={e => update('phone', e.target.value)} placeholder="(248) 555-0100" style={inputStyle} />
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <input
+                        type="tel"
+                        value={form.phone}
+                        onChange={e => { update('phone', e.target.value); setCodeSent(false); setPhoneVerified(false); setCodeInput(''); setVerifyError(''); }}
+                        placeholder="(248) 555-0100"
+                        style={{ ...inputStyle, flex: 1 }}
+                        disabled={phoneVerified}
+                      />
+                      {!phoneVerified && (
+                        <button
+                          onClick={sendCode}
+                          disabled={sendingCode || form.phone.length < 10}
+                          style={{ background: form.phone.length >= 10 ? '#111' : '#ccc', color: '#fff', border: 'none', borderRadius: 8, padding: '0 16px', fontSize: 13, fontWeight: 500, cursor: form.phone.length >= 10 ? 'pointer' : 'not-allowed', whiteSpace: 'nowrap' }}
+                        >
+                          {sendingCode ? 'Sending...' : codeSent ? 'Resend' : 'Send code'}
+                        </button>
+                      )}
+                      {phoneVerified && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: '#0F6E56', fontSize: 13, fontWeight: 500 }}>
+                          ✓ Verified
+                        </div>
+                      )}
+                    </div>
                   </div>
+
+                  {codeSent && !phoneVerified && (
+                    <div style={{ gridColumn: '1 / -1' }}>
+                      <label style={labelStyle}>Enter the 6-digit code sent to your phone</label>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <input
+                          type="text"
+                          value={codeInput}
+                          onChange={e => setCodeInput(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                          placeholder="000000"
+                          maxLength={6}
+                          style={{ ...inputStyle, flex: 1, letterSpacing: '0.2em', fontWeight: 600 }}
+                        />
+                        <button
+                          onClick={verifyCode}
+                          disabled={verifyingCode || codeInput.length !== 6}
+                          style={{ background: codeInput.length === 6 ? '#1D9E75' : '#ccc', color: '#fff', border: 'none', borderRadius: 8, padding: '0 16px', fontSize: 13, fontWeight: 500, cursor: codeInput.length === 6 ? 'pointer' : 'not-allowed' }}
+                        >
+                          {verifyingCode ? 'Verifying...' : 'Verify'}
+                        </button>
+                      </div>
+                      {verifyError && <div style={{ fontSize: 12, color: '#DC2626', marginTop: 6 }}>{verifyError}</div>}
+                    </div>
+                  )}
                 </div>
+
                 <div style={{ background: '#f9f9f7', borderRadius: 12, padding: 20, marginBottom: 24, border: '1px solid #eee' }}>
                   <div style={{ fontSize: 12, fontWeight: 600, color: '#1D9E75', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12 }}>Your BidLock™ summary</div>
                   <div style={{ fontSize: 15, fontWeight: 600, color: '#111', marginBottom: 4 }}>{form.make} {form.model} {form.trim}</div>
@@ -401,12 +495,20 @@ export default function BidLockPage() {
                     <div><div style={{ fontSize: 11, color: '#999' }}>Incentives</div><div style={{ fontSize: 18, fontWeight: 600, color: '#111' }}>{incentiveCount}</div></div>
                   </div>
                 </div>
+
                 <div style={{ background: '#E1F5EE', borderRadius: 10, padding: '14px 16px', marginBottom: 24, fontSize: 13, color: '#0F6E56', lineHeight: 1.6 }}>
                   <strong>Free to submit.</strong> Soft credit check only — no impact to your score.
                 </div>
+
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <button onClick={() => setStep(2)} style={{ background: 'transparent', color: '#666', border: '1px solid #ddd', borderRadius: 99, padding: '12px 24px', fontSize: 14, cursor: 'pointer' }}>← Back</button>
-                  <button onClick={() => { if (form.name && form.email && form.phone) setSubmitted(true); }} disabled={!form.name || !form.email || !form.phone} style={{ background: form.name && form.email && form.phone ? '#1D9E75' : '#ccc', color: '#fff', border: 'none', borderRadius: 99, padding: '14px 36px', fontSize: 15, fontWeight: 500, cursor: form.name && form.email && form.phone ? 'pointer' : 'not-allowed' }}>Submit BidLock™ — free</button>
+                  <button
+                    onClick={() => { if (form.name && form.email && phoneVerified) setSubmitted(true); }}
+                    disabled={!form.name || !form.email || !phoneVerified}
+                    style={{ background: form.name && form.email && phoneVerified ? '#1D9E75' : '#ccc', color: '#fff', border: 'none', borderRadius: 99, padding: '14px 36px', fontSize: 15, fontWeight: 500, cursor: form.name && form.email && phoneVerified ? 'pointer' : 'not-allowed' }}
+                  >
+                    Submit BidLock™ — free
+                  </button>
                 </div>
               </div>
             )}
