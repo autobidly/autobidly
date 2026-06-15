@@ -30,6 +30,93 @@ export default function BidLockPage() {
   const update = (k: string, v: any) => setForm(f => ({ ...f, [k]: v }));
   const makes = ['Ford','Chevrolet','GMC','Ram','Toyota','Honda','BMW','Mercedes-Benz','Cadillac','Buick','Jeep','Kia','Hyundai','Nissan','Lexus','Audi','Porsche','Subaru','Mazda','Volkswagen','Infiniti'];
 
+  function getLeaseIntelligenceScore(make: string, model: string, trim: string): { score: number; label: string; color: string; reason: string } {
+    let score = 60;
+    const m = make.toLowerCase();
+    const mo = model.toLowerCase();
+    const t = trim.toLowerCase();
+    const now = new Date();
+    const day = now.getDate();
+    const month = now.getMonth() + 1;
+
+    // Timing factors
+    if (day >= 26) score += 10; // End of month
+    if ([3, 6, 9, 12].includes(month)) score += 15; // End of quarter
+    if (month === 12) score += 10; // End of year
+    if (day >= 26 && [3, 6, 9, 12].includes(month)) score += 5; // End of month AND quarter bonus
+
+    // Brand factors
+    if (m.includes('chevrolet') || m.includes('gmc') || m.includes('buick') || m.includes('cadillac')) score += 10;
+    if (m.includes('bmw') || m.includes('mercedes') || m.includes('audi') || m.includes('lexus') || m.includes('volvo')) score += 8;
+    if (m.includes('honda') || m.includes('hyundai') || m.includes('kia')) score += 6;
+    if (m.includes('ford') || m.includes('ram')) score += 5;
+
+    // High demand / low inventory models — penalize
+    if (mo.includes('wrangler') || mo.includes('bronco') || mo.includes('tacoma') || mo.includes('4runner')) score -= 12;
+    if (mo.includes('civic') || mo.includes('corolla') || mo.includes('camry')) score -= 5;
+    if (mo.includes('maverick') || mo.includes('santa cruz')) score -= 8;
+
+    // Performance / exotic trims — penalize
+    if (t.includes('gt3') || t.includes('gt2') || t.includes('rs') || t.includes('nismo') || t.includes('hellcat') || t.includes('redeye')) score -= 15;
+    if (t.includes('raptor') || t.includes('shelby') || t.includes('zr2') || t.includes('at4x')) score -= 10;
+    if (t.includes('tremor') || t.includes('trd pro') || t.includes('rubicon')) score -= 8;
+
+    // Good lease models — bonus
+    if (mo.includes('equinox') || mo.includes('trax') || mo.includes('blazer') || mo.includes('traverse')) score += 8;
+    if (mo.includes('enclave') || mo.includes('envision') || mo.includes('encore')) score += 10;
+    if (mo.includes('3 series') || mo.includes('c-class') || mo.includes('a4') || mo.includes('q5')) score += 8;
+    if (mo.includes('escape') || mo.includes('explorer') || mo.includes('edge')) score += 6;
+
+    // Cap score
+    score = Math.max(10, Math.min(100, score));
+
+    let label = '';
+    let color = '';
+    let reason = '';
+
+    if (score >= 85) {
+      label = 'Excellent';
+      color = '#0F6E56';
+      reason = buildReason(make, model, day, month, score);
+    } else if (score >= 70) {
+      label = 'Good';
+      color = '#1D9E75';
+      reason = buildReason(make, model, day, month, score);
+    } else if (score >= 50) {
+      label = 'Fair';
+      color = '#B45309';
+      reason = buildReason(make, model, day, month, score);
+    } else {
+      label = 'Poor';
+      color = '#DC2626';
+      reason = buildReason(make, model, day, month, score);
+    }
+
+    return { score, label, color, reason };
+  }
+
+  function buildReason(make: string, model: string, day: number, month: number, score: number): string {
+    const reasons = [];
+    const m = make.toLowerCase();
+    const mo = model.toLowerCase();
+
+    if (day >= 26 && [3, 6, 9, 12].includes(month)) reasons.push('end of quarter push');
+    else if (day >= 26) reasons.push('end of month dealer incentives');
+    else if ([3, 6, 9, 12].includes(month)) reasons.push('end of quarter manufacturer incentives');
+
+    if (m.includes('chevrolet') || m.includes('gmc') || m.includes('buick')) reasons.push('GM offering strong subvented rates');
+    if (m.includes('bmw') || m.includes('mercedes') || m.includes('audi')) reasons.push('luxury brand incentives active');
+    if (mo.includes('enclave') || mo.includes('envision')) reasons.push('high dealer inventory');
+    if (mo.includes('wrangler') || mo.includes('bronco') || mo.includes('tacoma')) reasons.push('high demand limits dealer flexibility');
+
+    if (reasons.length === 0) {
+      if (score >= 70) reasons.push('solid lease conditions this month');
+      else reasons.push('standard market conditions');
+    }
+
+    return reasons.join(' · ');
+  }
+
   function mapBody(raw: string): string {
     const r = raw.toLowerCase();
     if (r.includes('supercrew') || r.includes('crew cab pickup')) return 'Crew Cab';
@@ -227,6 +314,8 @@ export default function BidLockPage() {
     return { strong, fair, suggested, market, msrp };
   }
 
+  const lis = form.trim ? getLeaseIntelligenceScore(form.make, form.model, form.trim) : null;
+
   return (
     <main style={{ fontFamily: 'system-ui, sans-serif', background: '#f9f9f7', minHeight: '100vh' }}>
       <nav style={{ background: '#fff', borderBottom: '1px solid #eee', padding: '16px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -334,6 +423,26 @@ export default function BidLockPage() {
                     <input value={form.color} onChange={e => update('color', e.target.value)} placeholder="e.g. White, Black, Any" style={inputStyle} />
                   </div>
                 </div>
+
+                {/* LEASE INTELLIGENCE SCORE */}
+                {lis && (
+                  <div style={{ marginTop: 20, padding: '16px 20px', borderRadius: 12, border: `1.5px solid ${lis.color}22`, background: `${lis.color}08` }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                      <div>
+                        <div style={{ fontSize: 11, fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 4 }}>Lease Intelligence Score™</div>
+                        <div style={{ fontSize: 13, color: '#555' }}>{lis.reason}</div>
+                      </div>
+                      <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: 16 }}>
+                        <div style={{ fontSize: 32, fontWeight: 700, color: lis.color, lineHeight: 1 }}>{lis.score}</div>
+                        <div style={{ fontSize: 11, color: lis.color, fontWeight: 600 }}>{lis.label}</div>
+                      </div>
+                    </div>
+                    <div style={{ height: 6, background: '#eee', borderRadius: 99, overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${lis.score}%`, background: lis.color, borderRadius: 99, transition: 'width 0.5s ease' }} />
+                    </div>
+                  </div>
+                )}
+
                 <div style={{ marginTop: 24, display: 'flex', justifyContent: 'flex-end' }}>
                   <button onClick={() => setStep(2)} disabled={!form.model || !form.trim} style={{ background: form.model && form.trim ? '#111' : '#ccc', color: '#fff', border: 'none', borderRadius: 99, padding: '12px 32px', fontSize: 15, fontWeight: 500, cursor: form.model && form.trim ? 'pointer' : 'not-allowed' }}>Next — your deal →</button>
                 </div>

@@ -5,8 +5,6 @@ export default function DealsPage() {
         src="/deals.html"
         style={{ width: '100%', height: '100%', border: 'none' }}
       />
-
-      {/* BidLock Nudge */}
       <div style={{
         position: 'fixed',
         bottom: 24,
