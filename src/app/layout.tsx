@@ -19,12 +19,12 @@ export const metadata: Metadata = {
   openGraph: {
     title: "AutoBidly — Name Your Lease Price. Dealers Compete.",
     description: "Submit the exact vehicle and payment you want. Verified dealers compete. First to accept is locked in. No negotiating. No games.",
-    url: "https://autobidly.vercel.app",
+    url: "https://autobidly.com",
     siteName: "AutoBidly",
     type: "website",
     images: [
       {
-        url: "https://autobidly.vercel.app/og-image.png",
+        url: "https://autobidly.com/og-image.png",
         width: 1200,
         height: 630,
         alt: "AutoBidly — Name Your Lease Price",
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "AutoBidly — Name Your Lease Price. Dealers Compete.",
     description: "Submit the exact vehicle and payment you want. Verified dealers compete. First to accept is locked in.",
-    images: ["https://autobidly.vercel.app/og-image.png"],
+    images: ["https://autobidly.com/og-image.png"],
   },
   robots: {
     index: true,
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://autobidly.vercel.app",
+    canonical: "https://autobidly.com",
   },
 };
 
@@ -66,10 +66,10 @@ export default function RootLayout({
               "@type": "WebSite",
               "name": "AutoBidly",
               "description": "AutoBidly is a two-sided car lease marketplace where buyers name their price and verified dealers compete for their business.",
-              "url": "https://autobidly.vercel.app",
+              "url": "https://autobidly.com",
               "potentialAction": {
                 "@type": "SearchAction",
-                "target": "https://autobidly.vercel.app/deals?q={search_term_string}",
+                "target": "https://autobidly.com/deals?q={search_term_string}",
                 "query-input": "required name=search_term_string"
               }
             })
@@ -82,8 +82,8 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               "name": "AutoBidly LLC",
-              "url": "https://autobidly.vercel.app",
-              "logo": "https://autobidly.vercel.app/autobidly-icon.png",
+              "url": "https://autobidly.com",
+              "logo": "https://autobidly.com/autobidly-icon.png",
               "contactPoint": {
                 "@type": "ContactPoint",
                 "email": "info@autobidly.com",
