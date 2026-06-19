@@ -612,9 +612,22 @@ export default function BidLockPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <button onClick={() => setStep(2)} style={{ background: 'transparent', color: '#666', border: '1px solid #ddd', borderRadius: 99, padding: '12px 24px', fontSize: 14, cursor: 'pointer' }}>← Back</button>
                   <button
-                    onClick={() => { if (form.name && form.email && phoneVerified) setSubmitted(true); }}
-                    disabled={!form.name || !form.email || !phoneVerified}
-                    style={{ background: form.name && form.email && phoneVerified ? '#1D9E75' : '#ccc', color: '#fff', border: 'none', borderRadius: 99, padding: '14px 36px', fontSize: 15, fontWeight: 500, cursor: form.name && form.email && phoneVerified ? 'pointer' : 'not-allowed' }}
+                    onClick={async () => {
+                    if (form.name && form.email) {
+                      try {
+                        await fetch('/api/bidlock', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ ...form, phoneVerified }),
+                        });
+                      } catch (e) {
+                        console.error('Failed to save bidlock:', e);
+                      }
+                      setSubmitted(true);
+                    }
+                  }}
+                    disabled={!form.name || !form.email}
+                    style={{ background: form.name && form.email ? '#1D9E75' : '#ccc', color: '#fff', border: 'none', borderRadius: 99, padding: '14px 36px', fontSize: 15, fontWeight: 500, cursor: form.name && form.email ? 'pointer' : 'not-allowed' }}
                   >
                     Submit BidLock™ — free
                   </button>

@@ -1,18 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseAdmin = createClient(
+  'https://wwvieytvxygrbbtbxaar.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3dmlleXR2eHlncmJidGJ4YWFyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTg3NTg3NCwiZXhwIjoyMDk3NDUxODc0fQ.AGmz0jtxujO9HbVgFewA1mLrvp4yNBr1UY2bV0uFD6c'
+);
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    
-    if (!url || !key) {
-      return NextResponse.json({ error: `Missing env vars: url=${!!url} key=${!!key}` }, { status: 500 });
-    }
-
-    const { createClient } = await import('@supabase/supabase-js');
-    const supabaseAdmin = createClient(url, key);
 
     const { data, error } = await supabaseAdmin
       .from('bidlocks')
