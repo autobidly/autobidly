@@ -1,9 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    
+    if (!url || !key) {
+      return NextResponse.json({ error: `Missing env vars: url=${!!url} key=${!!key}` }, { status: 500 });
+    }
+
+    const { createClient } = await import('@supabase/supabase-js');
+    const supabaseAdmin = createClient(url, key);
 
     const { data, error } = await supabaseAdmin
       .from('bidlocks')
@@ -35,14 +44,12 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Supabase error:', error);
-      return NextResponse.json({ error: error.message }, { status: 500 });
+      return NextResponse.json({ error: error.message, details: error }, { status: 500 });
     }
 
     return NextResponse.json({ success: true, bidlock: data });
 
   } catch (err) {
-    console.error('Error:', err);
     return NextResponse.json({ error: String(err) }, { status: 500 });
   }
 }
