@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 function ExpressContent() {
@@ -19,7 +19,7 @@ function ExpressContent() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  const canSubmit = zip.length === 5 && name.trim() && email.includes('@') && phone.length >= 10;
+  const canSubmit = zip.length === 5 && name.trim().length > 0 && email.includes('@') && phone.length >= 10;
 
   async function handleSubmit() {
     if (!canSubmit) return;
@@ -30,7 +30,9 @@ function ExpressContent() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          make, model, trim,
+          make,
+          model,
+          trim,
           config: 'Standard',
           cab: 'Standard',
           term: '36',
@@ -39,17 +41,17 @@ function ExpressContent() {
           down: '0',
           zip,
           credit: 'excellent',
-          incentives: [],
-          buyer_name: name,
-          buyer_email: email,
-          buyer_phone: phone,
-          phone_verified: false,
+          name,
+          email,
+          phone,
+          phoneVerified: false,
         }),
       });
       if (res.ok) {
         setSubmitted(true);
       } else {
-        setError('Something went wrong. Please try again.');
+        const data = await res.json();
+        setError(data.error || 'Something went wrong. Please try again.');
       }
     } catch {
       setError('Something went wrong. Please try again.');
@@ -85,10 +87,10 @@ function ExpressContent() {
               Verified dealers near {zip} can now see your bid for the {make} {model} {trim} at <strong>${payment}/mo</strong>. The first dealer to accept is locked in at your price.
             </p>
             <div style={{ background: '#E1F5EE', borderRadius: 14, padding: '24px', marginBottom: 28 }}>
-              <div style={{ fontSize: 14, color: '#0F6E56', lineHeight: 1.7 }}>
+              <div style={{ fontSize: 14, color: '#0F6E56', lineHeight: 1.8 }}>
                 ✓ Your BidLock™ has been submitted<br />
                 ✓ Dealers in your area have been notified<br />
-                ✓ You'll receive an email at {email} when a dealer accepts<br />
+                ✓ You&apos;ll receive an email at {email} when a dealer accepts<br />
                 ✓ Acceptance locks the price — no renegotiation
               </div>
             </div>
@@ -99,7 +101,6 @@ function ExpressContent() {
           </div>
         ) : (
           <>
-            {/* VEHICLE CARD */}
             <div style={{ background: '#111', borderRadius: 16, padding: '28px', marginBottom: 28 }}>
               <div style={{ fontSize: 11, fontWeight: 600, color: '#1D9E75', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12 }}>Your BidLock™ — ready to submit</div>
               <div style={{ fontSize: 24, fontWeight: 700, color: '#fff', marginBottom: 6 }}>{make} {model} {trim}</div>
@@ -117,7 +118,6 @@ function ExpressContent() {
               </div>
             </div>
 
-            {/* HOW IT WORKS — MINI */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 28 }}>
               {[
                 { num: '1', text: 'Your bid goes live to dealers near you' },
@@ -131,51 +131,32 @@ function ExpressContent() {
               ))}
             </div>
 
-            {/* FORM */}
             <div style={{ background: '#fff', borderRadius: 14, padding: '28px', border: '1px solid #eee', marginBottom: 16 }}>
               <div style={{ fontSize: 16, fontWeight: 600, color: '#111', marginBottom: 20 }}>Where should dealers look for you?</div>
-
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                <div>
-                  <label style={{ fontSize: 13, fontWeight: 600, color: '#111', display: 'block', marginBottom: 6 }}>Your name</label>
-                  <input
-                    value={name}
-                    onChange={e => setName(e.target.value)}
-                    placeholder="First and last name"
-                    style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: '1.5px solid #eee', fontSize: 15, fontFamily: 'system-ui', outline: 'none', boxSizing: 'border-box' as const }}
-                    onFocus={e => (e.target.style.borderColor = '#1D9E75')}
-                    onBlur={e => (e.target.style.borderColor = '#eee')}
-                  />
-                </div>
-                <div>
-                  <label style={{ fontSize: 13, fontWeight: 600, color: '#111', display: 'block', marginBottom: 6 }}>Email address</label>
-                  <input
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    placeholder="you@email.com"
-                    type="email"
-                    style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: '1.5px solid #eee', fontSize: 15, fontFamily: 'system-ui', outline: 'none', boxSizing: 'border-box' as const }}
-                    onFocus={e => (e.target.style.borderColor = '#1D9E75')}
-                    onBlur={e => (e.target.style.borderColor = '#eee')}
-                  />
-                </div>
-                <div>
-                  <label style={{ fontSize: 13, fontWeight: 600, color: '#111', display: 'block', marginBottom: 6 }}>Phone number</label>
-                  <input
-                    value={phone}
-                    onChange={e => setPhone(e.target.value)}
-                    placeholder="(248) 555-0100"
-                    type="tel"
-                    style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: '1.5px solid #eee', fontSize: 15, fontFamily: 'system-ui', outline: 'none', boxSizing: 'border-box' as const }}
-                    onFocus={e => (e.target.style.borderColor = '#1D9E75')}
-                    onBlur={e => (e.target.style.borderColor = '#eee')}
-                  />
-                </div>
+                {[
+                  { label: 'Your name', value: name, setter: setName, placeholder: 'First and last name', type: 'text' },
+                  { label: 'Email address', value: email, setter: setEmail, placeholder: 'you@email.com', type: 'email' },
+                  { label: 'Phone number', value: phone, setter: setPhone, placeholder: '(248) 555-0100', type: 'tel' },
+                ].map((field, i) => (
+                  <div key={i}>
+                    <label style={{ fontSize: 13, fontWeight: 600, color: '#111', display: 'block', marginBottom: 6 }}>{field.label}</label>
+                    <input
+                      value={field.value}
+                      onChange={e => { field.setter(e.target.value); setError(''); }}
+                      placeholder={field.placeholder}
+                      type={field.type}
+                      style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: '1.5px solid #eee', fontSize: 15, fontFamily: 'system-ui', outline: 'none', boxSizing: 'border-box' as const }}
+                      onFocus={e => (e.target.style.borderColor = '#1D9E75')}
+                      onBlur={e => (e.target.style.borderColor = '#eee')}
+                    />
+                  </div>
+                ))}
                 <div>
                   <label style={{ fontSize: 13, fontWeight: 600, color: '#111', display: 'block', marginBottom: 6 }}>Your ZIP code</label>
                   <input
                     value={zip}
-                    onChange={e => setZip(e.target.value.replace(/\D/g, '').slice(0, 5))}
+                    onChange={e => { setZip(e.target.value.replace(/\D/g, '').slice(0, 5)); setError(''); }}
                     placeholder="48167"
                     style={{ width: '100%', padding: '12px 14px', borderRadius: 10, border: '1.5px solid #eee', fontSize: 15, fontFamily: 'system-ui', outline: 'none', boxSizing: 'border-box' as const }}
                     onFocus={e => (e.target.style.borderColor = '#1D9E75')}
@@ -186,7 +167,11 @@ function ExpressContent() {
               </div>
             </div>
 
-            {error && <div style={{ fontSize: 14, color: '#DC2626', marginBottom: 12, textAlign: 'center' }}>{error}</div>}
+            {error && (
+              <div style={{ fontSize: 14, color: '#DC2626', marginBottom: 12, textAlign: 'center', padding: '10px', background: '#FEF2F2', borderRadius: 8 }}>
+                {error}
+              </div>
+            )}
 
             <button
               onClick={handleSubmit}
