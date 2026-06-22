@@ -71,8 +71,8 @@ export default function HomePage() {
           <a href="/how-it-works" style={{ fontSize: 14, color: '#666', textDecoration: 'none' }}>How it works</a>
           <a href="/deals" style={{ fontSize: 14, color: '#666', textDecoration: 'none' }}>Browse deals</a>
           <a href="/lease-intelligence" style={{ fontSize: 14, color: '#666', textDecoration: 'none' }}>Lease Intelligence</a>
-          <a href="/dealer" style={{ fontSize: 14, color: '#666', textDecoration: 'none' }}>For dealers</a>
-          <a href="/profile" style={{ fontSize: 14, color: '#666', textDecoration: 'none' }}>My Lease Passport</a>
+          <a href="/insider" style={{ fontSize: 14, color: '#666', textDecoration: 'none' }}>The Insider</a>
+          <a href="/dealer-login" style={{ fontSize: 14, color: '#666', textDecoration: 'none' }}>For dealers</a>
           <a href="/bidlock" style={{ background: '#1D9E75', color: '#fff', borderRadius: 99, padding: '8px 20px', fontSize: 14, fontWeight: 500, textDecoration: 'none' }}>Submit a bid</a>
         </div>
       </nav>
@@ -83,7 +83,7 @@ export default function HomePage() {
           <div>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, border: '1px solid #ddd', borderRadius: 99, padding: '5px 14px', marginBottom: 20 }}>
               <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#1D9E75', display: 'inline-block' }}></span>
-              <span style={{ fontSize: 12, color: '#555' }}>The lease marketplace dealers didn&apos;t want you to know about</span>
+              <span style={{ fontSize: 12, color: '#555' }}>The lease marketplace that puts buyers in the driver&apos;s seat</span>
             </div>
             <h1 style={{ fontSize: 48, fontWeight: 700, lineHeight: 1.1, letterSpacing: '-1.5px', marginBottom: 16, color: '#111' }}>
               Name your price.<br />Dealers <span style={{ color: '#1D9E75' }}>compete.</span>
@@ -119,7 +119,7 @@ export default function HomePage() {
                   <div style={{ padding: 12 }}>
                     <div style={{ background: '#fff', borderRadius: 10, padding: 12, marginBottom: 10, border: '1px solid #eee' }}>
                       <div style={{ fontSize: 9, fontWeight: 600, color: '#1D9E75', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Your BidLock™</div>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: '#111', marginBottom: 1 }}>2025 Silverado 1500 LT</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: '#111', marginBottom: 1 }}>2026 Silverado 1500 LT</div>
                       <div style={{ fontSize: 10, color: '#999', marginBottom: 6 }}>Crew Cab · 4x4 · 36mo · 12k/yr</div>
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <div><div style={{ fontSize: 9, color: '#999' }}>Payment</div><div style={{ fontSize: 18, fontWeight: 700, color: '#1D9E75' }}>$489<span style={{ fontSize: 11, fontWeight: 400 }}>/mo</span></div></div>
@@ -176,7 +176,7 @@ export default function HomePage() {
       {/* TICKER */}
       <div style={{ background: '#085041', padding: '11px 0', overflow: 'hidden', whiteSpace: 'nowrap' }}>
         <div style={{ display: 'inline-flex', gap: 48, animation: 'scroll 22s linear infinite' }}>
-          {['2025 Silverado 1500 LT — $0 down, $489/mo accepted · Detroit, MI', '2025 Equinox LT — $0 down, $359/mo accepted · Novi, MI', '2025 Traverse Premier — $0 down, $479/mo accepted · Troy, MI', '2025 Tahoe LT — $0 down, $699/mo accepted · Birmingham, MI', '2025 Trax LT — $0 down, $279/mo accepted · Livonia, MI', '2025 Silverado 1500 LT — $0 down, $489/mo accepted · Detroit, MI', '2025 Equinox LT — $0 down, $359/mo accepted · Novi, MI', '2025 Traverse Premier — $0 down, $479/mo accepted · Troy, MI'].map((item, i) => (
+          {['2026 Silverado 1500 LT — $0 down, $489/mo accepted · Detroit, MI', '2026 Equinox LT — $0 down, $359/mo accepted · Novi, MI', '2026 Traverse Premier — $0 down, $479/mo accepted · Troy, MI', '2026 Tahoe LT — $0 down, $699/mo accepted · Birmingham, MI', '2026 Trax LT — $0 down, $279/mo accepted · Livonia, MI', '2026 Silverado 1500 LT — $0 down, $489/mo accepted · Detroit, MI', '2026 Equinox LT — $0 down, $359/mo accepted · Novi, MI', '2026 Traverse Premier — $0 down, $479/mo accepted · Troy, MI'].map((item, i) => (
             <span key={i} style={{ fontSize: 12, fontWeight: 500, color: '#9FE1CB', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
               <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#1D9E75', display: 'inline-block' }}></span>{item}
             </span>
@@ -198,7 +198,7 @@ export default function HomePage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: 24, alignItems: 'center' }}>
               <div style={{ width: 48, height: 48, borderRadius: 10, background: '#E1F5EE', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>🛻</div>
               <div>
-                <div style={{ fontSize: 11, color: '#1D9E75', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 3 }}>2025 Chevrolet Silverado 1500 LT</div>
+                <div style={{ fontSize: 11, color: '#1D9E75', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 3 }}>2026 Chevrolet Silverado 1500 LT</div>
                 <div style={{ fontSize: 18, fontWeight: 600, color: '#111', marginBottom: 4 }}>$489/mo · $0 down · 36mo</div>
                 <div style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>Feldman Chevrolet · Novi, MI · 12,000 mi/yr · Crew Cab 4x4</div>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -225,13 +225,13 @@ export default function HomePage() {
       <section style={{ padding: '56px 40px', background: '#f9f9f7' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'center', maxWidth: 1100, margin: '0 auto' }}>
           <div>
-            <span style={{ display: 'inline-block', background: '#E1F5EE', color: '#0F6E56', fontSize: 11, fontWeight: 500, padding: '3px 10px', borderRadius: 99, marginBottom: 14 }}>The dirty secret</span>
+            <span style={{ display: 'inline-block', background: '#E1F5EE', color: '#0F6E56', fontSize: 11, fontWeight: 500, padding: '3px 10px', borderRadius: 99, marginBottom: 14 }}>The pricing gap</span>
             <h2 style={{ fontSize: 32, fontWeight: 700, color: '#111', lineHeight: 1.15, letterSpacing: '-1px', marginBottom: 16 }}>
               Same car. Same sticker.<br /><span style={{ color: '#1D9E75' }}>Wildly different prices.</span>
             </h2>
-            <p style={{ fontSize: 15, color: '#555', lineHeight: 1.75, marginBottom: 10 }}>Five dealers. Same 2025 Silverado 1500 LT. Same GM incentives. Same customer with GM employee pricing and Costco membership.</p>
-            <p style={{ fontSize: 15, color: '#555', lineHeight: 1.75, marginBottom: 16 }}>Five completely different monthly payments — because every dealer decides for themselves how much they think they can get away with.</p>
-            <p style={{ fontSize: 15, color: '#111', fontWeight: 600 }}>AutoBidly fixes this. We show you what you should actually be paying.</p>
+            <p style={{ fontSize: 15, color: '#555', lineHeight: 1.75, marginBottom: 10 }}>Five dealers. Same 2026 Silverado 1500 LT. Same GM incentives available to all of them. Same buyer with GM employee pricing and Costco membership.</p>
+            <p style={{ fontSize: 15, color: '#555', lineHeight: 1.75, marginBottom: 16 }}>Five completely different monthly payments — because pricing transparency in car leasing has never been required.</p>
+            <p style={{ fontSize: 15, color: '#111', fontWeight: 600 }}>AutoBidly changes that. We show you what comparable buyers are actually paying.</p>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {[
@@ -246,7 +246,7 @@ export default function HomePage() {
                 <div style={{ fontSize: 11, color: '#999', marginTop: 3 }}>Same Silverado 1500 LT. Same GM incentives available.</div>
               </div>
             ))}
-            <div style={{ fontSize: 12, color: '#999', textAlign: 'center', fontStyle: 'italic' }}>AutoBidly finds your Dealer D every time.</div>
+            <div style={{ fontSize: 12, color: '#999', textAlign: 'center', fontStyle: 'italic' }}>AutoBidly helps you find your Dealer D.</div>
           </div>
         </div>
       </section>
@@ -315,6 +315,40 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* INSIDER SECTION */}
+      <section style={{ padding: '56px 40px', background: '#fff' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 28 }}>
+            <div>
+              <div style={{ display: 'inline-block', background: '#111', color: '#1D9E75', fontSize: 10, fontWeight: 600, padding: '3px 10px', borderRadius: 99, marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>The AutoBidly Insider</div>
+              <h2 style={{ fontSize: 28, fontWeight: 700, color: '#111', letterSpacing: '-0.5px', marginBottom: 4 }}>The informed buyer&apos;s guide to leasing</h2>
+              <p style={{ fontSize: 14, color: '#666' }}>Everything you should know before you sign</p>
+            </div>
+            <a href="/insider" style={{ fontSize: 13, color: '#1D9E75', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>See all guides →</a>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 16 }}>
+            {[
+              { slug: 'model-year-timing', tag: 'Model Year Timing', title: 'Leasing last year\'s model — when it saves you money and when it doesn\'t' },
+              { slug: 'lease-equity', tag: 'Lease Equity', title: 'Does your current lease have equity? Here\'s how to check before you turn it in.' },
+              { slug: 'dealer-addons', tag: 'Lease Math', title: 'The real cost of adding accessories to your lease' },
+              { slug: 'retired-loaners', tag: 'Insider Intel', title: 'Retired loaners — brand new vehicles with built-in savings' },
+            ].map((article, i) => (
+              <a key={i} href={`/insider/${article.slug}`} style={{ textDecoration: 'none' }}>
+                <div
+                  style={{ background: '#f9f9f7', borderRadius: 12, border: '1px solid #eee', padding: '20px', cursor: 'pointer', height: '100%' }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = '#1D9E75'; e.currentTarget.style.background = '#fff'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = '#eee'; e.currentTarget.style.background = '#f9f9f7'; }}
+                >
+                  <span style={{ fontSize: 10, fontWeight: 600, color: '#0F6E56', background: '#E1F5EE', padding: '2px 8px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 10, display: 'inline-block' }}>{article.tag}</span>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: '#111', lineHeight: 1.4, marginTop: 8 }}>{article.title}</div>
+                  <div style={{ fontSize: 13, color: '#1D9E75', fontWeight: 500, marginTop: 12 }}>Read more →</div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* WAITLIST */}
       <section style={{ padding: '56px 40px', background: '#E1F5EE' }}>
         <div style={{ maxWidth: 560, margin: '0 auto', textAlign: 'center' }}>
@@ -338,7 +372,7 @@ export default function HomePage() {
             }} style={{ background: '#1D9E75', color: '#fff', border: 'none', borderRadius: 99, padding: '12px 24px', fontSize: 14, fontWeight: 500, cursor: 'pointer' }}>Join waitlist</button>
           </div>
           <div id="waitlist-msg" style={{ marginTop: 10, fontSize: 13, minHeight: 18 }}></div>
-          <p style={{ fontSize: 11, color: '#888', marginTop: 10 }}>No spam. No selling your email. Just a heads up when we launch.</p>
+          <p style={{ fontSize: 11, color: '#888', marginTop: 10 }}>No spam. Unsubscribe anytime. We respect your inbox.</p>
         </div>
       </section>
 
@@ -358,6 +392,7 @@ export default function HomePage() {
         <div style={{ display: 'flex', gap: 20 }}>
           <a href="/privacy" style={{ fontSize: 12, color: '#666', textDecoration: 'none' }}>Privacy</a>
           <a href="/terms" style={{ fontSize: 12, color: '#666', textDecoration: 'none' }}>Terms</a>
+          <a href="/insider" style={{ fontSize: 12, color: '#666', textDecoration: 'none' }}>The Insider</a>
           <a href="/dealer-login" style={{ fontSize: 12, color: '#666', textDecoration: 'none' }}>Dealer login</a>
           <a href="mailto:info@autobidly.com" style={{ fontSize: 12, color: '#666', textDecoration: 'none' }}>Contact</a>
         </div>
