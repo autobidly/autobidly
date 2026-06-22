@@ -1,65 +1,110 @@
 "use client";
+import { useState } from "react";
+
+function getLeaseScore(make: string, model: string, trim: string = ''): number {
+  let score = 60;
+  const m = make.toLowerCase();
+  const mo = model.toLowerCase();
+  const t = trim.toLowerCase();
+  const now = new Date();
+  const day = now.getDate();
+  const month = now.getMonth() + 1;
+  if (day >= 26) score += 10;
+  if ([3, 6, 9, 12].includes(month)) score += 15;
+  if (month === 12) score += 10;
+  if (day >= 26 && [3, 6, 9, 12].includes(month)) score += 5;
+  if (m.includes('chevrolet') || m.includes('gmc') || m.includes('buick') || m.includes('cadillac')) score += 10;
+  if (m.includes('bmw') || m.includes('mercedes') || m.includes('audi') || m.includes('lexus')) score += 8;
+  if (m.includes('honda') || m.includes('hyundai') || m.includes('kia')) score += 6;
+  if (m.includes('ford') || m.includes('ram')) score += 5;
+  if (mo.includes('wrangler') || mo.includes('bronco') || mo.includes('tacoma') || mo.includes('4runner')) score -= 12;
+  if (mo.includes('maverick') || mo.includes('santa cruz')) score -= 8;
+  if (t.includes('gt3') || t.includes('raptor') || t.includes('hellcat') || t.includes('nismo')) score -= 15;
+  if (t.includes('rubicon') || t.includes('trd pro') || t.includes('at4x')) score -= 8;
+  if (mo.includes('equinox') || mo.includes('trax') || mo.includes('blazer') || mo.includes('traverse')) score += 8;
+  if (mo.includes('enclave') || mo.includes('envision') || mo.includes('encore')) score += 10;
+  if (mo.includes('3 series') || mo.includes('c-class') || mo.includes('a4') || mo.includes('q5')) score += 8;
+  if (mo.includes('escape') || mo.includes('explorer') || mo.includes('edge')) score += 6;
+  if (mo.includes('sierra') || mo.includes('silverado')) score += 6;
+  if (mo.includes('accord') || mo.includes('cr-v') || mo.includes('pilot')) score += 6;
+  if (mo.includes('rav4') || mo.includes('highlander') || mo.includes('venza')) score += 4;
+  if (mo.includes('tucson') || mo.includes('santa fe') || mo.includes('telluride') || mo.includes('sorento')) score += 6;
+  if (mo.includes('xt4') || mo.includes('xt5') || mo.includes('xt6') || mo.includes('escalade')) score += 8;
+  if (mo.includes('navigator') || mo.includes('aviator') || mo.includes('nautilus')) score += 7;
+  return Math.max(10, Math.min(100, score));
+}
+
+const allVehicles = [
+  { make: 'Chevrolet', model: 'Trax', trim: 'LT', category: 'SUV', seats: 5, estPayment: 249, miles: [10, 12, 15] },
+  { make: 'Hyundai', model: 'Tucson', trim: 'SEL', category: 'SUV', seats: 5, estPayment: 339, miles: [10, 12, 15] },
+  { make: 'Chevrolet', model: 'Equinox', trim: 'LT', category: 'SUV', seats: 5, estPayment: 359, miles: [10, 12, 15] },
+  { make: 'Honda', model: 'Accord', trim: 'EX-L', category: 'Sedan', seats: 5, estPayment: 349, miles: [10, 12, 15] },
+  { make: 'Honda', model: 'CR-V', trim: 'EX-L', category: 'SUV', seats: 5, estPayment: 389, miles: [10, 12, 15] },
+  { make: 'Ford', model: 'Ranger', trim: 'XLT', category: 'Truck', seats: 5, estPayment: 379, miles: [10, 12, 15] },
+  { make: 'Chevrolet', model: 'Blazer', trim: 'RS', category: 'SUV', seats: 5, estPayment: 419, miles: [10, 12, 15] },
+  { make: 'GMC', model: 'Canyon', trim: 'AT4', category: 'Truck', seats: 5, estPayment: 429, miles: [10, 12, 15] },
+  { make: 'Ford', model: 'Explorer', trim: 'XLT', category: 'SUV', seats: 7, estPayment: 449, miles: [10, 12, 15] },
+  { make: 'Kia', model: 'Telluride', trim: 'EX', category: 'SUV', seats: 8, estPayment: 459, miles: [10, 12, 15] },
+  { make: 'Chevrolet', model: 'Silverado 1500', trim: 'LT', category: 'Truck', seats: 5, estPayment: 469, miles: [10, 12, 15] },
+  { make: 'Ford', model: 'F-150', trim: 'XLT', category: 'Truck', seats: 5, estPayment: 469, miles: [10, 12, 15] },
+  { make: 'Chevrolet', model: 'Traverse', trim: 'Premier', category: 'SUV', seats: 7, estPayment: 479, miles: [10, 12, 15] },
+  { make: 'Buick', model: 'Enclave', trim: 'Avenir', category: 'SUV', seats: 7, estPayment: 499, miles: [10, 12, 15] },
+  { make: 'BMW', model: '3 Series', trim: '330i', category: 'Sedan', seats: 5, estPayment: 499, miles: [10, 12, 15] },
+  { make: 'GMC', model: 'Sierra 1500', trim: 'SLT', category: 'Truck', seats: 5, estPayment: 489, miles: [10, 12, 15] },
+  { make: 'BMW', model: 'X3', trim: 'sDrive30i', category: 'SUV', seats: 5, estPayment: 529, miles: [10, 12, 15] },
+  { make: 'GMC', model: 'Acadia', trim: 'Denali', category: 'SUV', seats: 7, estPayment: 549, miles: [10, 12, 15] },
+  { make: 'Audi', model: 'Q5', trim: 'Premium Plus', category: 'SUV', seats: 5, estPayment: 569, miles: [10, 12, 15] },
+  { make: 'Cadillac', model: 'XT5', trim: 'Premium Luxury', category: 'SUV', seats: 5, estPayment: 579, miles: [10, 12, 15] },
+  { make: 'Lincoln', model: 'Nautilus', trim: 'Reserve', category: 'Luxury SUV', seats: 5, estPayment: 579, miles: [10, 12, 15] },
+  { make: 'Mercedes-Benz', model: 'C-Class', trim: 'C 300', category: 'Sedan', seats: 5, estPayment: 509, miles: [10, 12, 15] },
+  { make: 'Cadillac', model: 'XT6', trim: 'Premium Luxury', category: 'Luxury SUV', seats: 7, estPayment: 619, miles: [10, 12, 15] },
+  { make: 'Mercedes-Benz', model: 'GLC', trim: '300', category: 'Luxury SUV', seats: 5, estPayment: 649, miles: [10, 12, 15] },
+  { make: 'BMW', model: 'X5', trim: 'xDrive40i', category: 'Luxury SUV', seats: 7, estPayment: 729, miles: [10, 12, 15] },
+].map(v => ({ ...v, score: getLeaseScore(v.make, v.model, v.trim) }))
+  .sort((a, b) => b.score - a.score);
+
+function scoreColor(score: number) {
+  if (score >= 85) return '#0F6E56';
+  if (score >= 70) return '#1D9E75';
+  if (score >= 50) return '#B45309';
+  return '#DC2626';
+}
+
+function scoreLabel(score: number) {
+  if (score >= 85) return 'Excellent';
+  if (score >= 70) return 'Good';
+  if (score >= 50) return 'Fair';
+  return 'Poor';
+}
+
+const hotVehicles = allVehicles.slice(0, 12);
 
 export default function HomePage() {
+  const [fitBudget, setFitBudget] = useState('400');
+  const [fitSeats, setFitSeats] = useState('5');
+  const [fitMiles, setFitMiles] = useState('12');
+  const [fitResults, setFitResults] = useState<typeof allVehicles | null>(null);
 
-  function getLeaseScore(make: string, model: string, trim: string = ''): number {
-    let score = 60;
-    const m = make.toLowerCase();
-    const mo = model.toLowerCase();
-    const t = trim.toLowerCase();
-    const now = new Date();
-    const day = now.getDate();
-    const month = now.getMonth() + 1;
-    if (day >= 26) score += 10;
-    if ([3, 6, 9, 12].includes(month)) score += 15;
-    if (month === 12) score += 10;
-    if (day >= 26 && [3, 6, 9, 12].includes(month)) score += 5;
-    if (m.includes('chevrolet') || m.includes('gmc') || m.includes('buick') || m.includes('cadillac')) score += 10;
-    if (m.includes('bmw') || m.includes('mercedes') || m.includes('audi') || m.includes('lexus')) score += 8;
-    if (m.includes('honda') || m.includes('hyundai') || m.includes('kia')) score += 6;
-    if (m.includes('ford') || m.includes('ram')) score += 5;
-    if (mo.includes('wrangler') || mo.includes('bronco') || mo.includes('tacoma') || mo.includes('4runner')) score -= 12;
-    if (mo.includes('maverick') || mo.includes('santa cruz')) score -= 8;
-    if (t.includes('gt3') || t.includes('raptor') || t.includes('hellcat') || t.includes('nismo')) score -= 15;
-    if (t.includes('rubicon') || t.includes('trd pro') || t.includes('at4x')) score -= 8;
-    if (mo.includes('equinox') || mo.includes('trax') || mo.includes('blazer') || mo.includes('traverse')) score += 8;
-    if (mo.includes('enclave') || mo.includes('envision') || mo.includes('encore')) score += 10;
-    if (mo.includes('3 series') || mo.includes('c-class') || mo.includes('a4') || mo.includes('q5')) score += 8;
-    if (mo.includes('escape') || mo.includes('explorer') || mo.includes('edge')) score += 6;
-    if (mo.includes('sierra') || mo.includes('silverado')) score += 6;
-    if (mo.includes('accord') || mo.includes('cr-v') || mo.includes('pilot')) score += 6;
-    return Math.max(10, Math.min(100, score));
+  function findMyFit() {
+    const budget = parseInt(fitBudget);
+    const seats = parseInt(fitSeats);
+    const results = allVehicles.filter(v =>
+      v.estPayment <= budget && v.seats >= seats
+    ).slice(0, 5);
+    setFitResults(results);
   }
 
-  const hotVehicles = [
-    { make: 'Chevrolet', model: 'Equinox', trim: 'LT', category: 'SUV' },
-    { make: 'Chevrolet', model: 'Silverado 1500', trim: 'LT', category: 'Truck' },
-    { make: 'Chevrolet', model: 'Traverse', trim: 'Premier', category: 'SUV' },
-    { make: 'Chevrolet', model: 'Trax', trim: 'LT', category: 'SUV' },
-    { make: 'GMC', model: 'Sierra 1500', trim: 'SLT', category: 'Truck' },
-    { make: 'Buick', model: 'Enclave', trim: 'Avenir', category: 'SUV' },
-    { make: 'BMW', model: '3 Series', trim: '330i', category: 'Sedan' },
-    { make: 'Honda', model: 'CR-V', trim: 'EX-L', category: 'SUV' },
-    { make: 'Chevrolet', model: 'Blazer', trim: 'RS', category: 'SUV' },
-    { make: 'GMC', model: 'Acadia', trim: 'Denali', category: 'SUV' },
-    { make: 'Audi', model: 'Q5', trim: 'Premium Plus', category: 'SUV' },
-    { make: 'GMC', model: 'Canyon', trim: 'AT4', category: 'Truck' },
-  ].map(v => ({ ...v, score: getLeaseScore(v.make, v.model, v.trim) }))
-    .sort((a, b) => b.score - a.score);
-
-  function scoreColor(score: number) {
-    if (score >= 85) return '#0F6E56';
-    if (score >= 70) return '#1D9E75';
-    if (score >= 50) return '#B45309';
-    return '#DC2626';
-  }
-
-  function scoreLabel(score: number) {
-    if (score >= 85) return 'Excellent';
-    if (score >= 70) return 'Good';
-    if (score >= 50) return 'Fair';
-    return 'Poor';
-  }
+  const selectStyle = {
+    padding: '12px 16px',
+    borderRadius: 10,
+    border: '1.5px solid #e5e5e5',
+    fontSize: 15,
+    fontFamily: 'system-ui',
+    outline: 'none',
+    background: '#fff',
+    color: '#111',
+    cursor: 'pointer',
+  };
 
   return (
     <main style={{ fontFamily: 'system-ui, sans-serif', margin: 0, padding: 0, background: '#fff' }}>
@@ -105,7 +150,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* PHONE */}
+          {/* PHONE MOCKUP */}
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <div style={{ width: 260, background: '#111', borderRadius: 36, padding: 10, boxShadow: '0 32px 64px rgba(0,0,0,0.18)' }}>
               <div style={{ background: '#111', borderRadius: 28, overflow: 'hidden' }}>
@@ -161,7 +206,7 @@ export default function HomePage() {
           {[
             { icon: '🔒', title: 'Submit a BidLock™', desc: 'Name your exact vehicle and payment. Verified dealers compete. First to accept is locked in.', cta: 'Submit a bid →', href: '/bidlock', dark: true },
             { icon: '🔍', title: 'Browse verified deals', desc: 'Real lease prices near you. Only your incentives applied. No bait pricing. No surprises.', cta: 'See deals near me →', href: '/deals', dark: false },
-            { icon: '📊', title: 'Best leases right now', desc: 'Our Lease Intelligence Score™ ranks every vehicle by how good the deal is today.', cta: 'See top vehicles →', href: '#lease-intelligence', dark: false },
+            { icon: '📊', title: 'Best leases right now', desc: 'Our Lease Intelligence Score™ ranks every vehicle by how good the deal is today — personalized to your incentives.', cta: 'See top vehicles →', href: '/lease-intelligence', dark: false },
           ].map((f, i) => (
             <div key={i} style={{ background: f.dark ? '#111' : '#f9f9f7', border: f.dark ? 'none' : '1px solid #eee', borderRadius: 14, padding: '22px 20px' }}>
               <div style={{ fontSize: 24, marginBottom: 12 }}>{f.icon}</div>
@@ -170,6 +215,145 @@ export default function HomePage() {
               <a href={f.href} style={{ fontSize: 13, fontWeight: 600, color: f.dark ? '#1D9E75' : '#111', textDecoration: 'none' }}>{f.cta}</a>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* FIND MY FIT */}
+      <section style={{ padding: '48px 40px', background: '#f9f9f7', borderTop: '1px solid #eee', borderBottom: '1px solid #eee' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'flex-start' }}>
+
+            {/* LEFT — INPUTS */}
+            <div>
+              <div style={{ display: 'inline-block', background: '#111', color: '#1D9E75', fontSize: 10, fontWeight: 600, padding: '3px 12px', borderRadius: 99, marginBottom: 14, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Find My Fit</div>
+              <h2 style={{ fontSize: 32, fontWeight: 700, color: '#111', letterSpacing: '-1px', lineHeight: 1.15, marginBottom: 12 }}>
+                What can I lease for <span style={{ color: '#1D9E75' }}>${fitBudget}/mo?</span>
+              </h2>
+              <p style={{ fontSize: 15, color: '#666', lineHeight: 1.7, marginBottom: 28 }}>
+                Tell us your budget, how many seats you need, and your annual mileage. We&apos;ll show you every vehicle in our Lease Intelligence database that fits — ranked by score so the best deals rise to the top.
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 20 }}>
+                <div>
+                  <label style={{ fontSize: 13, fontWeight: 600, color: '#111', display: 'block', marginBottom: 6 }}>Max monthly payment</label>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    {['300', '350', '400', '450', '500', '600', '700'].map(val => (
+                      <button
+                        key={val}
+                        onClick={() => { setFitBudget(val); setFitResults(null); }}
+                        style={{
+                          padding: '9px 16px', borderRadius: 99, fontSize: 14, fontWeight: 500, cursor: 'pointer', border: '1.5px solid',
+                          borderColor: fitBudget === val ? '#1D9E75' : '#ddd',
+                          background: fitBudget === val ? '#E1F5EE' : '#fff',
+                          color: fitBudget === val ? '#0F6E56' : '#555',
+                        }}
+                      >${val}/mo</button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ fontSize: 13, fontWeight: 600, color: '#111', display: 'block', marginBottom: 6 }}>Minimum seats needed</label>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    {[{ val: '2', label: 'Any' }, { val: '5', label: '5 seats' }, { val: '7', label: '7 seats' }, { val: '8', label: '8 seats' }].map(opt => (
+                      <button
+                        key={opt.val}
+                        onClick={() => { setFitSeats(opt.val); setFitResults(null); }}
+                        style={{
+                          padding: '9px 16px', borderRadius: 99, fontSize: 14, fontWeight: 500, cursor: 'pointer', border: '1.5px solid',
+                          borderColor: fitSeats === opt.val ? '#1D9E75' : '#ddd',
+                          background: fitSeats === opt.val ? '#E1F5EE' : '#fff',
+                          color: fitSeats === opt.val ? '#0F6E56' : '#555',
+                        }}
+                      >{opt.label}</button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{ fontSize: 13, fontWeight: 600, color: '#111', display: 'block', marginBottom: 6 }}>Miles per year</label>
+                  <div style={{ display: 'flex', gap: 8 }}>
+                    {[{ val: '10', label: '10,000' }, { val: '12', label: '12,000' }, { val: '15', label: '15,000' }].map(opt => (
+                      <button
+                        key={opt.val}
+                        onClick={() => { setFitMiles(opt.val); setFitResults(null); }}
+                        style={{
+                          padding: '9px 16px', borderRadius: 99, fontSize: 14, fontWeight: 500, cursor: 'pointer', border: '1.5px solid',
+                          borderColor: fitMiles === opt.val ? '#1D9E75' : '#ddd',
+                          background: fitMiles === opt.val ? '#E1F5EE' : '#fff',
+                          color: fitMiles === opt.val ? '#0F6E56' : '#555',
+                        }}
+                      >{opt.label} mi/yr</button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={findMyFit}
+                style={{ background: '#111', color: '#fff', border: 'none', borderRadius: 99, padding: '14px 32px', fontSize: 15, fontWeight: 600, cursor: 'pointer', width: '100%' }}
+              >
+                Show me what fits →
+              </button>
+
+              <p style={{ fontSize: 12, color: '#999', marginTop: 10, lineHeight: 1.5 }}>
+                * Payments estimated at $0 down, 36mo, excellent credit. Actual payment varies by market, dealer, and incentives. <a href="/lease-intelligence" style={{ color: '#1D9E75', textDecoration: 'none' }}>Personalize with your incentives →</a>
+              </p>
+            </div>
+
+            {/* RIGHT — RESULTS */}
+            <div>
+              {fitResults === null ? (
+                <div style={{ background: '#fff', borderRadius: 14, border: '1.5px dashed #ddd', padding: '40px 32px', textAlign: 'center' }}>
+                  <div style={{ fontSize: 36, marginBottom: 12 }}>🔍</div>
+                  <div style={{ fontSize: 16, fontWeight: 600, color: '#111', marginBottom: 8 }}>Your matches will appear here</div>
+                  <div style={{ fontSize: 14, color: '#999', lineHeight: 1.65 }}>Select your budget, seats, and mileage on the left and hit &quot;Show me what fits&quot; to see vehicles ranked by Lease Intelligence Score.</div>
+                </div>
+              ) : fitResults.length === 0 ? (
+                <div style={{ background: '#fff', borderRadius: 14, border: '1.5px solid #eee', padding: '40px 32px', textAlign: 'center' }}>
+                  <div style={{ fontSize: 36, marginBottom: 12 }}>🤔</div>
+                  <div style={{ fontSize: 16, fontWeight: 600, color: '#111', marginBottom: 8 }}>No exact matches found</div>
+                  <div style={{ fontSize: 14, color: '#666', lineHeight: 1.65, marginBottom: 20 }}>Try increasing your budget or reducing your seat requirement. You can also submit a BidLock™ and let dealers compete at your exact price.</div>
+                  <a href="/bidlock" style={{ background: '#1D9E75', color: '#fff', borderRadius: 99, padding: '12px 24px', fontSize: 14, fontWeight: 600, textDecoration: 'none', display: 'inline-block' }}>Submit a BidLock™ →</a>
+                </div>
+              ) : (
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: '#111' }}>{fitResults.length} vehicle{fitResults.length !== 1 ? 's' : ''} fit your budget</div>
+                    <div style={{ fontSize: 12, color: '#999' }}>Ranked by Lease Intelligence Score™</div>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {fitResults.map((v, i) => (
+                      <a key={i} href="/bidlock" style={{ textDecoration: 'none' }}>
+                        <div
+                          style={{ background: '#fff', borderRadius: 12, border: i === 0 ? '1.5px solid #1D9E75' : '1px solid #eee', padding: '16px 18px', display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, alignItems: 'center' }}
+                          onMouseEnter={e => (e.currentTarget.style.borderColor = '#1D9E75')}
+                          onMouseLeave={e => (e.currentTarget.style.borderColor = i === 0 ? '#1D9E75' : '#eee')}
+                        >
+                          <div>
+                            {i === 0 && <div style={{ fontSize: 10, fontWeight: 600, color: '#0F6E56', background: '#E1F5EE', padding: '2px 8px', borderRadius: 99, display: 'inline-block', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Best match</div>}
+                            <div style={{ fontSize: 15, fontWeight: 600, color: '#111', marginBottom: 2 }}>{v.make} {v.model} {v.trim}</div>
+                            <div style={{ fontSize: 12, color: '#888', marginBottom: 6 }}>{v.category} · {v.seats} seats · est. ${v.estPayment}/mo</div>
+                            <div style={{ height: 3, background: '#eee', borderRadius: 99, overflow: 'hidden', maxWidth: 180 }}>
+                              <div style={{ height: '100%', width: `${v.score}%`, background: scoreColor(v.score), borderRadius: 99 }} />
+                            </div>
+                          </div>
+                          <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: 28, fontWeight: 700, color: scoreColor(v.score), lineHeight: 1 }}>{v.score}</div>
+                            <div style={{ fontSize: 10, color: scoreColor(v.score), fontWeight: 600, marginTop: 2 }}>{scoreLabel(v.score)}</div>
+                            <div style={{ fontSize: 11, color: '#1D9E75', marginTop: 6, fontWeight: 500 }}>BidLock™ →</div>
+                          </div>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                  <div style={{ marginTop: 16, textAlign: 'center' }}>
+                    <a href="/lease-intelligence" style={{ fontSize: 13, color: '#1D9E75', fontWeight: 500, textDecoration: 'none' }}>See full Lease Intelligence rankings → </a>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -221,7 +405,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* DIRTY SECRET */}
+      {/* PRICING GAP */}
       <section style={{ padding: '56px 40px', background: '#f9f9f7' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, alignItems: 'center', maxWidth: 1100, margin: '0 auto' }}>
           <div>
@@ -251,8 +435,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* LEASE INTELLIGENCE SCORE */}
-      <section id="lease-intelligence" style={{ padding: '56px 40px', background: '#fff' }}>
+      {/* LEASE INTELLIGENCE */}
+      <section style={{ padding: '56px 40px', background: '#fff' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 28 }}>
             <div>
@@ -287,7 +471,7 @@ export default function HomePage() {
             ))}
           </div>
           <div style={{ textAlign: 'center', marginTop: 24 }}>
-            <a href="/lease-intelligence" style={{ fontSize: 14, color: '#1D9E75', fontWeight: 500, textDecoration: 'none' }}>See full Lease Intelligence rankings →</a>
+            <a href="/lease-intelligence" style={{ fontSize: 14, color: '#1D9E75', fontWeight: 500, textDecoration: 'none' }}>Personalize with your incentives → Custom Lease Intelligence™</a>
           </div>
         </div>
       </section>
@@ -315,7 +499,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* INSIDER SECTION */}
+      {/* INSIDER */}
       <section style={{ padding: '56px 40px', background: '#fff' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 28 }}>
@@ -328,8 +512,8 @@ export default function HomePage() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 16 }}>
             {[
-              { slug: 'model-year-timing', tag: 'Model Year Timing', title: 'Leasing last year\'s model — when it saves you money and when it doesn\'t' },
-              { slug: 'lease-equity', tag: 'Lease Equity', title: 'Does your current lease have equity? Here\'s how to check before you turn it in.' },
+              { slug: 'why-autobidly-exists', tag: 'Our Story', title: 'Why AutoBidly exists — the founding story' },
+              { slug: 'lease-equity', tag: 'Lease Equity', title: "Does your current lease have equity? Here's how to check before you turn it in." },
               { slug: 'dealer-addons', tag: 'Lease Math', title: 'The real cost of adding accessories to your lease' },
               { slug: 'retired-loaners', tag: 'Insider Intel', title: 'Retired loaners — brand new vehicles with built-in savings' },
             ].map((article, i) => (
