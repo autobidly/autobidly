@@ -6,8 +6,6 @@ const supabaseAdmin = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3dmlleXR2eHlncmJidGJ4YWFyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MTg3NTg3NCwiZXhwIjoyMDk3NDUxODc0fQ.AGmz0jtxujO9HbVgFewA1mLrvp4yNBr1UY2bV0uFD6c'
 );
 
-const BREVO_API_KEY = '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';
-
 export async function POST(req: NextRequest) {
   try {
     const { bidlockId, dealerEmail } = await req.json();
@@ -16,7 +14,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // Get the bidlock
     const { data: bidlock, error: fetchError } = await supabaseAdmin
       .from('bidlocks')
       .select('*')
@@ -31,14 +28,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'This BidLock has already been accepted or expired' }, { status: 400 });
     }
 
-    // Get dealer info
-    const { data: dealer } = await supabaseAdmin
-      .from('dealers')
-      .select('*')
-      .eq('email', dealerEmail)
-      .single();
-
-    // Update bidlock status
     const { error: updateError } = await supabaseAdmin
       .from('bidlocks')
       .update({
@@ -52,12 +41,13 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: updateError.message }, { status: 500 });
     }
 
-    // Send email to buyer via Brevo
-    const buyerEmailRes = await fetch('https://api.brevo.com/v3/smtp/email', {
+    const brevoKey = process.env.BREVO_API_KEY || '';
+
+    await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'api-key': BREVO_API_KEY,
+        'api-key': brevoKey,
       },
       body: JSON.stringify({
         sender: { name: 'AutoBidly', email: 'info@autobidly.com' },
@@ -103,12 +93,8 @@ export async function POST(req: NextRequest) {
       }),
     });
 
-    if (!buyerEmailRes.ok) {
-      console.error('Failed to send buyer email');
-    }
-
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       buyer: {
         name: bidlock.buyer_name,
         email: bidlock.buyer_email,
