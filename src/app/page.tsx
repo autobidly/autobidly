@@ -32,17 +32,17 @@ export default function HomePage() {
   }
 
   const hotVehicles = [
-    { make: 'Buick', model: 'Enclave', trim: 'Avenir', category: 'SUV' },
-    { make: 'GMC', model: 'Sierra 1500', trim: 'SLT', category: 'Truck' },
-    { make: 'Chevrolet', model: 'Traverse', trim: 'Premier', category: 'SUV' },
-    { make: 'BMW', model: '3 Series', trim: '330i', category: 'Sedan' },
     { make: 'Chevrolet', model: 'Equinox', trim: 'LT', category: 'SUV' },
-    { make: 'GMC', model: 'Acadia', trim: 'Denali', category: 'SUV' },
+    { make: 'Chevrolet', model: 'Silverado 1500', trim: 'LT', category: 'Truck' },
+    { make: 'Chevrolet', model: 'Traverse', trim: 'Premier', category: 'SUV' },
+    { make: 'Chevrolet', model: 'Trax', trim: 'LT', category: 'SUV' },
+    { make: 'GMC', model: 'Sierra 1500', trim: 'SLT', category: 'Truck' },
+    { make: 'Buick', model: 'Enclave', trim: 'Avenir', category: 'SUV' },
+    { make: 'BMW', model: '3 Series', trim: '330i', category: 'Sedan' },
     { make: 'Honda', model: 'CR-V', trim: 'EX-L', category: 'SUV' },
-    { make: 'Cadillac', model: 'XT5', trim: 'Premium Luxury', category: 'SUV' },
-    { make: 'Ford', model: 'Explorer', trim: 'XLT', category: 'SUV' },
-    { make: 'Audi', model: 'Q5', trim: 'Premium Plus', category: 'SUV' },
     { make: 'Chevrolet', model: 'Blazer', trim: 'RS', category: 'SUV' },
+    { make: 'GMC', model: 'Acadia', trim: 'Denali', category: 'SUV' },
+    { make: 'Audi', model: 'Q5', trim: 'Premium Plus', category: 'SUV' },
     { make: 'GMC', model: 'Canyon', trim: 'AT4', category: 'Truck' },
   ].map(v => ({ ...v, score: getLeaseScore(v.make, v.model, v.trim) }))
     .sort((a, b) => b.score - a.score);
@@ -70,8 +70,8 @@ export default function HomePage() {
         <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
           <a href="/how-it-works" style={{ fontSize: 14, color: '#666', textDecoration: 'none' }}>How it works</a>
           <a href="/deals" style={{ fontSize: 14, color: '#666', textDecoration: 'none' }}>Browse deals</a>
-          <a href="/dealer" style={{ fontSize: 14, color: '#666', textDecoration: 'none' }}>For dealers</a>
           <a href="/lease-intelligence" style={{ fontSize: 14, color: '#666', textDecoration: 'none' }}>Lease Intelligence</a>
+          <a href="/dealer" style={{ fontSize: 14, color: '#666', textDecoration: 'none' }}>For dealers</a>
           <a href="/profile" style={{ fontSize: 14, color: '#666', textDecoration: 'none' }}>My Lease Passport</a>
           <a href="/bidlock" style={{ background: '#1D9E75', color: '#fff', borderRadius: 99, padding: '8px 20px', fontSize: 14, fontWeight: 500, textDecoration: 'none' }}>Submit a bid</a>
         </div>
@@ -119,22 +119,22 @@ export default function HomePage() {
                   <div style={{ padding: 12 }}>
                     <div style={{ background: '#fff', borderRadius: 10, padding: 12, marginBottom: 10, border: '1px solid #eee' }}>
                       <div style={{ fontSize: 9, fontWeight: 600, color: '#1D9E75', marginBottom: 4, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Your BidLock™</div>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: '#111', marginBottom: 1 }}>2025 F-150 XLT 4x4</div>
-                      <div style={{ fontSize: 10, color: '#999', marginBottom: 6 }}>Crew Cab · 36mo · 12k/yr</div>
+                      <div style={{ fontSize: 12, fontWeight: 600, color: '#111', marginBottom: 1 }}>2025 Silverado 1500 LT</div>
+                      <div style={{ fontSize: 10, color: '#999', marginBottom: 6 }}>Crew Cab · 4x4 · 36mo · 12k/yr</div>
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <div><div style={{ fontSize: 9, color: '#999' }}>Payment</div><div style={{ fontSize: 18, fontWeight: 700, color: '#1D9E75' }}>$495<span style={{ fontSize: 11, fontWeight: 400 }}>/mo</span></div></div>
+                        <div><div style={{ fontSize: 9, color: '#999' }}>Payment</div><div style={{ fontSize: 18, fontWeight: 700, color: '#1D9E75' }}>$489<span style={{ fontSize: 11, fontWeight: 400 }}>/mo</span></div></div>
                         <div style={{ textAlign: 'right' }}><div style={{ fontSize: 9, color: '#999' }}>Down</div><div style={{ fontSize: 14, fontWeight: 600, color: '#111' }}>$0</div></div>
                       </div>
                     </div>
                     <div style={{ background: '#E1F5EE', borderRadius: 8, padding: '8px 12px', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
                       <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#1D9E75', flexShrink: 0 }}></div>
-                      <div><div style={{ fontSize: 10, fontWeight: 600, color: '#0F6E56' }}>Bid sent to 8 dealers</div><div style={{ fontSize: 9, color: '#1D9E75' }}>Expires in 47:32:18</div></div>
+                      <div><div style={{ fontSize: 10, fontWeight: 600, color: '#0F6E56' }}>Bid sent to 6 dealers</div><div style={{ fontSize: 9, color: '#1D9E75' }}>Expires in 71:44:22</div></div>
                     </div>
                     <div style={{ fontSize: 9, fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 6 }}>Dealer responses</div>
                     {[
-                      { name: 'Suburban Ford', location: 'Sterling Heights', status: 'reviewing', time: '2m ago' },
-                      { name: 'LaFontaine Buick', location: 'Highland', status: 'accepted', time: 'Just now' },
-                      { name: 'Fox Ford', location: 'Ann Arbor', status: 'reviewing', time: '5m ago' },
+                      { name: 'Feldman Chevrolet', location: 'Novi, MI', status: 'accepted', time: 'Just now' },
+                      { name: 'LaFontaine Chevy', location: 'Highland, MI', status: 'reviewing', time: '4m ago' },
+                      { name: 'Bill Brown Chevy', location: 'Livonia, MI', status: 'reviewing', time: '7m ago' },
                     ].map((dealer, i) => (
                       <div key={i} style={{ background: '#fff', borderRadius: 8, padding: '8px 10px', marginBottom: 6, border: dealer.status === 'accepted' ? '1.5px solid #1D9E75' : '1px solid #eee' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -176,7 +176,7 @@ export default function HomePage() {
       {/* TICKER */}
       <div style={{ background: '#085041', padding: '11px 0', overflow: 'hidden', whiteSpace: 'nowrap' }}>
         <div style={{ display: 'inline-flex', gap: 48, animation: 'scroll 22s linear infinite' }}>
-          {['2025 F-150 XLT 4x4 — $0 down, $489/mo accepted · Detroit, MI', '2025 RAV4 Hybrid XSE — $0 down, $312/mo accepted · Chicago, IL', '2025 Silverado 1500 LT — $0 down, $419/mo accepted · Dallas, TX', '2025 Enclave Essence — $0 down, $539/mo accepted · Columbus, OH', '2025 Model 3 RWD — $0 down, $379/mo accepted · Austin, TX', '2025 F-150 XLT 4x4 — $0 down, $489/mo accepted · Detroit, MI', '2025 RAV4 Hybrid XSE — $0 down, $312/mo accepted · Chicago, IL', '2025 Silverado 1500 LT — $0 down, $419/mo accepted · Dallas, TX'].map((item, i) => (
+          {['2025 Silverado 1500 LT — $0 down, $489/mo accepted · Detroit, MI', '2025 Equinox LT — $0 down, $359/mo accepted · Novi, MI', '2025 Traverse Premier — $0 down, $479/mo accepted · Troy, MI', '2025 Tahoe LT — $0 down, $699/mo accepted · Birmingham, MI', '2025 Trax LT — $0 down, $279/mo accepted · Livonia, MI', '2025 Silverado 1500 LT — $0 down, $489/mo accepted · Detroit, MI', '2025 Equinox LT — $0 down, $359/mo accepted · Novi, MI', '2025 Traverse Premier — $0 down, $479/mo accepted · Troy, MI'].map((item, i) => (
             <span key={i} style={{ fontSize: 12, fontWeight: 500, color: '#9FE1CB', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
               <span style={{ width: 4, height: 4, borderRadius: '50%', background: '#1D9E75', display: 'inline-block' }}></span>{item}
             </span>
@@ -196,13 +196,13 @@ export default function HomePage() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 32, alignItems: 'center', background: '#f9f9f7', borderRadius: 14, padding: '24px 28px', border: '1.5px solid #1D9E75' }}>
             <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: 24, alignItems: 'center' }}>
-              <div style={{ width: 48, height: 48, borderRadius: 10, background: '#E1F5EE', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>🚙</div>
+              <div style={{ width: 48, height: 48, borderRadius: 10, background: '#E1F5EE', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>🛻</div>
               <div>
-                <div style={{ fontSize: 11, color: '#1D9E75', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 3 }}>2025 Buick Enclave Avenir AWD</div>
-                <div style={{ fontSize: 18, fontWeight: 600, color: '#111', marginBottom: 4 }}>$499/mo · $0 down · 36mo</div>
-                <div style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>Feldman Buick GMC · West Bloomfield, MI · 12,000 mi/yr</div>
+                <div style={{ fontSize: 11, color: '#1D9E75', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 3 }}>2025 Chevrolet Silverado 1500 LT</div>
+                <div style={{ fontSize: 18, fontWeight: 600, color: '#111', marginBottom: 4 }}>$489/mo · $0 down · 36mo</div>
+                <div style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>Feldman Chevrolet · Novi, MI · 12,000 mi/yr · Crew Cab 4x4</div>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                  {['GM Employee eligible', 'Conquest eligible', 'Lease loyalty eligible', 'Verified VIN on lot'].map((tag, i) => (
+                  {['GM Employee eligible', 'Conquest eligible', 'Verified VIN on lot', 'Lease loyalty eligible'].map((tag, i) => (
                     <span key={i} style={{ fontSize: 10, padding: '2px 8px', borderRadius: 99, background: '#E1F5EE', color: '#0F6E56', border: '1px solid #9FE1CB' }}>{tag}</span>
                   ))}
                 </div>
@@ -229,7 +229,7 @@ export default function HomePage() {
             <h2 style={{ fontSize: 32, fontWeight: 700, color: '#111', lineHeight: 1.15, letterSpacing: '-1px', marginBottom: 16 }}>
               Same car. Same sticker.<br /><span style={{ color: '#1D9E75' }}>Wildly different prices.</span>
             </h2>
-            <p style={{ fontSize: 15, color: '#555', lineHeight: 1.75, marginBottom: 10 }}>Five dealers. Same 2025 Sierra 1500 Elevation. Same GM incentives. Same customer with GM employee pricing and Costco membership.</p>
+            <p style={{ fontSize: 15, color: '#555', lineHeight: 1.75, marginBottom: 10 }}>Five dealers. Same 2025 Silverado 1500 LT. Same GM incentives. Same customer with GM employee pricing and Costco membership.</p>
             <p style={{ fontSize: 15, color: '#555', lineHeight: 1.75, marginBottom: 16 }}>Five completely different monthly payments — because every dealer decides for themselves how much they think they can get away with.</p>
             <p style={{ fontSize: 15, color: '#111', fontWeight: 600 }}>AutoBidly fixes this. We show you what you should actually be paying.</p>
           </div>
@@ -237,13 +237,13 @@ export default function HomePage() {
             {[
               { dealer: 'Dealer A · Northville, MI', price: '$619/mo + $15,000 down', good: false },
               { dealer: 'Dealer B · Novi, MI', price: '$578/mo + $3,000 down', good: false },
-              { dealer: 'Dealer C · Novi, MI', price: '$541/mo + $1,000 down', good: false },
-              { dealer: 'Dealer D · 20 min away', price: '$389/mo + $0 down', good: true },
+              { dealer: 'Dealer C · Canton, MI', price: '$541/mo + $1,000 down', good: false },
+              { dealer: 'Dealer D · 20 min away', price: '$489/mo + $0 down', good: true },
             ].map((d, i) => (
               <div key={i} style={{ background: '#fff', borderRadius: 10, padding: '16px 18px', border: d.good ? '1.5px solid #1D9E75' : '1px solid #eee' }}>
                 <div style={{ fontSize: 10, fontWeight: 500, color: '#999', textTransform: 'uppercase', letterSpacing: '0.07em', marginBottom: 4 }}>{d.dealer}</div>
                 <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: '-0.5px', color: d.good ? '#1D9E75' : '#E24B4A' }}>{d.price}</div>
-                <div style={{ fontSize: 11, color: '#999', marginTop: 3 }}>Same car. Same incentives available.</div>
+                <div style={{ fontSize: 11, color: '#999', marginTop: 3 }}>Same Silverado 1500 LT. Same GM incentives available.</div>
               </div>
             ))}
             <div style={{ fontSize: 12, color: '#999', textAlign: 'center', fontStyle: 'italic' }}>AutoBidly finds your Dealer D every time.</div>
@@ -260,7 +260,7 @@ export default function HomePage() {
               <h2 style={{ fontSize: 28, fontWeight: 700, color: '#111', letterSpacing: '-0.5px', marginBottom: 4 }}>Best vehicles to lease right now</h2>
               <p style={{ fontSize: 14, color: '#666' }}>Updated daily · Based on manufacturer incentives, inventory & market timing</p>
             </div>
-            <a href="/bidlock" style={{ fontSize: 13, color: '#1D9E75', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>Submit a BidLock™ for any vehicle →</a>
+            <a href="/lease-intelligence" style={{ fontSize: 13, color: '#1D9E75', fontWeight: 500, textDecoration: 'none', whiteSpace: 'nowrap' }}>See full rankings →</a>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12 }}>
             {hotVehicles.map((v, i) => (
@@ -285,6 +285,9 @@ export default function HomePage() {
                 </div>
               </a>
             ))}
+          </div>
+          <div style={{ textAlign: 'center', marginTop: 24 }}>
+            <a href="/lease-intelligence" style={{ fontSize: 14, color: '#1D9E75', fontWeight: 500, textDecoration: 'none' }}>See full Lease Intelligence rankings →</a>
           </div>
         </div>
       </section>
@@ -355,7 +358,7 @@ export default function HomePage() {
         <div style={{ display: 'flex', gap: 20 }}>
           <a href="/privacy" style={{ fontSize: 12, color: '#666', textDecoration: 'none' }}>Privacy</a>
           <a href="/terms" style={{ fontSize: 12, color: '#666', textDecoration: 'none' }}>Terms</a>
-          <a href="/dealer" style={{ fontSize: 12, color: '#666', textDecoration: 'none' }}>For dealers</a>
+          <a href="/dealer-login" style={{ fontSize: 12, color: '#666', textDecoration: 'none' }}>Dealer login</a>
           <a href="mailto:info@autobidly.com" style={{ fontSize: 12, color: '#666', textDecoration: 'none' }}>Contact</a>
         </div>
         <div style={{ fontSize: 11, color: '#444' }}>© 2026 AutoBidly LLC · Michigan</div>

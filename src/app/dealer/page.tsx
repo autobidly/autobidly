@@ -30,17 +30,27 @@ interface BidLock {
   expires_at: string;
 }
 
+interface BuyerInfo {
+  name: string;
+  email: string;
+  phone: string;
+}
+
 export default function DealerPage() {
   const [bidlocks, setBidlocks] = useState<BidLock[]>([]);
   const [loading, setLoading] = useState(true);
   const [authChecking, setAuthChecking] = useState(true);
   const [selected, setSelected] = useState<BidLock | null>(null);
+  const [accepting, setAccepting] = useState(false);
+  const [acceptedBuyer, setAcceptedBuyer] = useState<BuyerInfo | null>(null);
+  const [dealerEmail, setDealerEmail] = useState('');
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
         window.location.href = '/dealer-login';
       } else {
+        setDealerEmail(session.user.email || '');
         setAuthChecking(false);
         fetchBidlocks();
       }
@@ -48,6 +58,7 @@ export default function DealerPage() {
   }, []);
 
   function fetchBidlocks() {
+    setLoading(true);
     fetch('/api/dealer/bidlocks')
       .then(r => r.json())
       .then(data => {
@@ -55,6 +66,29 @@ export default function DealerPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
+  }
+
+  async function handleAccept() {
+    if (!selected) return;
+    setAccepting(true);
+    try {
+      const res = await fetch('/api/dealer/accept', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bidlockId: selected.id, dealerEmail }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAcceptedBuyer(data.buyer);
+        setBidlocks(prev => prev.map(b => b.id === selected.id ? { ...b, status: 'accepted' } : b));
+        setSelected({ ...selected, status: 'accepted' });
+      } else {
+        alert(data.error || 'Failed to accept BidLock');
+      }
+    } catch {
+      alert('Something went wrong. Please try again.');
+    }
+    setAccepting(false);
   }
 
   async function handleLogout() {
@@ -108,10 +142,10 @@ export default function DealerPage() {
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', background: '#f9f9f7', minHeight: '100vh' }}>
 
-      {/* NAV */}
       <nav style={{ background: '#111', padding: '14px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: '#fff' }}>Auto<span style={{ color: '#1D9E75' }}>Bidly</span> <span style={{ fontSize: 12, color: '#666', fontWeight: 400 }}>Dealer Dashboard</span></div>
         <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
+          <span style={{ fontSize: 12, color: '#555' }}>{dealerEmail}</span>
           <a href="/" style={{ fontSize: 13, color: '#666', textDecoration: 'none' }}>← Back to AutoBidly</a>
           <button onClick={handleLogout} style={{ fontSize: 13, color: '#999', background: 'none', border: '1px solid #333', borderRadius: 99, padding: '6px 16px', cursor: 'pointer' }}>Sign out</button>
         </div>
@@ -119,7 +153,6 @@ export default function DealerPage() {
 
       <div style={{ maxWidth: 1100, margin: '0 auto', padding: '32px 20px' }}>
 
-        {/* STATS */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16, marginBottom: 32 }}>
           {[
             { label: 'Active BidLocks', value: active.length.toString(), color: '#1D9E75' },
@@ -134,9 +167,8 @@ export default function DealerPage() {
           ))}
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: selected ? '1fr 380px' : '1fr', gap: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: selected ? '1fr 400px' : '1fr', gap: 20 }}>
 
-          {/* BIDLOCK LIST */}
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <h2 style={{ fontSize: 18, fontWeight: 600, color: '#111' }}>Incoming BidLocks</h2>
@@ -154,11 +186,12 @@ export default function DealerPage() {
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {bidlocks.map((b, i) => (
-                  <div key={i} onClick={() => setSelected(selected?.id === b.id ? null : b)} style={{ background: '#fff', borderRadius: 12, padding: '18px 20px', border: `1.5px solid ${selected?.id === b.id ? '#1D9E75' : '#eee'}`, cursor: 'pointer', display: 'grid', gridTemplateColumns: '1fr auto', gap: 16, alignItems: 'center' }}>
+                  <div key={i} onClick={() => { setSelected(selected?.id === b.id ? null : b); setAcceptedBuyer(null); }}
+                    style={{ background: '#fff', borderRadius: 12, padding: '18px 20px', border: `1.5px solid ${selected?.id === b.id ? '#1D9E75' : '#eee'}`, cursor: 'pointer', display: 'grid', gridTemplateColumns: '1fr auto', gap: 16, alignItems: 'center', opacity: b.status === 'accepted' ? 0.6 : 1 }}>
                     <div>
                       <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 6 }}>
                         <span style={{ fontSize: 15, fontWeight: 600, color: '#111' }}>{b.make} {b.model} {b.trim}</span>
-                        <span style={{ fontSize: 11, background: b.status === 'active' ? '#E1F5EE' : '#eee', color: b.status === 'active' ? '#0F6E56' : '#999', padding: '2px 8px', borderRadius: 99, fontWeight: 500 }}>{b.status}</span>
+                        <span style={{ fontSize: 11, background: b.status === 'active' ? '#E1F5EE' : '#ddd', color: b.status === 'active' ? '#0F6E56' : '#666', padding: '2px 8px', borderRadius: 99, fontWeight: 500 }}>{b.status}</span>
                       </div>
                       <div style={{ fontSize: 13, color: '#666', marginBottom: 6 }}>{b.config} · {b.cab} · {b.term}mo · {parseInt(b.miles).toLocaleString()} mi/yr · ZIP {b.zip}</div>
                       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -171,7 +204,7 @@ export default function DealerPage() {
                     <div style={{ textAlign: 'right' }}>
                       <div style={{ fontSize: 24, fontWeight: 700, color: '#1D9E75' }}>${b.payment}/mo</div>
                       <div style={{ fontSize: 12, color: '#999' }}>${b.down} down</div>
-                      <div style={{ fontSize: 11, color: '#999', marginTop: 4 }}>Expires in {timeLeft(b.expires_at)}</div>
+                      <div style={{ fontSize: 11, color: '#999', marginTop: 4 }}>{b.status === 'active' ? `Expires in ${timeLeft(b.expires_at)}` : 'Accepted'}</div>
                       <div style={{ fontSize: 11, color: '#bbb' }}>{timeAgo(b.created_at)}</div>
                     </div>
                   </div>
@@ -180,12 +213,11 @@ export default function DealerPage() {
             )}
           </div>
 
-          {/* DETAIL PANEL */}
           {selected && (
             <div style={{ background: '#fff', borderRadius: 12, border: '1px solid #eee', padding: 24, height: 'fit-content', position: 'sticky', top: 20 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                 <div style={{ fontSize: 15, fontWeight: 600, color: '#111' }}>BidLock Details</div>
-                <button onClick={() => setSelected(null)} style={{ background: 'none', border: 'none', fontSize: 18, color: '#999', cursor: 'pointer' }}>×</button>
+                <button onClick={() => { setSelected(null); setAcceptedBuyer(null); }} style={{ background: 'none', border: 'none', fontSize: 18, color: '#999', cursor: 'pointer' }}>×</button>
               </div>
 
               <div style={{ fontSize: 18, fontWeight: 700, color: '#111', marginBottom: 4 }}>{selected.make} {selected.model}</div>
@@ -218,18 +250,42 @@ export default function DealerPage() {
                 </div>
               )}
 
-              <div style={{ background: '#f9f9f7', borderRadius: 10, padding: '14px 16px', marginBottom: 20, fontSize: 13, color: '#555', lineHeight: 1.6 }}>
-                <strong style={{ color: '#111' }}>Expires in:</strong> {timeLeft(selected.expires_at)}<br />
-                <strong style={{ color: '#111' }}>Submitted:</strong> {timeAgo(selected.created_at)}
-              </div>
-
-              <div style={{ background: '#E1F5EE', borderRadius: 10, padding: '14px 16px', marginBottom: 16, fontSize: 13, color: '#0F6E56', lineHeight: 1.6 }}>
-                <strong>To accept:</strong> Buyer contact info revealed upon acceptance. Full acceptance flow coming soon.
-              </div>
-
-              <button style={{ width: '100%', background: '#1D9E75', color: '#fff', border: 'none', borderRadius: 99, padding: '14px', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
-                Accept BidLock™ — ${selected.payment}/mo
-              </button>
+              {/* ACCEPTED — show buyer info */}
+              {acceptedBuyer ? (
+                <div>
+                  <div style={{ background: '#E1F5EE', borderRadius: 10, padding: '16px', marginBottom: 16 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#0F6E56', marginBottom: 12 }}>✓ BidLock accepted! Buyer contact info:</div>
+                    <div style={{ fontSize: 15, fontWeight: 600, color: '#111', marginBottom: 4 }}>{acceptedBuyer.name}</div>
+                    <div style={{ fontSize: 14, color: '#1D9E75', marginBottom: 4 }}>{acceptedBuyer.phone}</div>
+                    <div style={{ fontSize: 14, color: '#1D9E75' }}>{acceptedBuyer.email}</div>
+                  </div>
+                  <div style={{ fontSize: 13, color: '#555', lineHeight: 1.7, background: '#f9f9f7', borderRadius: 10, padding: '14px 16px' }}>
+                    <strong style={{ color: '#111' }}>Next steps:</strong><br />
+                    Contact the buyer within 2 hours. They have <strong>72 hours</strong> to visit and sign. Price is locked at <strong>${selected.payment}/mo</strong>.
+                  </div>
+                </div>
+              ) : selected.status === 'accepted' ? (
+                <div style={{ background: '#f9f9f7', borderRadius: 10, padding: '14px 16px', fontSize: 13, color: '#888', textAlign: 'center' }}>
+                  This BidLock has been accepted
+                </div>
+              ) : (
+                <div>
+                  <div style={{ background: '#f9f9f7', borderRadius: 10, padding: '14px 16px', marginBottom: 16, fontSize: 13, color: '#555', lineHeight: 1.6 }}>
+                    <strong style={{ color: '#111' }}>Expires in:</strong> {timeLeft(selected.expires_at)}<br />
+                    <strong style={{ color: '#111' }}>Submitted:</strong> {timeAgo(selected.created_at)}
+                  </div>
+                  <div style={{ background: '#FFFBEB', borderRadius: 10, padding: '14px 16px', marginBottom: 16, fontSize: 13, color: '#B45309', lineHeight: 1.6 }}>
+                    Buyer contact info is revealed after you accept. You pay the AutoBidly fee only upon acceptance.
+                  </div>
+                  <button
+                    onClick={handleAccept}
+                    disabled={accepting}
+                    style={{ width: '100%', background: accepting ? '#ccc' : '#1D9E75', color: '#fff', border: 'none', borderRadius: 99, padding: '14px', fontSize: 15, fontWeight: 600, cursor: accepting ? 'not-allowed' : 'pointer' }}
+                  >
+                    {accepting ? 'Accepting...' : `Accept BidLock™ — $${selected.payment}/mo`}
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
