@@ -1,5 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  'https://wwvieytvxygrbbtbxaar.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3dmlleXR2eHlncmJidGJ4YWFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE4NzU4NzQsImV4cCI6MjA5NzQ1MTg3NH0.gjmu7Gbl7cwPCeUmPMVlz8-iaschkRKPf2CbwYtqiRk'
+);
 
 interface BidLock {
   id: string;
@@ -27,9 +33,21 @@ interface BidLock {
 export default function DealerPage() {
   const [bidlocks, setBidlocks] = useState<BidLock[]>([]);
   const [loading, setLoading] = useState(true);
+  const [authChecking, setAuthChecking] = useState(true);
   const [selected, setSelected] = useState<BidLock | null>(null);
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        window.location.href = '/dealer-login';
+      } else {
+        setAuthChecking(false);
+        fetchBidlocks();
+      }
+    });
+  }, []);
+
+  function fetchBidlocks() {
     fetch('/api/dealer/bidlocks')
       .then(r => r.json())
       .then(data => {
@@ -37,7 +55,12 @@ export default function DealerPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    window.location.href = '/dealer-login';
+  }
 
   function timeAgo(dateStr: string) {
     const diff = Date.now() - new Date(dateStr).getTime();
@@ -72,17 +95,25 @@ export default function DealerPage() {
     return list;
   }
 
+  if (authChecking) {
+    return (
+      <div style={{ fontFamily: 'system-ui', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#f9f9f7' }}>
+        <div style={{ color: '#999', fontSize: 14 }}>Checking credentials...</div>
+      </div>
+    );
+  }
+
   const active = bidlocks.filter(b => b.status === 'active');
-  const s = { fontFamily: 'system-ui, sans-serif' };
 
   return (
-    <div style={{ ...s, background: '#f9f9f7', minHeight: '100vh' }}>
+    <div style={{ fontFamily: 'system-ui, sans-serif', background: '#f9f9f7', minHeight: '100vh' }}>
 
       {/* NAV */}
       <nav style={{ background: '#111', padding: '14px 32px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: '#fff' }}>Auto<span style={{ color: '#1D9E75' }}>Bidly</span> <span style={{ fontSize: 12, color: '#666', fontWeight: 400 }}>Dealer Dashboard</span></div>
         <div style={{ display: 'flex', gap: 20, alignItems: 'center' }}>
           <a href="/" style={{ fontSize: 13, color: '#666', textDecoration: 'none' }}>← Back to AutoBidly</a>
+          <button onClick={handleLogout} style={{ fontSize: 13, color: '#999', background: 'none', border: '1px solid #333', borderRadius: 99, padding: '6px 16px', cursor: 'pointer' }}>Sign out</button>
         </div>
       </nav>
 
@@ -109,7 +140,7 @@ export default function DealerPage() {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <h2 style={{ fontSize: 18, fontWeight: 600, color: '#111' }}>Incoming BidLocks</h2>
-              <button onClick={() => { setLoading(true); fetch('/api/dealer/bidlocks').then(r => r.json()).then(d => { setBidlocks(d.bidlocks || []); setLoading(false); }); }} style={{ fontSize: 13, color: '#1D9E75', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 500 }}>↻ Refresh</button>
+              <button onClick={fetchBidlocks} style={{ fontSize: 13, color: '#1D9E75', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 500 }}>↻ Refresh</button>
             </div>
 
             {loading ? (
@@ -193,7 +224,7 @@ export default function DealerPage() {
               </div>
 
               <div style={{ background: '#E1F5EE', borderRadius: 10, padding: '14px 16px', marginBottom: 16, fontSize: 13, color: '#0F6E56', lineHeight: 1.6 }}>
-                <strong>To accept this BidLock:</strong> Contact the buyer directly. Their info is revealed upon acceptance. Full dealer acceptance flow coming soon.
+                <strong>To accept:</strong> Buyer contact info revealed upon acceptance. Full acceptance flow coming soon.
               </div>
 
               <button style={{ width: '100%', background: '#1D9E75', color: '#fff', border: 'none', borderRadius: 99, padding: '14px', fontSize: 15, fontWeight: 600, cursor: 'pointer' }}>
