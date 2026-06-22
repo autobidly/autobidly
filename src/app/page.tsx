@@ -324,7 +324,7 @@ export default function HomePage() {
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                     {fitResults.map((v, i) => (
-                      <a key={i} href="/bidlock" style={{ textDecoration: 'none' }}>
+                      <a key={i} href={`/bidlock/express?make=${encodeURIComponent(v.make)}&model=${encodeURIComponent(v.model)}&trim=${encodeURIComponent(v.trim)}&payment=${v.estPayment}&seats=${v.seats}&miles=${fitMiles}`} style={{ textDecoration: 'none' }}>
                         <div
                           style={{ background: '#fff', borderRadius: 12, border: i === 0 ? '1.5px solid #1D9E75' : '1px solid #eee', padding: '16px 18px', display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, alignItems: 'center' }}
                           onMouseEnter={e => (e.currentTarget.style.borderColor = '#1D9E75')}
@@ -448,7 +448,7 @@ export default function HomePage() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: 12 }}>
             {hotVehicles.map((v, i) => (
-              <a key={i} href="/bidlock" style={{ textDecoration: 'none' }}>
+              <a key={i} href={`/bidlock/express?make=${encodeURIComponent(v.make)}&model=${encodeURIComponent(v.model)}&trim=${encodeURIComponent(v.trim)}&payment=${v.estPayment}&seats=${v.seats}&miles=${fitMiles}`} style={{ textDecoration: 'none' }}>
                 <div
                   style={{ background: '#f9f9f7', borderRadius: 10, border: '1px solid #eee', padding: '14px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, cursor: 'pointer' }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = '#1D9E75'; e.currentTarget.style.background = '#fff'; }}
