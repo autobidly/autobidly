@@ -2,6 +2,15 @@
 
 const articles = [
   {
+    slug: "why-autobidly-exists",
+    title: "Why AutoBidly exists",
+    subtitle: "The story behind the platform — and why it took a Metro Detroit founder to build it.",
+    tag: "Our Story",
+    readTime: "10 min read",
+    teaser: "This isn't a startup origin story about a lightbulb moment in a college dorm. It's about years of sitting across from car salespeople and leaving with that specific feeling — equal parts excited about a new vehicle and completely unsure what just happened to you.",
+    featured: true,
+  },
+  {
     slug: "model-year-timing",
     title: "Leasing last year's model — when it saves you money and when it doesn't",
     subtitle: "The answer depends on the vehicle, the time of year, and what the manufacturer is supporting.",
@@ -26,20 +35,20 @@ const articles = [
     teaser: "There's nothing wrong with having the dealer install a tonneau cover before you pick up your truck. But before you say yes, it's worth understanding the full 36-month cost — and what your alternatives look like.",
   },
   {
-    slug: "lease-protection",
-    title: "Lease protection packages — is it worth it?",
-    subtitle: "Understanding what you're buying, what it covers, and how to decide if it makes sense for you.",
-    tag: "Finance Office",
-    readTime: "4 min read",
-    teaser: "At the end of signing, you'll likely be offered a lease protection package covering excess wear and tear. Here's what it covers, what it costs over the life of your lease, and the questions worth asking before you decide.",
-  },
-  {
     slug: "retired-loaners",
     title: "Retired loaners — brand new vehicles with built-in savings",
     subtitle: "Under 3,000 miles. Manufacturer discount applied. Same warranty as new.",
     tag: "Insider Intel",
     readTime: "4 min read",
     teaser: "Every dealer has retired loaner vehicles — nearly new cars with under 3,000 miles that were used as service loaners. Manufacturers provide a discount that dealers can pass through to buyers. Most buyers don't know to ask for them.",
+  },
+  {
+    slug: "lease-protection",
+    title: "Lease protection packages — is it worth it?",
+    subtitle: "Understanding what you're buying, what it covers, and how to decide if it makes sense for you.",
+    tag: "Finance Office",
+    readTime: "4 min read",
+    teaser: "At the end of signing, you'll likely be offered a lease protection package covering excess wear and tear. Here's what it covers, what it costs over the life of your lease, and the questions worth asking before you decide.",
   },
   {
     slug: "money-factor",
@@ -77,25 +86,51 @@ export default function InsiderPage() {
           </p>
         </div>
 
-        {/* FEATURED ARTICLE */}
-        <a href={`/insider/${articles[0].slug}`} style={{ textDecoration: 'none', display: 'block', marginBottom: 32 }}>
-          <div style={{ background: '#111', borderRadius: 16, padding: '32px 36px', cursor: 'pointer' }}>
+        {/* FEATURED — OUR STORY */}
+        <a href="/insider/why-autobidly-exists" style={{ textDecoration: 'none', display: 'block', marginBottom: 16 }}>
+          <div
+            style={{ background: '#111', borderRadius: 16, padding: '32px 36px', cursor: 'pointer' }}
+            onMouseEnter={e => (e.currentTarget.style.opacity = '0.95')}
+            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+          >
             <div style={{ display: 'flex', gap: 10, marginBottom: 16, alignItems: 'center' }}>
-              <span style={{ fontSize: 10, fontWeight: 600, color: '#1D9E75', background: '#1D9E7522', padding: '3px 10px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{articles[0].tag}</span>
-              <span style={{ fontSize: 12, color: '#555' }}>{articles[0].readTime}</span>
+              <span style={{ fontSize: 10, fontWeight: 600, color: '#1D9E75', background: '#1D9E7522', padding: '3px 10px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Our Story</span>
+              <span style={{ fontSize: 12, color: '#555' }}>10 min read</span>
+              <span style={{ fontSize: 12, color: '#555' }}>·</span>
+              <span style={{ fontSize: 12, color: '#1D9E75', fontWeight: 500 }}>Start here</span>
             </div>
-            <h2 style={{ fontSize: 26, fontWeight: 700, color: '#fff', letterSpacing: '-0.5px', lineHeight: 1.2, marginBottom: 10 }}>{articles[0].title}</h2>
-            <p style={{ fontSize: 15, color: '#888', lineHeight: 1.7, marginBottom: 20 }}>{articles[0].teaser}</p>
-            <span style={{ fontSize: 14, fontWeight: 600, color: '#1D9E75' }}>Read the full guide →</span>
+            <h2 style={{ fontSize: 28, fontWeight: 700, color: '#fff', letterSpacing: '-0.5px', lineHeight: 1.2, marginBottom: 10 }}>Why AutoBidly exists</h2>
+            <p style={{ fontSize: 15, color: '#888', lineHeight: 1.7, marginBottom: 20, maxWidth: 620 }}>
+              This isn&apos;t a startup origin story about a lightbulb moment in a college dorm. It&apos;s about years of sitting across from car salespeople and leaving with that specific feeling — equal parts excited about a new vehicle and completely unsure what just happened to you.
+            </p>
+            <span style={{ fontSize: 14, fontWeight: 600, color: '#1D9E75' }}>Read the founding story →</span>
+          </div>
+        </a>
+
+        {/* SECOND FEATURED — MODEL YEAR TIMING */}
+        <a href="/insider/model-year-timing" style={{ textDecoration: 'none', display: 'block', marginBottom: 32 }}>
+          <div
+            style={{ background: '#fff', borderRadius: 16, padding: '28px 32px', cursor: 'pointer', border: '1.5px solid #eee' }}
+            onMouseEnter={e => (e.currentTarget.style.borderColor = '#1D9E75')}
+            onMouseLeave={e => (e.currentTarget.style.borderColor = '#eee')}
+          >
+            <div style={{ display: 'flex', gap: 10, marginBottom: 12, alignItems: 'center' }}>
+              <span style={{ fontSize: 10, fontWeight: 600, color: '#0F6E56', background: '#E1F5EE', padding: '3px 10px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Model Year Timing</span>
+              <span style={{ fontSize: 12, color: '#999' }}>4 min read</span>
+            </div>
+            <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111', letterSpacing: '-0.5px', lineHeight: 1.2, marginBottom: 8 }}>Leasing last year&apos;s model — when it saves you money and when it doesn&apos;t</h2>
+            <p style={{ fontSize: 14, color: '#666', lineHeight: 1.65, marginBottom: 16 }}>Most buyers assume older model year always means better deal. Sometimes that&apos;s true. Often it isn&apos;t. Here&apos;s exactly when leasing last year&apos;s model saves you money — and when the current year is the smarter move.</p>
+            <span style={{ fontSize: 13, fontWeight: 600, color: '#1D9E75' }}>Read more →</span>
           </div>
         </a>
 
         {/* ARTICLE GRID */}
+        <div style={{ fontSize: 13, fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 16 }}>All guides</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16, marginBottom: 48 }}>
-          {articles.slice(1).map((article, i) => (
+          {articles.slice(2).map((article, i) => (
             <a key={i} href={`/insider/${article.slug}`} style={{ textDecoration: 'none' }}>
               <div
-                style={{ background: '#fff', borderRadius: 12, border: '1px solid #eee', padding: '24px', cursor: 'pointer', display: 'flex', flexDirection: 'column' }}
+                style={{ background: '#fff', borderRadius: 12, border: '1px solid #eee', padding: '24px', cursor: 'pointer', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}
                 onMouseEnter={e => (e.currentTarget.style.borderColor = '#1D9E75')}
                 onMouseLeave={e => (e.currentTarget.style.borderColor = '#eee')}
               >
@@ -103,11 +138,27 @@ export default function InsiderPage() {
                   <span style={{ fontSize: 10, fontWeight: 600, color: '#0F6E56', background: '#E1F5EE', padding: '3px 8px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{article.tag}</span>
                   <span style={{ fontSize: 11, color: '#999' }}>{article.readTime}</span>
                 </div>
-                <h3 style={{ fontSize: 16, fontWeight: 600, color: '#111', lineHeight: 1.3, marginBottom: 10, flex: 1 }}>{article.title}</h3>
-                <p style={{ fontSize: 13, color: '#666', lineHeight: 1.65, marginBottom: 16 }}>{article.teaser.substring(0, 120)}...</p>
+                <h3 style={{ fontSize: 15, fontWeight: 600, color: '#111', lineHeight: 1.35, marginBottom: 10, flex: 1 }}>{article.title}</h3>
+                <p style={{ fontSize: 13, color: '#666', lineHeight: 1.65, marginBottom: 16 }}>{article.teaser.substring(0, 110)}...</p>
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#1D9E75' }}>Read more →</span>
               </div>
             </a>
+          ))}
+
+          {/* COMING SOON CARDS */}
+          {[
+            { title: 'Employee pricing in Metro Detroit — what you have, what you might not know you have, and how to use it', tag: 'Insider Intel' },
+            { title: 'Why Ford Employee Pricing for All is actually a bad deal in Metro Detroit', tag: 'Insider Intel' },
+            { title: 'Why you should almost never put money down on a lease', tag: 'Lease Math' },
+            { title: 'Your Costco membership and car leasing — what it actually does and when it matters', tag: 'Insider Intel' },
+          ].map((article, i) => (
+            <div key={i} style={{ background: '#f9f9f7', borderRadius: 12, border: '1px dashed #ddd', padding: '24px', display: 'flex', flexDirection: 'column', opacity: 0.7 }}>
+              <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }}>
+                <span style={{ fontSize: 10, fontWeight: 600, color: '#999', background: '#eee', padding: '3px 8px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{article.tag}</span>
+                <span style={{ fontSize: 11, color: '#bbb' }}>Coming soon</span>
+              </div>
+              <h3 style={{ fontSize: 15, fontWeight: 600, color: '#999', lineHeight: 1.35, flex: 1 }}>{article.title}</h3>
+            </div>
           ))}
         </div>
 
