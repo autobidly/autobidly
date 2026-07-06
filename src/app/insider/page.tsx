@@ -1,71 +1,80 @@
 "use client";
 
+const FORD_PROMO_END = new Date('2026-07-07');
+const fordPromoActive = new Date() < FORD_PROMO_END;
+
 const articles = [
   {
     slug: "why-autobidly-exists",
     title: "Why AutoBidly exists",
-    subtitle: "The story behind the platform — and why it took a Metro Detroit founder to build it.",
     tag: "Our Story",
     readTime: "10 min read",
-    teaser: "This isn't a startup origin story about a lightbulb moment in a college dorm. It's about years of sitting across from car salespeople and leaving with that specific feeling — equal parts excited about a new vehicle and completely unsure what just happened to you.",
+    teaser: "This isn't a startup origin story about a lightbulb moment in a college dorm. It's about years of sitting across from car salespeople and leaving equal parts excited and completely unsure what just happened to you.",
   },
   {
     slug: "employee-pricing-detroit",
     title: "Employee pricing in Metro Detroit — what you have, what you might not know you have, and how to use it",
-    subtitle: "The complete guide to GM Family First, Ford AXZ Plans, and Stellantis Employee Advantage.",
     tag: "Insider Intel",
     readTime: "8 min read",
-    teaser: "In Metro Detroit, employee pricing isn't a perk for the lucky few. It's practically a birthright. Here's the complete guide to every manufacturer program, who qualifies, and how to stack what you have.",
+    teaser: "In Metro Detroit, employee pricing isn't a perk for the lucky few. It's practically a birthright. Here's the complete guide to GM Family First, Ford AXZ Plans, and Stellantis Employee Advantage — including how to stack them.",
+  },
+  {
+    slug: "ford-employee-pricing-for-all",
+    title: "Why Ford Employee Pricing for All is actually a bad deal in Metro Detroit",
+    tag: "Insider Intel",
+    readTime: "6 min read",
+    teaser: "The commercials make it sound like the deal of the year. For Metro Detroit buyers who already have X-Plan access, it's often the worst month to buy a Ford. Here's the math.",
   },
   {
     slug: "model-year-timing",
     title: "Leasing last year's model — when it saves you money and when it doesn't",
-    subtitle: "The answer depends on the vehicle, the time of year, and what the manufacturer is supporting.",
     tag: "Model Year Timing",
     readTime: "4 min read",
-    teaser: "Most buyers assume older model year always means better deal. Sometimes that's true. Often it isn't. Here's exactly when leasing last year's model saves you money — and when the current year is actually the smarter move.",
+    teaser: "Most buyers assume older model year always means better deal. Sometimes that's true. Often it isn't. Here's exactly when leasing last year's model saves you money — and when the current year is the smarter move.",
   },
   {
     slug: "lease-equity",
     title: "Does your current lease have equity? Here's how to check before you turn it in.",
-    subtitle: "In today's used car market, your lease buyout may be less than what the car is actually worth.",
     tag: "Lease Equity",
     readTime: "5 min read",
-    teaser: "When you turn in a lease, the dealer takes the car and you walk away. But in many cases the car is worth more than your buyout price. That difference belongs to you — if you know to look for it before you hand over the keys.",
+    teaser: "When you turn in a lease, the dealer takes the car and you walk away. But in many cases the car is worth more than your buyout price. That difference belongs to you — if you know to look for it.",
   },
   {
     slug: "dealer-addons",
     title: "The real cost of adding accessories to your lease",
-    subtitle: "Dealer-installed accessories are convenient. Here's what that convenience actually costs over 36 months.",
     tag: "Lease Math",
     readTime: "3 min read",
-    teaser: "There's nothing wrong with having the dealer install a tonneau cover before you pick up your truck. But before you say yes, it's worth understanding the full 36-month cost — and what your alternatives look like.",
+    teaser: "There's nothing wrong with having the dealer install a tonneau cover before you pick up your truck. But before you say yes, it's worth understanding the full 36-month cost.",
   },
   {
     slug: "retired-loaners",
     title: "Retired loaners — brand new vehicles with built-in savings",
-    subtitle: "Under 3,000 miles. Manufacturer discount applied. Same warranty as new.",
     tag: "Insider Intel",
     readTime: "4 min read",
-    teaser: "Every dealer has retired loaner vehicles — nearly new cars with under 3,000 miles that were used as service loaners. Manufacturers provide a discount that dealers can pass through to buyers. Most buyers don't know to ask for them.",
+    teaser: "Every dealer has retired loaner vehicles — nearly new cars with under 3,000 miles. Manufacturers provide a discount that dealers can pass through. Most buyers don't know to ask.",
   },
   {
     slug: "lease-protection",
     title: "Lease protection packages — is it worth it?",
-    subtitle: "Understanding what you're buying, what it covers, and how to decide if it makes sense for you.",
     tag: "Finance Office",
     readTime: "4 min read",
-    teaser: "At the end of signing, you'll likely be offered a lease protection package covering excess wear and tear. Here's what it covers, what it costs over the life of your lease, and the questions worth asking before you decide.",
+    teaser: "At the end of signing, you'll likely be offered an Excess Wear and Tear protection plan. Here's what it covers, what it costs, and how to decide if it makes sense for you.",
   },
   {
     slug: "money-factor",
     title: "Money factor explained — the lease interest rate most buyers never see",
-    subtitle: "Every lease has an interest rate. Here's how to find yours and what it means for your payment.",
     tag: "Lease Math",
     readTime: "5 min read",
-    teaser: "Every lease has an interest rate called the money factor. It's not always disclosed upfront, but it significantly affects your monthly payment. Here's how to find it, how to interpret it, and how to use it when comparing lease offers.",
+    teaser: "Every lease has an interest rate called the money factor. It's not always disclosed upfront, but it significantly affects your monthly payment. Here's how to find it and use it.",
   },
 ];
+
+// Articles shown in grid — skip featured ones (why-autobidly-exists, employee-pricing-detroit)
+// Also skip ford-employee-pricing-for-all when promo is active since it shows in the banner
+// When promo is inactive, ford article shows in grid
+const gridArticles = fordPromoActive
+  ? articles.slice(3)
+  : articles.slice(2);
 
 export default function InsiderPage() {
   return (
@@ -93,6 +102,26 @@ export default function InsiderPage() {
           </p>
         </div>
 
+        {/* FORD PROMO ALERT — only shows when active */}
+        {fordPromoActive && (
+          <a href="/insider/ford-employee-pricing-for-all" style={{ textDecoration: 'none', display: 'block', marginBottom: 16 }}>
+            <div
+              style={{ background: '#FEF3C7', borderRadius: 16, padding: '24px 32px', cursor: 'pointer', border: '1.5px solid #FDE68A' }}
+              onMouseEnter={e => (e.currentTarget.style.borderColor = '#F59E0B')}
+              onMouseLeave={e => (e.currentTarget.style.borderColor = '#FDE68A')}
+            >
+              <div style={{ display: 'flex', gap: 10, marginBottom: 12, alignItems: 'center' }}>
+                <span style={{ fontSize: 20 }}>⚠️</span>
+                <span style={{ fontSize: 10, fontWeight: 600, color: '#B45309', background: '#FEF3C7', border: '1px solid #FDE68A', padding: '3px 10px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Time sensitive</span>
+                <span style={{ fontSize: 12, color: '#B45309', fontWeight: 500 }}>Ford Employee Pricing for All is running right now</span>
+              </div>
+              <h2 style={{ fontSize: 20, fontWeight: 700, color: '#111', letterSpacing: '-0.5px', lineHeight: 1.2, marginBottom: 8 }}>Why Ford Employee Pricing for All is actually a bad deal in Metro Detroit</h2>
+              <p style={{ fontSize: 14, color: '#666', lineHeight: 1.65, marginBottom: 12 }}>The promotion sounds like the deal of the year. For Metro Detroit buyers who already have X-Plan access, it often isn&apos;t. Read this before you sign.</p>
+              <span style={{ fontSize: 13, fontWeight: 600, color: '#B45309' }}>Read now — it&apos;s running today →</span>
+            </div>
+          </a>
+        )}
+
         {/* FEATURED — OUR STORY */}
         <a href="/insider/why-autobidly-exists" style={{ textDecoration: 'none', display: 'block', marginBottom: 16 }}>
           <div
@@ -108,7 +137,7 @@ export default function InsiderPage() {
             </div>
             <h2 style={{ fontSize: 28, fontWeight: 700, color: '#fff', letterSpacing: '-0.5px', lineHeight: 1.2, marginBottom: 10 }}>Why AutoBidly exists</h2>
             <p style={{ fontSize: 15, color: '#888', lineHeight: 1.7, marginBottom: 20, maxWidth: 620 }}>
-              This isn&apos;t a startup origin story about a lightbulb moment in a college dorm. It&apos;s about years of sitting across from car salespeople and leaving with that specific feeling — equal parts excited about a new vehicle and completely unsure what just happened to you.
+              This isn&apos;t a startup origin story about a lightbulb moment in a college dorm. It&apos;s about years of sitting across from car salespeople and leaving equal parts excited and completely unsure what just happened to you.
             </p>
             <span style={{ fontSize: 14, fontWeight: 600, color: '#1D9E75' }}>Read the founding story →</span>
           </div>
@@ -128,18 +157,18 @@ export default function InsiderPage() {
               <span style={{ fontSize: 12, color: '#1D9E75', fontWeight: 500 }}>Essential for Metro Detroit</span>
             </div>
             <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111', letterSpacing: '-0.5px', lineHeight: 1.2, marginBottom: 8 }}>Employee pricing in Metro Detroit — what you have, what you might not know you have, and how to use it</h2>
-            <p style={{ fontSize: 14, color: '#666', lineHeight: 1.65, marginBottom: 16 }}>In Metro Detroit, employee pricing isn&apos;t a perk for the lucky few. It&apos;s practically a birthright. Here&apos;s the complete guide to GM Family First, Ford AXZ Plans, and Stellantis Employee Advantage — including how to stack them.</p>
+            <p style={{ fontSize: 14, color: '#666', lineHeight: 1.65, marginBottom: 12 }}>In Metro Detroit, employee pricing isn&apos;t a perk for the lucky few. It&apos;s practically a birthright. Here&apos;s the complete guide to GM Family First, Ford AXZ Plans, and Stellantis Employee Advantage — including how to stack them.</p>
             <span style={{ fontSize: 13, fontWeight: 600, color: '#1D9E75' }}>Read the full guide →</span>
           </div>
         </a>
 
-        {/* ARTICLE GRID */}
+        {/* ALL GUIDES GRID */}
         <div style={{ fontSize: 13, fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 16 }}>All guides</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 16, marginBottom: 48 }}>
-          {articles.slice(2).map((article, i) => (
+          {gridArticles.map((article, i) => (
             <a key={i} href={`/insider/${article.slug}`} style={{ textDecoration: 'none' }}>
               <div
-                style={{ background: '#fff', borderRadius: 12, border: '1px solid #eee', padding: '24px', cursor: 'pointer', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' }}
+                style={{ background: '#fff', borderRadius: 12, border: '1px solid #eee', padding: '24px', cursor: 'pointer', display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box' as const }}
                 onMouseEnter={e => (e.currentTarget.style.borderColor = '#1D9E75')}
                 onMouseLeave={e => (e.currentTarget.style.borderColor = '#eee')}
               >
@@ -156,7 +185,6 @@ export default function InsiderPage() {
 
           {/* COMING SOON */}
           {[
-            { title: 'Why Ford Employee Pricing for All is actually a bad deal in Metro Detroit', tag: 'Insider Intel' },
             { title: 'Why you should almost never put money down on a lease', tag: 'Lease Math' },
             { title: 'Your Costco membership and car leasing — what it actually does and when it matters', tag: 'Insider Intel' },
           ].map((article, i) => (
@@ -175,7 +203,7 @@ export default function InsiderPage() {
           <div style={{ fontSize: 11, fontWeight: 600, color: '#1D9E75', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 12 }}>The AutoBidly Insider Newsletter</div>
           <h2 style={{ fontSize: 26, fontWeight: 700, color: '#fff', letterSpacing: '-0.5px', marginBottom: 10 }}>One email a month. Tailored to your lease situation.</h2>
           <p style={{ fontSize: 15, color: '#888', lineHeight: 1.7, maxWidth: 520, margin: '0 auto 28px' }}>
-            No generic deals. No spam. Just the information that&apos;s relevant to your specific vehicle, your lease timeline, and your market. The email you&apos;ll actually want to open.
+            No generic deals. No spam. Just the information that&apos;s relevant to your specific vehicle, your lease timeline, and your market.
           </p>
           <div style={{ display: 'flex', gap: 8, maxWidth: 420, margin: '0 auto', flexWrap: 'wrap', justifyContent: 'center' }}>
             <input
@@ -202,7 +230,7 @@ export default function InsiderPage() {
             </button>
           </div>
           <div id="insider-msg" style={{ marginTop: 10, fontSize: 13, minHeight: 18 }}></div>
-          <p style={{ fontSize: 11, color: '#555', marginTop: 10 }}>No spam. Unsubscribe anytime. We respect your inbox.</p>
+          <p style={{ fontSize: 11, color: '#555', marginTop: 10 }}>No spam. Unsubscribe anytime.</p>
         </div>
 
       </div>
