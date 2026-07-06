@@ -40,6 +40,20 @@ const articles = [
     teaser: "When you turn in a lease, the dealer takes the car and you walk away. But in many cases the car is worth more than your buyout price. That difference belongs to you — if you know to look for it.",
   },
   {
+    slug: "no-money-down",
+    title: "Why you should almost never put money down on a lease",
+    tag: "Lease Math",
+    readTime: "5 min read",
+    teaser: "Putting money down on a lease feels responsible. In reality it's almost always the wrong financial decision — and in the worst case, it's money you could lose entirely if the vehicle is totaled.",
+  },
+  {
+    slug: "costco-auto-program",
+    title: "Your Costco membership and car leasing — what it actually does and when it matters",
+    tag: "Insider Intel",
+    readTime: "5 min read",
+    teaser: "Most Costco members know the membership pays for itself in gas and groceries. Fewer know it can save $1,000-2,000 on a car lease — but only on certain brands, only in certain months.",
+  },
+  {
     slug: "dealer-addons",
     title: "The real cost of adding accessories to your lease",
     tag: "Lease Math",
@@ -69,12 +83,7 @@ const articles = [
   },
 ];
 
-// Articles shown in grid — skip featured ones (why-autobidly-exists, employee-pricing-detroit)
-// Also skip ford-employee-pricing-for-all when promo is active since it shows in the banner
-// When promo is inactive, ford article shows in grid
-const gridArticles = fordPromoActive
-  ? articles.slice(3)
-  : articles.slice(2);
+const gridArticles = fordPromoActive ? articles.slice(3) : articles.slice(2);
 
 export default function InsiderPage() {
   return (
@@ -91,7 +100,6 @@ export default function InsiderPage() {
 
       <div style={{ maxWidth: 900, margin: '0 auto', padding: '48px 20px' }}>
 
-        {/* HEADER */}
         <div style={{ marginBottom: 48 }}>
           <div style={{ display: 'inline-block', background: '#111', color: '#1D9E75', fontSize: 11, fontWeight: 600, padding: '4px 14px', borderRadius: 99, marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.05em' }}>The AutoBidly Insider</div>
           <h1 style={{ fontSize: 40, fontWeight: 700, color: '#111', letterSpacing: '-1px', lineHeight: 1.15, marginBottom: 16 }}>
@@ -102,7 +110,7 @@ export default function InsiderPage() {
           </p>
         </div>
 
-        {/* FORD PROMO ALERT — only shows when active */}
+        {/* FORD PROMO ALERT */}
         {fordPromoActive && (
           <a href="/insider/ford-employee-pricing-for-all" style={{ textDecoration: 'none', display: 'block', marginBottom: 16 }}>
             <div
@@ -181,20 +189,6 @@ export default function InsiderPage() {
                 <span style={{ fontSize: 13, fontWeight: 600, color: '#1D9E75' }}>Read more →</span>
               </div>
             </a>
-          ))}
-
-          {/* COMING SOON */}
-          {[
-            { title: 'Why you should almost never put money down on a lease', tag: 'Lease Math' },
-            { title: 'Your Costco membership and car leasing — what it actually does and when it matters', tag: 'Insider Intel' },
-          ].map((article, i) => (
-            <div key={i} style={{ background: '#f9f9f7', borderRadius: 12, border: '1px dashed #ddd', padding: '24px', display: 'flex', flexDirection: 'column', opacity: 0.7 }}>
-              <div style={{ display: 'flex', gap: 8, marginBottom: 12, alignItems: 'center' }}>
-                <span style={{ fontSize: 10, fontWeight: 600, color: '#999', background: '#eee', padding: '3px 8px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{article.tag}</span>
-                <span style={{ fontSize: 11, color: '#bbb' }}>Coming soon</span>
-              </div>
-              <h3 style={{ fontSize: 15, fontWeight: 600, color: '#999', lineHeight: 1.35, flex: 1 }}>{article.title}</h3>
-            </div>
           ))}
         </div>
 
