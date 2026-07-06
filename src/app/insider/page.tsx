@@ -8,7 +8,14 @@ const articles = [
     tag: "Our Story",
     readTime: "10 min read",
     teaser: "This isn't a startup origin story about a lightbulb moment in a college dorm. It's about years of sitting across from car salespeople and leaving with that specific feeling — equal parts excited about a new vehicle and completely unsure what just happened to you.",
-    featured: true,
+  },
+  {
+    slug: "employee-pricing-detroit",
+    title: "Employee pricing in Metro Detroit — what you have, what you might not know you have, and how to use it",
+    subtitle: "The complete guide to GM Family First, Ford AXZ Plans, and Stellantis Employee Advantage.",
+    tag: "Insider Intel",
+    readTime: "8 min read",
+    teaser: "In Metro Detroit, employee pricing isn't a perk for the lucky few. It's practically a birthright. Here's the complete guide to every manufacturer program, who qualifies, and how to stack what you have.",
   },
   {
     slug: "model-year-timing",
@@ -107,20 +114,22 @@ export default function InsiderPage() {
           </div>
         </a>
 
-        {/* SECOND FEATURED — MODEL YEAR TIMING */}
-        <a href="/insider/model-year-timing" style={{ textDecoration: 'none', display: 'block', marginBottom: 32 }}>
+        {/* FEATURED — EMPLOYEE PRICING */}
+        <a href="/insider/employee-pricing-detroit" style={{ textDecoration: 'none', display: 'block', marginBottom: 32 }}>
           <div
-            style={{ background: '#fff', borderRadius: 16, padding: '28px 32px', cursor: 'pointer', border: '1.5px solid #eee' }}
-            onMouseEnter={e => (e.currentTarget.style.borderColor = '#1D9E75')}
-            onMouseLeave={e => (e.currentTarget.style.borderColor = '#eee')}
+            style={{ background: '#fff', borderRadius: 16, padding: '28px 32px', cursor: 'pointer', border: '1.5px solid #1D9E75' }}
+            onMouseEnter={e => (e.currentTarget.style.background = '#f9fff9')}
+            onMouseLeave={e => (e.currentTarget.style.background = '#fff')}
           >
             <div style={{ display: 'flex', gap: 10, marginBottom: 12, alignItems: 'center' }}>
-              <span style={{ fontSize: 10, fontWeight: 600, color: '#0F6E56', background: '#E1F5EE', padding: '3px 10px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Model Year Timing</span>
-              <span style={{ fontSize: 12, color: '#999' }}>4 min read</span>
+              <span style={{ fontSize: 10, fontWeight: 600, color: '#0F6E56', background: '#E1F5EE', padding: '3px 10px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Insider Intel</span>
+              <span style={{ fontSize: 12, color: '#999' }}>8 min read</span>
+              <span style={{ fontSize: 12, color: '#999' }}>·</span>
+              <span style={{ fontSize: 12, color: '#1D9E75', fontWeight: 500 }}>Essential for Metro Detroit</span>
             </div>
-            <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111', letterSpacing: '-0.5px', lineHeight: 1.2, marginBottom: 8 }}>Leasing last year&apos;s model — when it saves you money and when it doesn&apos;t</h2>
-            <p style={{ fontSize: 14, color: '#666', lineHeight: 1.65, marginBottom: 16 }}>Most buyers assume older model year always means better deal. Sometimes that&apos;s true. Often it isn&apos;t. Here&apos;s exactly when leasing last year&apos;s model saves you money — and when the current year is the smarter move.</p>
-            <span style={{ fontSize: 13, fontWeight: 600, color: '#1D9E75' }}>Read more →</span>
+            <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111', letterSpacing: '-0.5px', lineHeight: 1.2, marginBottom: 8 }}>Employee pricing in Metro Detroit — what you have, what you might not know you have, and how to use it</h2>
+            <p style={{ fontSize: 14, color: '#666', lineHeight: 1.65, marginBottom: 16 }}>In Metro Detroit, employee pricing isn&apos;t a perk for the lucky few. It&apos;s practically a birthright. Here&apos;s the complete guide to GM Family First, Ford AXZ Plans, and Stellantis Employee Advantage — including how to stack them.</p>
+            <span style={{ fontSize: 13, fontWeight: 600, color: '#1D9E75' }}>Read the full guide →</span>
           </div>
         </a>
 
@@ -145,9 +154,8 @@ export default function InsiderPage() {
             </a>
           ))}
 
-          {/* COMING SOON CARDS */}
+          {/* COMING SOON */}
           {[
-            { title: 'Employee pricing in Metro Detroit — what you have, what you might not know you have, and how to use it', tag: 'Insider Intel' },
             { title: 'Why Ford Employee Pricing for All is actually a bad deal in Metro Detroit', tag: 'Insider Intel' },
             { title: 'Why you should almost never put money down on a lease', tag: 'Lease Math' },
             { title: 'Your Costco membership and car leasing — what it actually does and when it matters', tag: 'Insider Intel' },
