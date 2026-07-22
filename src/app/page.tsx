@@ -91,6 +91,10 @@ export default function HomePage() {
     setFitResults(results);
   }
 
+  function fitUrl(v: typeof allVehicles[0]) {
+    return `/fit?make=${encodeURIComponent(v.make)}&model=${encodeURIComponent(v.model)}&trim=${encodeURIComponent(v.trim)}&payment=${v.estPayment}&seats=${v.seats}&miles=${fitMiles}&category=${encodeURIComponent(v.category)}`;
+  }
+
   return (
     <main style={{ fontFamily: 'system-ui, sans-serif', margin: 0, padding: 0, background: '#fff' }}>
       <style>{`
@@ -323,7 +327,7 @@ export default function HomePage() {
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 10 }}>
                     {fitResults.map((v, i) => (
-                      <a key={i} href={`/bidlock/express?make=${encodeURIComponent(v.make)}&model=${encodeURIComponent(v.model)}&trim=${encodeURIComponent(v.trim)}&payment=${v.estPayment}&seats=${v.seats}&miles=${fitMiles}`} style={{ textDecoration: 'none' }}>
+                      <a key={i} href={fitUrl(v)} style={{ textDecoration: 'none' }}>
                         <div style={{ background: '#fff', borderRadius: 12, border: i === 0 ? '1.5px solid #1D9E75' : '1px solid #eee', padding: '16px 18px', display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, alignItems: 'center' }}
                           onMouseEnter={e => (e.currentTarget.style.borderColor = '#1D9E75')}
                           onMouseLeave={e => (e.currentTarget.style.borderColor = i === 0 ? '#1D9E75' : '#eee')}
@@ -339,7 +343,7 @@ export default function HomePage() {
                           <div style={{ textAlign: 'center' as const }}>
                             <div style={{ fontSize: 28, fontWeight: 700, color: scoreColor(v.score), lineHeight: 1 }}>{v.score}</div>
                             <div style={{ fontSize: 10, color: scoreColor(v.score), fontWeight: 600, marginTop: 2 }}>{scoreLabel(v.score)}</div>
-                            <div style={{ fontSize: 11, color: '#1D9E75', marginTop: 6, fontWeight: 500 }}>BidLock™ →</div>
+                            <div style={{ fontSize: 11, color: '#1D9E75', marginTop: 6, fontWeight: 500 }}>See options →</div>
                           </div>
                         </div>
                       </a>

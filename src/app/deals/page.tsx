@@ -1,8 +1,22 @@
-export default function DealsPage() {
+"use client";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+
+function DealsContent() {
+  const searchParams = useSearchParams();
+  const make = searchParams.get('make') || '';
+  const model = searchParams.get('model') || '';
+
+  let iframeSrc = '/deals.html';
+  const params = new URLSearchParams();
+  if (make) params.set('make', make);
+  if (model) params.set('model', model);
+  if (params.toString()) iframeSrc += '?' + params.toString();
+
   return (
     <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
       <iframe
-        src="/deals.html"
+        src={iframeSrc}
         style={{ width: '100%', height: '100%', border: 'none' }}
       />
       <div style={{
@@ -37,5 +51,13 @@ export default function DealsPage() {
         }}>Lock my price →</a>
       </div>
     </div>
+  );
+}
+
+export default function DealsPage() {
+  return (
+    <Suspense fallback={<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', fontFamily: 'system-ui' }}>Loading...</div>}>
+      <DealsContent />
+    </Suspense>
   );
 }

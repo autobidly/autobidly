@@ -257,7 +257,7 @@ header{background:var(--ink);position:sticky;top:0;z-index:100;border-bottom:3px
 
 <header>
   <div class="header-inner">
-    <a class="logo" href="#">
+    <a class="logo" href="/">
       <span class="logo-auto">Auto</span><span class="logo-bidly">Bidly</span><span class="logo-tm">™</span>
     </a>
     <nav class="header-nav">
@@ -1019,6 +1019,54 @@ setInterval(() => {
   count += Math.floor(Math.random()*3);
   document.getElementById('liveCount').textContent = `— ${count.toLocaleString()} verified deals across 340 dealerships`;
 }, 8000);
+</script>
+<script>
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  const make = params.get('make');
+  const model = params.get('model');
+  if (!make) return;
+
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      const makeEl = document.getElementById('s_make');
+      if (!makeEl) return;
+
+      for (let i = 0; i < makeEl.options.length; i++) {
+        if (makeEl.options[i].value.toLowerCase() === make.toLowerCase() ||
+            makeEl.options[i].text.toLowerCase() === make.toLowerCase()) {
+          makeEl.selectedIndex = i;
+          makeEl.dispatchEvent(new Event('change'));
+          break;
+        }
+      }
+
+      if (model) {
+        setTimeout(function() {
+          const modelEl = document.getElementById('s_model');
+          if (!modelEl) return;
+          for (let i = 0; i < modelEl.options.length; i++) {
+            if (modelEl.options[i].value.toLowerCase() === model.toLowerCase() ||
+                modelEl.options[i].text.toLowerCase() === model.toLowerCase()) {
+              modelEl.selectedIndex = i;
+              modelEl.dispatchEvent(new Event('change'));
+              break;
+            }
+          }
+          setTimeout(function() {
+            const btn = document.querySelector('.search-btn');
+            if (btn) btn.click();
+          }, 300);
+        }, 500);
+      } else {
+        setTimeout(function() {
+          const btn = document.querySelector('.search-btn');
+          if (btn) btn.click();
+        }, 300);
+      }
+    }, 300);
+  });
+})();
 </script>
 </body>
 </html>
