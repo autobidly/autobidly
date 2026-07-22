@@ -92,7 +92,6 @@ function getLeaseScore(make: string, model: string, trim: string = '', incentive
     if (incentives.kiaEmployee && isKia) score += 4;
     if (incentives.bmwEmployee && isBMW) score += 4;
     if (incentives.mercedesEmployee && isMercedes) score += 4;
-
     if (incentives.fordXPlan && isFord) score += 5;
     if (incentives.gmFriends && isGM) score += 4;
     if (incentives.stellantisChoice && isStellantis) score += 7;
@@ -134,13 +133,7 @@ function getLeaseScore(make: string, model: string, trim: string = '', incentive
       else score += 1;
     }
 
-    if (incentives.military) {
-      if (isGM && incentives.gmEmployee) {
-        // Cannot stack GM military with GM employee pricing
-      } else {
-        score += 3;
-      }
-    }
+    if (incentives.military && !(isGM && incentives.gmEmployee)) score += 3;
   }
 
   return Math.max(10, Math.min(100, score));
@@ -231,66 +224,29 @@ export default function LeaseIntelligenceClient() {
   const hasAnyIncentive = activeCount > 0;
   const toggle = (key: keyof Incentives) => setIncentives(prev => ({ ...prev, [key]: !prev[key] }));
 
-  function checkStyle(checked: boolean) {
-    return {
-      display: 'flex' as const,
-      gap: 14,
-      alignItems: 'flex-start' as const,
-      cursor: 'pointer',
-      padding: '16px 18px',
-      background: checked ? '#0F6E5620' : '#1e1e1e',
-      borderRadius: 10,
-      border: `1.5px solid ${checked ? '#1D9E75' : '#333'}`,
-      marginBottom: 10,
-    };
-  }
-
   function CheckItem({ label, detail, checked, onChange, warning }: {
     label: string; detail: string; checked: boolean; onChange: () => void; warning?: string;
   }) {
     return (
-      <label style={checkStyle(checked)}>
-        <input
-          type="checkbox"
-          checked={checked}
-          onChange={onChange}
-          style={{ accentColor: '#1D9E75', width: 18, height: 18, marginTop: 2, flexShrink: 0 }}
-        />
+      <label style={{ display: 'flex', gap: 12, alignItems: 'flex-start', cursor: 'pointer', padding: '12px 16px', background: checked ? '#0F6E5618' : '#1e1e1e', borderRadius: 10, border: `1.5px solid ${checked ? '#1D9E75' : '#333'}`, marginBottom: 10 }}>
+        <input type="checkbox" checked={checked} onChange={onChange}
+          style={{ accentColor: '#1D9E75', width: 18, height: 18, marginTop: 2, flexShrink: 0 }} />
         <div>
-          <div style={{ fontSize: 15, color: checked ? '#1D9E75' : '#ffffff', fontWeight: 600, lineHeight: 1.4, marginBottom: 6 }}>
-            {label}
-          </div>
-          <div style={{ fontSize: 14, color: '#aaaaaa', lineHeight: 1.7 }}>
-            {detail}
-          </div>
-          {warning && (
-            <div style={{ fontSize: 13, color: '#f59e0b', marginTop: 8, lineHeight: 1.6, fontWeight: 500 }}>
-              ⚠️ {warning}
-            </div>
-          )}
+          <div style={{ fontSize: 15, color: checked ? '#1D9E75' : '#ffffff', fontWeight: 600, lineHeight: 1.4, marginBottom: 6 }}>{label}</div>
+          <div style={{ fontSize: 14, color: '#aaaaaa', lineHeight: 1.7 }}>{detail}</div>
+          {warning && <div style={{ fontSize: 13, color: '#f59e0b', marginTop: 8, lineHeight: 1.6, fontWeight: 500 }}>⚠️ {warning}</div>}
         </div>
       </label>
     );
   }
 
-  function Section({ id, title, subtitle, children }: {
-    id: string; title: string; subtitle: string; children: React.ReactNode;
-  }) {
+  function Section({ id, title, subtitle, children }: { id: string; title: string; subtitle: string; children: React.ReactNode }) {
     const open = openSection === id;
     return (
       <div style={{ marginBottom: 12 }}>
-        <button
-          onClick={() => setOpenSection(open ? null : id)}
-          style={{ width: '100%', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', padding: 0 }}
-        >
-          <div style={{
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            padding: '16px 20px',
-            background: open ? '#1a1a1a' : '#1e1e1e',
-            borderRadius: open ? '10px 10px 0 0' : 10,
-            border: '1.5px solid #333',
-            borderBottom: open ? 'none' : '1.5px solid #333',
-          }}>
+        <button onClick={() => setOpenSection(open ? null : id)}
+          style={{ width: '100%', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', padding: 0, WebkitTapHighlightColor: 'transparent', touchAction: 'manipulation' } as React.CSSProperties}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', background: open ? '#1a1a1a' : '#1e1e1e', borderRadius: open ? '10px 10px 0 0' : 10, border: '1.5px solid #333', borderBottom: open ? 'none' : '1.5px solid #333' }}>
             <div>
               <div style={{ fontSize: 15, fontWeight: 700, color: '#ffffff' }}>{title}</div>
               <div style={{ fontSize: 13, color: '#888', marginTop: 3 }}>{subtitle}</div>
@@ -299,13 +255,7 @@ export default function LeaseIntelligenceClient() {
           </div>
         </button>
         {open && (
-          <div style={{
-            background: '#141414',
-            borderRadius: '0 0 10px 10px',
-            border: '1.5px solid #333',
-            borderTop: 'none',
-            padding: '20px 18px',
-          }}>
+          <div style={{ background: '#141414', borderRadius: '0 0 10px 10px', border: '1.5px solid #333', borderTop: 'none', padding: '20px 18px' }}>
             {children}
           </div>
         )}
@@ -324,7 +274,7 @@ export default function LeaseIntelligenceClient() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {vehicles.map((v, i) => (
             <a key={i} href="/bidlock" style={{ textDecoration: 'none' }}>
-              <div
+              <div className="vehicle-card"
                 style={{ background: '#fff', borderRadius: 12, border: '1px solid #eee', padding: '20px 24px', display: 'grid', gridTemplateColumns: 'auto 1fr auto', gap: 20, alignItems: 'center' }}
                 onMouseEnter={e => (e.currentTarget.style.borderColor = '#1D9E75')}
                 onMouseLeave={e => (e.currentTarget.style.borderColor = '#eee')}
@@ -333,13 +283,13 @@ export default function LeaseIntelligenceClient() {
                 <div>
                   <div style={{ fontSize: 16, fontWeight: 600, color: '#111', marginBottom: 3 }}>{v.make} {v.model} {v.trim}</div>
                   <div style={{ fontSize: 13, color: '#888', marginBottom: 8 }}>MSRP from {v.msrp} · Est. ${v.estPayment}/mo · {v.seats} seats</div>
-                  <div style={{ fontSize: 13, color: '#555', lineHeight: 1.65 }}>{v.why}</div>
+                  <div className="vehicle-why" style={{ fontSize: 13, color: '#555', lineHeight: 1.65 }}>{v.why}</div>
                   <div style={{ marginTop: 10, height: 4, background: '#eee', borderRadius: 99, overflow: 'hidden', maxWidth: 300 }}>
                     <div style={{ height: '100%', width: `${v.score}%`, background: scoreColor(v.score), borderRadius: 99 }} />
                   </div>
                 </div>
-                <div style={{ textAlign: 'center', minWidth: 80 }}>
-                  <div style={{ fontSize: 36, fontWeight: 700, color: scoreColor(v.score), lineHeight: 1 }}>{v.score}</div>
+                <div style={{ textAlign: 'center', minWidth: 64 }}>
+                  <div style={{ fontSize: 32, fontWeight: 700, color: scoreColor(v.score), lineHeight: 1 }}>{v.score}</div>
                   <div style={{ fontSize: 11, color: scoreColor(v.score), fontWeight: 600, marginTop: 2 }}>{scoreLabel(v.score)}</div>
                 </div>
               </div>
@@ -352,56 +302,72 @@ export default function LeaseIntelligenceClient() {
 
   return (
     <main style={{ fontFamily: 'system-ui, sans-serif', background: '#f9f9f7', minHeight: '100vh' }}>
-      <nav style={{ background: '#fff', borderBottom: '1px solid #eee', padding: '14px 40px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <style>{`
+        .li-nav-links { display: flex; gap: 24px; align-items: center; }
+        .li-nav-mobile { display: none; }
+        .category-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+        .score-explanation-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .lower-scores-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .vehicle-why { display: block; }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+        .panel-btn { flex-shrink: 0; background: #1D9E75; color: #fff; border: none; border-radius: 99px; padding: 13px 24px; font-size: 15px; font-weight: 600; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; position: relative; z-index: 10; }
+        .panel-btn.close { background: #333; }
+        @media (max-width: 768px) {
+          .li-nav-links { display: none; }
+          .li-nav-mobile { display: flex; }
+          .category-grid { grid-template-columns: repeat(2, 1fr); }
+          .score-explanation-grid { grid-template-columns: 1fr; }
+          .lower-scores-grid { grid-template-columns: 1fr; }
+          .vehicle-card { padding: 14px 16px !important; gap: 10px !important; }
+          .vehicle-why { display: none; }
+          .panel-header { flex-direction: column; align-items: stretch; gap: 12px; }
+          .panel-btn { width: 100%; text-align: center; }
+        }
+      `}</style>
+
+      <nav style={{ background: '#fff', borderBottom: '1px solid #eee', padding: '14px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <a href="/" style={{ fontSize: 20, fontWeight: 600, textDecoration: 'none', color: '#111' }}>Auto<span style={{ color: '#1D9E75' }}>Bidly</span></a>
-        <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+        <div className="li-nav-links">
           <a href="/deals" style={{ fontSize: 14, color: '#666', textDecoration: 'none' }}>Browse deals</a>
           <a href="/lease-intelligence" style={{ fontSize: 14, color: '#1D9E75', textDecoration: 'none', fontWeight: 500 }}>Lease Intelligence</a>
           <a href="/insider" style={{ fontSize: 14, color: '#666', textDecoration: 'none' }}>The Insider</a>
           <a href="/dealer-login" style={{ fontSize: 14, color: '#666', textDecoration: 'none' }}>For dealers</a>
           <a href="/bidlock" style={{ background: '#1D9E75', color: '#fff', borderRadius: 99, padding: '8px 20px', fontSize: 14, fontWeight: 500, textDecoration: 'none' }}>Submit a bid</a>
         </div>
+        <div className="li-nav-mobile">
+          <a href="/bidlock" style={{ background: '#1D9E75', color: '#fff', borderRadius: 99, padding: '8px 18px', fontSize: 13, fontWeight: 500, textDecoration: 'none' }}>Submit a bid</a>
+        </div>
       </nav>
 
-      <div style={{ maxWidth: 900, margin: '0 auto', padding: '48px 20px' }}>
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '32px 20px' }}>
 
         <div style={{ marginBottom: 32 }}>
           <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 16, flexWrap: 'wrap' }}>
             <div style={{ display: 'inline-block', background: '#E1F5EE', color: '#0F6E56', fontSize: 11, fontWeight: 600, padding: '4px 14px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Updated {monthName} {year}</div>
-            {isPersonalized && (
-              <div style={{ display: 'inline-block', background: '#111', color: '#1D9E75', fontSize: 11, fontWeight: 600, padding: '4px 14px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                ✓ Personalized · {activeCount} incentive{activeCount !== 1 ? 's' : ''} applied
-              </div>
-            )}
+            {isPersonalized && <div style={{ display: 'inline-block', background: '#111', color: '#1D9E75', fontSize: 11, fontWeight: 600, padding: '4px 14px', borderRadius: 99, textTransform: 'uppercase', letterSpacing: '0.05em' }}>✓ Personalized · {activeCount} incentive{activeCount !== 1 ? 's' : ''} applied</div>}
           </div>
-          <h1 style={{ fontSize: 40, fontWeight: 700, color: '#111', letterSpacing: '-1px', lineHeight: 1.15, marginBottom: 16 }}>
+          <h1 style={{ fontSize: 36, fontWeight: 700, color: '#111', letterSpacing: '-1px', lineHeight: 1.15, marginBottom: 16 }}>
             {isPersonalized ? 'Your Custom Lease Intelligence™' : 'Best vehicles to lease right now'}
           </h1>
-          <p style={{ fontSize: 17, color: '#555', lineHeight: 1.75, maxWidth: 700, marginBottom: 8 }}>
+          <p style={{ fontSize: 16, color: '#555', lineHeight: 1.75, maxWidth: 700, marginBottom: 8 }}>
             {isPersonalized
               ? `Scores personalized based on ${activeCount} incentive${activeCount !== 1 ? 's' : ''} you qualify for — stacked across all applicable brands simultaneously.`
-              : "AutoBidly's Lease Intelligence Score™ ranks every vehicle from 1–100 based on manufacturer incentives, inventory levels, and market timing. Tell us what you qualify for and we'll personalize every score — you may qualify for more than you think."}
+              : "AutoBidly's Lease Intelligence Score™ ranks every vehicle from 1–100 based on manufacturer incentives, inventory levels, and market timing. Tell us what you qualify for and we'll personalize every score."}
           </p>
-          {!isPersonalized && (
-            <p style={{ fontSize: 13, color: '#999', marginBottom: 20 }}>
-              Scores are based on AutoBidly's proprietary scoring methodology and update automatically. They reflect our analysis of manufacturer incentive patterns, inventory trends, and seasonal demand — not live data feeds from lenders.
-            </p>
-          )}
+          {!isPersonalized && <p style={{ fontSize: 13, color: '#999', marginBottom: 20 }}>Scores are based on AutoBidly's proprietary scoring methodology and update automatically. They reflect our analysis of manufacturer incentive patterns, inventory trends, and seasonal demand — not live data feeds from lenders.</p>}
 
-          {/* CUSTOM LEASE INTELLIGENCE PANEL */}
+          {/* INCENTIVE PANEL */}
           <div style={{ background: '#111', borderRadius: 14, padding: '24px 28px', marginBottom: 24 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: showIncentivePanel ? 24 : 0 }}>
-              <div>
+            <div className="panel-header" style={{ marginBottom: showIncentivePanel ? 24 : 0 }}>
+              <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 16, fontWeight: 700, color: '#1D9E75', marginBottom: 4 }}>🎯 Custom Lease Intelligence™</div>
                 <div style={{ fontSize: 14, color: '#aaa' }}>
-                  {isPersonalized
-                    ? `${activeCount} incentive${activeCount !== 1 ? 's' : ''} applied — scores updated across all brands`
-                    : 'Tell us everything you qualify for — stack incentives across multiple brands at once'}
+                  {isPersonalized ? `${activeCount} incentive${activeCount !== 1 ? 's' : ''} applied` : 'Tell us everything you qualify for — stack across multiple brands'}
                 </div>
               </div>
               <button
-                onClick={() => setShowIncentivePanel(!showIncentivePanel)}
-                style={{ background: showIncentivePanel ? '#333' : '#1D9E75', color: '#fff', border: 'none', borderRadius: 99, padding: '11px 22px', fontSize: 14, fontWeight: 600, cursor: 'pointer', flexShrink: 0 }}
+                className={`panel-btn${showIncentivePanel ? ' close' : ''}`}
+                onClick={() => setShowIncentivePanel(v => !v)}
               >
                 {showIncentivePanel ? 'Close' : isPersonalized ? 'Edit my incentives' : 'Personalize my scores →'}
               </button>
@@ -409,132 +375,37 @@ export default function LeaseIntelligenceClient() {
 
             {showIncentivePanel && (
               <div>
-                {/* IMPORTANT NOTE */}
                 <div style={{ background: '#1D9E7518', border: '1px solid #1D9E7540', borderRadius: 10, padding: '16px 20px', marginBottom: 20 }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: '#1D9E75', marginBottom: 6 }}>
-                    Check everything that applies — you can qualify across multiple brands at the same time
-                  </div>
-                  <div style={{ fontSize: 14, color: '#bbb', lineHeight: 1.7 }}>
-                    You might have GM Family First pricing through your family AND a friend at Ford who can give you X-Plan. Both count. Both move your scores independently. A GM household with a Ford-employee neighbor is extremely common in Metro Detroit — and both incentives apply simultaneously on their respective brands.
-                  </div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#1D9E75', marginBottom: 6 }}>Check everything that applies — you can qualify across multiple brands at the same time</div>
+                  <div style={{ fontSize: 14, color: '#bbb', lineHeight: 1.7 }}>You might have GM Family First pricing AND a friend at Ford who can give you X-Plan. Both count. Both move your scores independently.</div>
                 </div>
 
-                {/* EMPLOYEE PRICING */}
-                <Section id="employee" title="Employee pricing" subtitle="You or a family member works or worked at one of these manufacturers — check all that apply">
-                  <CheckItem
-                    checked={incentives.gmEmployee}
-                    onChange={() => toggle('gmEmployee')}
-                    label="GM Family First — Chevrolet, Buick, GMC, Cadillac"
-                    detail="You or a family member (including aunts, uncles, nieces, nephews, grandparents, in-laws) works or worked at GM or GM Financial. Access via gmfamilyfirst.com. Requires an authorization number. One of the broadest and most generous employee programs available — stackable with most national incentives."
-                  />
-                  <CheckItem
-                    checked={incentives.fordEmployee}
-                    onChange={() => toggle('fordEmployee')}
-                    label="Ford A-Plan or Z-Plan — Ford & Lincoln"
-                    detail="You or an immediate family member is an active Ford corporate employee (A-Plan) or retired Ford employee (Z-Plan). Same deep discount pricing on both plans. Up to 4 PINs per year. Generate your PIN at axz.ford.com before you go to the dealer — you cannot use this without a PIN. Does not apply to F-150 Raptor or Mustang Dark Horse."
-                  />
-                  <CheckItem
-                    checked={incentives.stellantisEmployee}
-                    onChange={() => toggle('stellantisEmployee')}
-                    label="Stellantis Employee Purchase (EP) — Jeep, Ram, Chrysler, Dodge"
-                    detail="You or an immediate family member works or worked at Stellantis. Price is fixed at 5% below dealer invoice plus a $200 program fee. Requires a Control Number generated through the Stellantis employee portal. Up to 6 Control Numbers per year."
-                    warning="Important: Stellantis often requires you to CHOOSE between employee pricing OR public cash rebates — they frequently do not stack. Always compare both options before deciding which to use."
-                  />
-                  <CheckItem
-                    checked={incentives.toyotaEmployee}
-                    onChange={() => toggle('toyotaEmployee')}
-                    label="Toyota VSPP — Toyota & Lexus"
-                    detail="You or an immediate family member works at Toyota corporate or a Toyota manufacturing plant (Vehicle Special Purchase Program). Price is set at dealer invoice minus factory holdbacks. The employee must be physically present at the dealership during the sale. High-demand models including TRD Pro trims are excluded. Individual dealers may choose not to participate."
-                  />
-                  <CheckItem
-                    checked={incentives.hondaEmployee}
-                    onChange={() => toggle('hondaEmployee')}
-                    label="Honda THPP — Honda & Acura"
-                    detail="You or an immediate family member works at Honda corporate (Team Honda Purchase Program). Price is fixed at dealer invoice minus 3.5% of MSRP — typically 7-12% off the window sticker. Covers Honda and Acura vehicles. Honda does not have a Friends & Neighbors tier — family relationship must be verified. Note: dealers may offset by offering less on your trade-in."
-                  />
-                  <CheckItem
-                    checked={incentives.hyundaiEmployee}
-                    onChange={() => toggle('hyundaiEmployee')}
-                    label="Hyundai Circle E-Plan — Hyundai & Genesis"
-                    detail="You work directly at Hyundai Motor America corporate or a Hyundai manufacturing facility (E-Plan). This is the deepest Hyundai discount available. Requires a Hyundai Circle Certificate — your name on the certificate must match your ID exactly. E-Plan vehicles cannot be resold for 6 months after purchase. Note: Hyundai and Kia are completely separate programs."
-                  />
-                  <CheckItem
-                    checked={incentives.kiaEmployee}
-                    onChange={() => toggle('kiaEmployee')}
-                    label="Kia Vehicle Purchase Program — Kia"
-                    detail="You work directly at Kia corporate or a Kia manufacturing facility. Fixed pricing tied to dealer invoice. Note that Hyundai and Kia run completely separate programs — a Hyundai employee cannot use their benefit on a Kia. Dealers on high-demand models may decline to participate."
-                    warning="Kia's program typically requires you to choose employee pricing OR public incentives — stacking is usually not permitted."
-                  />
-                  <CheckItem
-                    checked={incentives.bmwEmployee}
-                    onChange={() => toggle('bmwEmployee')}
-                    label="BMW Corporate Sales Program — BMW"
-                    detail="You work at BMW Group or an approved BMW partner company. Provides a flat dollar reduction of $500-$3,000 depending on model, trim, and financing method. Stackable with most public incentives and regional lease deals — one of the better stacking programs among luxury brands. Performance models like the M4 CS or XM may be excluded."
-                  />
-                  <CheckItem
-                    checked={incentives.mercedesEmployee}
-                    onChange={() => toggle('mercedesEmployee')}
-                    label="Mercedes-Benz Star or Preferred Employer Program"
-                    detail="You work at Mercedes-Benz corporate (Star Program — up to $5,000 in factory incentives) or at an approved partner company such as Apple, Google, Microsoft, or Delta Air Lines (Preferred Employer Program). The Preferred Employer discount applies to the employee only and cannot be transferred to family members. Obtain your Company Account Number (CAN) from your HR department to generate a control form."
-                  />
+                <Section id="employee" title="Employee pricing" subtitle="You or a family member works or worked at one of these manufacturers">
+                  <CheckItem checked={incentives.gmEmployee} onChange={() => toggle('gmEmployee')} label="GM Family First — Chevrolet, Buick, GMC, Cadillac" detail="You or a family member (including aunts, uncles, nieces, nephews, grandparents, in-laws) works or worked at GM or GM Financial. Access via gmfamilyfirst.com. Stackable with most national incentives." />
+                  <CheckItem checked={incentives.fordEmployee} onChange={() => toggle('fordEmployee')} label="Ford A-Plan or Z-Plan — Ford & Lincoln" detail="You or an immediate family member is an active (A-Plan) or retired (Z-Plan) Ford corporate employee. Up to 4 PINs per year. Generate at axz.ford.com before going to the dealer." />
+                  <CheckItem checked={incentives.stellantisEmployee} onChange={() => toggle('stellantisEmployee')} label="Stellantis Employee Purchase (EP) — Jeep, Ram, Chrysler, Dodge" detail="You or an immediate family member works or worked at Stellantis. Fixed at 5% below invoice + $200 fee. Requires a Control Number from the employee portal." warning="Stellantis often requires you to CHOOSE between employee pricing OR public cash rebates — compare both before deciding." />
+                  <CheckItem checked={incentives.toyotaEmployee} onChange={() => toggle('toyotaEmployee')} label="Toyota VSPP — Toyota & Lexus" detail="You or an immediate family member works at Toyota. Employee must be present at the dealership. High-demand models excluded. Dealers may refuse." />
+                  <CheckItem checked={incentives.hondaEmployee} onChange={() => toggle('hondaEmployee')} label="Honda THPP — Honda & Acura" detail="You or an immediate family member works at Honda. Fixed at invoice minus 3.5% of MSRP. No Friends & Neighbors tier available." />
+                  <CheckItem checked={incentives.hyundaiEmployee} onChange={() => toggle('hyundaiEmployee')} label="Hyundai Circle E-Plan — Hyundai & Genesis" detail="You work directly at Hyundai Motor America. Requires a Circle Certificate with your exact name. E-Plan vehicles cannot be resold for 6 months." />
+                  <CheckItem checked={incentives.kiaEmployee} onChange={() => toggle('kiaEmployee')} label="Kia Vehicle Purchase Program — Kia" detail="You work directly at Kia corporate. Hyundai and Kia are completely separate programs." warning="Kia's program typically requires you to choose employee pricing OR public incentives." />
+                  <CheckItem checked={incentives.bmwEmployee} onChange={() => toggle('bmwEmployee')} label="BMW Corporate Sales Program — BMW" detail="You work at BMW Group or an approved partner company. Flat $500-$3,000 reduction. Stackable with most public incentives." />
+                  <CheckItem checked={incentives.mercedesEmployee} onChange={() => toggle('mercedesEmployee')} label="Mercedes-Benz Star or Preferred Employer" detail="You work at Mercedes-Benz corporate (up to $5,000) or an approved partner company like Apple, Google, or Delta. Partner discount is employee-only." />
                 </Section>
 
-                {/* FRIENDS & NEIGHBORS */}
-                <Section id="friends" title="Friends & Neighbors access" subtitle="You don't have to work at these companies — you just have to know someone who does">
-                  <div style={{ fontSize: 14, color: '#bbb', lineHeight: 1.7, marginBottom: 16 }}>
-                    Ford employees can sponsor up to 4 people per year. GM and Stellantis have similar programs. If you know anyone at these companies — a neighbor, a family friend, a coworker's spouse — ask whether they have unused sponsorships. Many employees have PINs sitting unused every single year. This is one of the most overlooked opportunities in Metro Detroit.
-                  </div>
-                  <CheckItem
-                    checked={incentives.fordXPlan}
-                    onChange={() => toggle('fordXPlan')}
-                    label="Ford X-Plan — Ford & Lincoln"
-                    detail="A Ford employee or retiree is willing to sponsor you. They generate a PIN for you at myplan.ford.com — you must have this PIN before you go to the dealer. Up to 4 sponsorships per Ford employee per year. Applies to friends, neighbors, extended family, or anyone they choose. Does not apply to F-150 Raptor or Mustang Dark Horse."
-                  />
-                  <CheckItem
-                    checked={incentives.gmFriends}
-                    onChange={() => toggle('gmFriends')}
-                    label="GM Supplier for Friends — Chevrolet, Buick, GMC, Cadillac"
-                    detail="A GM active or retired employee is sharing supplier-level pricing with you through the GM Supplier for Friends program. This is slightly less deep than the full GM Family First employee discount but still provides meaningful savings. Stackable with most national incentives."
-                  />
-                  <CheckItem
-                    checked={incentives.stellantisChoice}
-                    onChange={() => toggle('stellantisChoice')}
-                    label="Stellantis Employee Choice voucher — Jeep, Ram, Chrysler, Dodge"
-                    detail="A Stellantis active employee is giving you their one annual Employee Choice voucher. This voucher can go to literally anyone they choose — friend, neighbor, or acquaintance — regardless of relationship. It provides the same full EP pricing (5% below invoice + $200 fee). Extremely limited — only one per active employee per year. If someone is offering you this, use it."
-                    warning="Stellantis Employee Choice may not stack with public cash rebates. Always compare employee pricing vs current public incentives to see which gives you the better total payment."
-                  />
-                  <CheckItem
-                    checked={incentives.stellantisFriends}
-                    onChange={() => toggle('stellantisFriends')}
-                    label="Stellantis Friends Program — Jeep, Ram, Chrysler, Dodge"
-                    detail="A Stellantis employee is sponsoring you through the standard Friends Program. This is approximately 1% below invoice plus a $75 administrative fee — meaningfully weaker than the Employee Choice voucher but still better than retail pricing on most models."
-                    warning="Stellantis Friends pricing may conflict with current public cash rebates. Verify which option gives you the better total deal before committing."
-                  />
-                  <CheckItem
-                    checked={incentives.hyundaiOPlan}
-                    onChange={() => toggle('hyundaiOPlan')}
-                    label="Hyundai Circle O-Plan — Hyundai & Genesis"
-                    detail="A direct Hyundai corporate employee is sponsoring you through the O-Plan (Friends & Family). Price is set at invoice minus 3% of MSRP minus select Circle cash credits. Requires a Hyundai Circle Certificate — the name on the certificate must match your ID exactly at the dealership."
-                  />
-                  <CheckItem
-                    checked={incentives.kiaFriends}
-                    onChange={() => toggle('kiaFriends')}
-                    label="Kia Friends & Family — Kia"
-                    detail="A direct Kia corporate employee is sponsoring you with a Friends & Family discount voucher. One sponsored person per employee per year. Note: Hyundai and Kia are completely separate programs — a Hyundai employee cannot sponsor you for Kia pricing or vice versa."
-                    warning="Kia Friends pricing typically cannot be stacked with public retail incentives or special financing offers."
-                  />
+                <Section id="friends" title="Friends & Neighbors access" subtitle="You don't have to work there — you just have to know someone who does">
+                  <div style={{ fontSize: 14, color: '#bbb', lineHeight: 1.7, marginBottom: 16 }}>Ford employees can sponsor up to 4 people per year. GM and Stellantis have similar programs. Many employees have unused sponsorships every year — ask around.</div>
+                  <CheckItem checked={incentives.fordXPlan} onChange={() => toggle('fordXPlan')} label="Ford X-Plan — Ford & Lincoln" detail="A Ford employee or retiree is sponsoring you. They generate a PIN at myplan.ford.com — you need this PIN before you go to the dealer. Up to 4 per Ford employee per year." />
+                  <CheckItem checked={incentives.gmFriends} onChange={() => toggle('gmFriends')} label="GM Supplier for Friends — Chevrolet, Buick, GMC, Cadillac" detail="A GM employee is sharing supplier-level pricing with you. Slightly less than full Family First pricing but still significant. Stackable with most national incentives." />
+                  <CheckItem checked={incentives.stellantisChoice} onChange={() => toggle('stellantisChoice')} label="Stellantis Employee Choice — Jeep, Ram, Chrysler, Dodge" detail="A Stellantis employee is giving you their one annual Choice voucher. Full EP pricing (5% below invoice + $200). One per active employee per year." warning="Stellantis Employee Choice may not stack with public cash rebates." />
+                  <CheckItem checked={incentives.stellantisFriends} onChange={() => toggle('stellantisFriends')} label="Stellantis Friends Program — Jeep, Ram, Chrysler, Dodge" detail="A Stellantis employee is sponsoring you. Approximately 1% below invoice + $75 fee." warning="Stellantis Friends pricing may conflict with public cash rebates." />
+                  <CheckItem checked={incentives.hyundaiOPlan} onChange={() => toggle('hyundaiOPlan')} label="Hyundai Circle O-Plan — Hyundai & Genesis" detail="A direct Hyundai employee is sponsoring you. Price is invoice minus 3% of MSRP. Certificate required with your exact name." />
+                  <CheckItem checked={incentives.kiaFriends} onChange={() => toggle('kiaFriends')} label="Kia Friends & Family — Kia" detail="A direct Kia employee is sponsoring you. One per employee per year. Hyundai and Kia are separate programs." warning="Kia Friends pricing typically cannot stack with public retail incentives." />
                 </Section>
 
-                {/* CURRENT LEASE */}
-                <Section id="loyalty" title="Current lease" subtitle="Returning to the same brand earns loyalty bonuses. Switching can earn conquest cash on brands where you have pricing access.">
-                  <div style={{ fontSize: 14, color: '#bbb', lineHeight: 1.7, marginBottom: 14 }}>
-                    If you are currently leasing a vehicle, tell us which brand. Returning to the same brand family typically earns a loyalty bonus from the manufacturer. Switching brands can earn conquest cash — but on AutoBidly we only apply conquest bonuses when you have actual employee or Friends pricing access on the new brand, since that is when conquest truly compounds your savings.
-                  </div>
-                  <select
-                    value={incentives.currentLeaseBrand}
-                    onChange={e => setIncentives({ ...incentives, currentLeaseBrand: e.target.value })}
-                    style={{ width: '100%', padding: '13px 16px', borderRadius: 10, border: '1.5px solid #333', fontSize: 15, fontFamily: 'system-ui', outline: 'none', background: '#1e1e1e', color: '#ffffff' }}
-                  >
+                <Section id="loyalty" title="Current lease" subtitle="Returning to the same brand earns loyalty bonuses.">
+                  <div style={{ fontSize: 14, color: '#bbb', lineHeight: 1.7, marginBottom: 14 }}>Tell us what you're currently leasing. Returning to the same brand family typically earns a loyalty bonus from the manufacturer.</div>
+                  <select value={incentives.currentLeaseBrand} onChange={e => setIncentives({ ...incentives, currentLeaseBrand: e.target.value })}
+                    style={{ width: '100%', padding: '13px 16px', borderRadius: 10, border: '1.5px solid #333', fontSize: 15, fontFamily: 'system-ui', outline: 'none', background: '#1e1e1e', color: '#ffffff' }}>
                     <option value="none">I am not currently leasing a vehicle</option>
                     <option value="gm">Currently leasing a GM vehicle — Chevrolet, GMC, Buick, or Cadillac</option>
                     <option value="ford">Currently leasing a Ford or Lincoln</option>
@@ -549,42 +420,22 @@ export default function LeaseIntelligenceClient() {
                   </select>
                 </Section>
 
-                {/* ADDITIONAL */}
                 <Section id="additional" title="Additional incentives" subtitle="These stack on top of everything above">
-                  <CheckItem
-                    checked={incentives.costco}
-                    onChange={() => toggle('costco')}
-                    label="Costco member"
-                    detail="GM is the most consistent Costco Auto Program partner — typically $1,000 to $2,000 in stackable cash on select Chevrolet, GMC, Buick, and Cadillac vehicles. BMW and Audi also participate regularly with meaningful incentives. Ford and Stellantis rarely offer direct Costco cash programs. You must have been a Costco member before the promotional period begins to qualify — joining just for the rebate typically does not work."
-                  />
-                  <CheckItem
-                    checked={incentives.military}
-                    onChange={() => toggle('military')}
-                    label="Military or veteran"
-                    detail="Most manufacturers offer $500 to $1,000 in Military Appreciation cash. Ford offers $500-$1,000. BMW's program scales from $500 up to $11,000 on select models depending on financing method. Honda and Toyota typically require financing through their captive lenders (Honda Financial Services or Toyota Financial Services) to unlock the discount. Verification through ID.me or SheerID is required at the dealership."
-                    warning="GM Military Appreciation cannot be combined with GM Family First employee pricing — you must choose whichever gives you the larger discount."
-                  />
+                  <CheckItem checked={incentives.costco} onChange={() => toggle('costco')} label="Costco member" detail="GM is the most consistent Costco partner — $1,000-$2,000 stackable cash on select GM vehicles. BMW and Audi also participate regularly. Must be a member before the promotional period begins." />
+                  <CheckItem checked={incentives.military} onChange={() => toggle('military')} label="Military or veteran" detail="Most manufacturers offer $500-$1,000 in Military Appreciation cash. BMW scales from $500 up to $11,000 on select models." warning="GM Military Appreciation cannot be combined with GM Family First employee pricing." />
                 </Section>
 
                 <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 16 }}>
                   <button
                     onClick={() => { if (hasAnyIncentive) { setIsPersonalized(true); setShowIncentivePanel(false); } }}
                     disabled={!hasAnyIncentive}
-                    style={{
-                      background: hasAnyIncentive ? '#1D9E75' : '#333',
-                      color: hasAnyIncentive ? '#fff' : '#666',
-                      border: 'none', borderRadius: 99, padding: '13px 30px',
-                      fontSize: 15, fontWeight: 600,
-                      cursor: hasAnyIncentive ? 'pointer' : 'not-allowed'
-                    }}
-                  >
+                    style={{ background: hasAnyIncentive ? '#1D9E75' : '#333', color: hasAnyIncentive ? '#fff' : '#666', border: 'none', borderRadius: 99, padding: '13px 30px', fontSize: 15, fontWeight: 600, cursor: hasAnyIncentive ? 'pointer' : 'not-allowed' } as React.CSSProperties}>
                     Show my personalized scores →
                   </button>
                   {isPersonalized && (
                     <button
                       onClick={() => { setIsPersonalized(false); setIncentives(defaultIncentives); setShowIncentivePanel(false); }}
-                      style={{ background: 'transparent', color: '#888', border: '1px solid #444', borderRadius: 99, padding: '13px 24px', fontSize: 15, cursor: 'pointer' }}
-                    >
+                      style={{ background: 'transparent', color: '#888', border: '1px solid #444', borderRadius: 99, padding: '13px 24px', fontSize: 15, cursor: 'pointer' }}>
                       Reset to general scores
                     </button>
                   )}
@@ -598,7 +449,7 @@ export default function LeaseIntelligenceClient() {
             <div style={{ fontSize: 13, fontWeight: 600, color: '#999', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 16 }}>
               {isPersonalized ? 'Your top pick by category' : 'Top pick by category right now'}
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 12 }}>
+            <div className="category-grid">
               {[
                 { label: '🏆 Best overall', vehicle: topVehicles[0] },
                 { label: '🛻 Best truck', vehicle: bestTruck },
@@ -607,8 +458,7 @@ export default function LeaseIntelligenceClient() {
                 { label: '⭐ Best luxury SUV', vehicle: bestLuxury },
               ].map((item, i) => (
                 <a key={i} href="/bidlock" style={{ textDecoration: 'none' }}>
-                  <div
-                    style={{ background: i === 0 ? '#111' : '#fff', borderRadius: 12, border: i === 0 ? 'none' : '1px solid #eee', padding: '16px', cursor: 'pointer' }}
+                  <div style={{ background: i === 0 ? '#111' : '#fff', borderRadius: 12, border: i === 0 ? 'none' : '1px solid #eee', padding: '16px', cursor: 'pointer' }}
                     onMouseEnter={e => { if (i !== 0) e.currentTarget.style.borderColor = '#1D9E75'; }}
                     onMouseLeave={e => { if (i !== 0) e.currentTarget.style.borderColor = '#eee'; }}
                   >
@@ -626,8 +476,8 @@ export default function LeaseIntelligenceClient() {
             <p style={{ fontSize: 12, color: '#bbb', fontStyle: 'italic', marginTop: 10 }}>* Est. payment based on $0 down, 36mo, 12k mi/yr, excellent credit. Actual payment varies by market and incentives.</p>
           </div>
 
-          {/* SLIM CTA STRIP */}
-          <div style={{ background: '#111', borderRadius: 12, padding: '20px 28px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 24, flexWrap: 'wrap' }}>
+          {/* CTA STRIP */}
+          <div style={{ background: '#111', borderRadius: 12, padding: '20px 28px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
             <div>
               <div style={{ fontSize: 13, fontWeight: 600, color: '#1D9E75', marginBottom: 4 }}>
                 {monthName} {year} · {topBrand} leads {isPersonalized ? 'your' : 'our'} rankings with a top score of {topScore}
@@ -641,21 +491,21 @@ export default function LeaseIntelligenceClient() {
         </div>
 
         {/* HOW SCORE WORKS */}
-        <div style={{ background: '#fff', borderRadius: 14, padding: '28px 32px', marginBottom: 40, border: '1px solid #eee' }}>
+        <div style={{ background: '#fff', borderRadius: 14, padding: '28px 24px', marginBottom: 40, border: '1px solid #eee' }}>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: '#111', marginBottom: 12 }}>
             {isPersonalized ? 'How your Custom Lease Intelligence Score™ works' : 'How the Lease Intelligence Score™ works'}
           </h2>
           <p style={{ fontSize: 15, color: '#555', lineHeight: 1.75, marginBottom: 16 }}>
             {isPersonalized
-              ? 'Your score starts with market timing, manufacturer incentives, and inventory levels — then adds every incentive you qualify for, stacked across all brands simultaneously. Employee pricing, Friends & Neighbors access, loyalty bonuses, Costco, and military all move your number independently.'
-              : 'The Lease Intelligence Score is a proprietary AutoBidly algorithm that scores every vehicle from 1 to 100 based on how favorable current lease conditions are. Personalize your scores above — your incentive stack can significantly change which vehicles rank highest for your specific situation.'}
+              ? 'Your score starts with market timing, manufacturer incentives, and inventory levels — then adds every incentive you qualify for, stacked across all brands simultaneously.'
+              : 'The Lease Intelligence Score scores every vehicle from 1 to 100 based on how favorable current lease conditions are. Personalize your scores above — your incentive stack can significantly change which vehicles rank highest.'}
           </p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16 }}>
+          <div className="score-explanation-grid">
             {[
               { factor: 'Manufacturer incentives', desc: 'Subvented money factors, lease cash, and special programs directly from the manufacturer.' },
               { factor: 'Dealer inventory levels', desc: 'Higher inventory levels create more flexibility and competitive pricing.' },
               { factor: 'Market timing', desc: 'End of month, end of quarter, and end of year create better conditions for buyers.' },
-              { factor: isPersonalized ? 'Your incentive stack' : 'Model demand', desc: isPersonalized ? 'All your incentives — employee pricing, Friends & Neighbors, loyalty, Costco, military — applied simultaneously across every applicable brand.' : 'High-demand vehicles score lower — strong demand reduces the need for incentive programs.' },
+              { factor: isPersonalized ? 'Your incentive stack' : 'Model demand', desc: isPersonalized ? 'All your incentives — employee pricing, Friends & Neighbors, loyalty, Costco, military — applied simultaneously.' : 'High-demand vehicles score lower — strong demand reduces the need for incentive programs.' },
             ].map((f, i) => (
               <div key={i} style={{ background: '#f9f9f7', borderRadius: 10, padding: '16px 18px' }}>
                 <div style={{ fontSize: 14, fontWeight: 600, color: '#111', marginBottom: 4 }}>✓ {f.factor}</div>
@@ -683,15 +533,15 @@ export default function LeaseIntelligenceClient() {
         <VehicleSection title={isPersonalized ? 'Best sedans for your situation' : 'Best sedans to lease right now'} vehicles={sedans} />
         <VehicleSection title={isPersonalized ? 'Best luxury SUVs for your situation' : 'Best luxury SUVs to lease right now'} vehicles={luxurySuvs} />
 
-        <div style={{ background: '#FEF2F2', borderRadius: 14, padding: '28px 32px', marginBottom: 40, border: '1px solid #FECACA' }}>
+        <div style={{ background: '#FEF2F2', borderRadius: 14, padding: '28px 24px', marginBottom: 40, border: '1px solid #FECACA' }}>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: '#111', marginBottom: 12 }}>Vehicles with lower lease scores right now</h2>
-          <p style={{ fontSize: 15, color: '#555', lineHeight: 1.75, marginBottom: 16 }}>These vehicles have lower scores due to high demand, limited inventory, or reduced manufacturer lease support. You can still lease them — conditions just favor the buyer less right now.</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+          <p style={{ fontSize: 15, color: '#555', lineHeight: 1.75, marginBottom: 16 }}>These vehicles have lower scores due to high demand, limited inventory, or reduced manufacturer lease support.</p>
+          <div className="lower-scores-grid">
             {[
-              { vehicle: 'Jeep Wrangler', reason: 'Consistently high demand means strong incentive programs are rarely needed. Limited lease support from Stellantis at this time.' },
-              { vehicle: 'Toyota Tacoma', reason: 'Supply constraints and strong resale values reduce the need for competitive lease rates from Toyota Financial.' },
-              { vehicle: 'Ford Bronco', reason: 'High demand and strong brand loyalty reduce the need for aggressive lease incentives from Ford Motor Credit.' },
-              { vehicle: 'Toyota 4Runner', reason: 'Legendary reliability and off-road reputation creates consistent demand. Lease programs reflect that strength.' },
+              { vehicle: 'Jeep Wrangler', reason: 'Consistently high demand means strong incentive programs are rarely needed.' },
+              { vehicle: 'Toyota Tacoma', reason: 'Supply constraints and strong resale values reduce the need for competitive lease rates.' },
+              { vehicle: 'Ford Bronco', reason: 'High demand and strong brand loyalty reduce the need for aggressive lease incentives.' },
+              { vehicle: 'Toyota 4Runner', reason: 'Legendary reliability and off-road reputation creates consistent demand.' },
             ].map((v, i) => (
               <div key={i} style={{ background: '#fff', borderRadius: 10, padding: '14px 16px', border: '1px solid #FECACA' }}>
                 <div style={{ fontSize: 14, fontWeight: 600, color: '#991B1B', marginBottom: 4 }}>↓ {v.vehicle}</div>
@@ -701,18 +551,18 @@ export default function LeaseIntelligenceClient() {
           </div>
         </div>
 
-        <div style={{ background: '#fff', borderRadius: 14, padding: '28px 32px', marginBottom: 40, border: '1px solid #eee' }}>
+        <div style={{ background: '#fff', borderRadius: 14, padding: '28px 24px', marginBottom: 40, border: '1px solid #eee' }}>
           <h2 style={{ fontSize: 20, fontWeight: 700, color: '#111', marginBottom: 12 }}>Best time of month to lease a car</h2>
-          <p style={{ fontSize: 15, color: '#555', lineHeight: 1.75, marginBottom: 16 }}>Timing matters almost as much as which vehicle you choose. Dealers have monthly sales targets and manufacturers run monthly incentive programs that reset on the first of every month.</p>
+          <p style={{ fontSize: 15, color: '#555', lineHeight: 1.75, marginBottom: 16 }}>Timing matters almost as much as which vehicle you choose.</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {[
-              { time: 'Last 5 days of the month', impact: '+10 pts', desc: 'Dealers are working toward monthly targets. Acceptance rates on BidLocks increase significantly during this window.' },
-              { time: 'End of quarter (March, June, September, December)', impact: '+15 pts', desc: 'Quarterly targets create additional urgency. Manufacturers often add dealer incentives to help close the gap.' },
-              { time: 'End of year (December)', impact: '+25 pts combined', desc: 'The strongest month for lease deals in most years. Year-end, quarter-end, and month-end all align simultaneously.' },
-              { time: 'First week of the month', impact: '0 pts', desc: 'Monthly targets just reset. Less urgency on both the dealer and manufacturer side during this window.' },
+              { time: 'Last 5 days of the month', impact: '+10 pts', desc: 'Dealers are working toward monthly targets. Acceptance rates on BidLocks increase significantly.' },
+              { time: 'End of quarter (March, June, September, December)', impact: '+15 pts', desc: 'Quarterly targets create additional urgency. Manufacturers often add dealer incentives.' },
+              { time: 'End of year (December)', impact: '+25 pts combined', desc: 'The strongest month for lease deals in most years. Year-end, quarter-end, and month-end all align.' },
+              { time: 'First week of the month', impact: '0 pts', desc: 'Monthly targets just reset. Less urgency on both the dealer and manufacturer side.' },
             ].map((t, i) => (
               <div key={i} style={{ display: 'flex', gap: 16, alignItems: 'flex-start', padding: '14px 16px', background: '#f9f9f7', borderRadius: 10 }}>
-                <div style={{ minWidth: 90, textAlign: 'center', paddingTop: 2 }}>
+                <div style={{ minWidth: 80, textAlign: 'center', paddingTop: 2 }}>
                   <div style={{ fontSize: 13, fontWeight: 700, color: '#1D9E75' }}>{t.impact}</div>
                 </div>
                 <div>
